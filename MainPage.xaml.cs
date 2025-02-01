@@ -6,7 +6,6 @@
         private readonly HttpClient _client = new HttpClient { Timeout = TimeSpan.FromSeconds(300) };
         private const string ApiUrl = "https://eminently-verified-walleye.ngrok-free.app";
 
-
         public MainPage()
         {
             InitializeComponent();
@@ -32,7 +31,18 @@
                 ResponseImage.IsVisible = false;
                 ResponseText.IsVisible = false;
 
-                var response = await _client.GetAsync(ApiUrl);
+                var inputText = InputEntry.Text?.Trim();
+                if (string.IsNullOrEmpty(inputText))
+                {
+                    ResponseText.Text = "Please enter some text.";
+                    ResponseText.IsVisible = true;
+                    ToggleLoading(false);
+                    return;
+                }
+
+                var requestUrl = $"{ApiUrl}?input={Uri.EscapeDataString(inputText)}";
+
+                var response = await _client.GetAsync(requestUrl);
 
                 if (!response.IsSuccessStatusCode)
                 {

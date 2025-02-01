@@ -2,7 +2,8 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="FashionApp.MainPage"
-             Title="Fashion App">
+             Title="Fashion App"
+             BackgroundColor="LightGray">
 
     <ScrollView>
         <VerticalStackLayout
@@ -31,6 +32,16 @@
                 SemanticProperties.Hint="Counts the number of times you click"
                 Clicked="OnCounterClicked"
                 HorizontalOptions="Fill" />
+
+            <Entry x:Name="InputEntry" 
+                   Placeholder="Enter text here"
+                   PlaceholderColor="Gray"
+                   TextColor="Black"
+                   BackgroundColor="White"
+                   Margin="0,10,0,0"
+                   HeightRequest="40"
+                   HorizontalOptions="FillAndExpand"
+                   VerticalOptions="Center" />
 
             <Button x:Name="LoadButton" 
                 Text="Load Content" 
