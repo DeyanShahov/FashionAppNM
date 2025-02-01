@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FashionApp.LoginPage"
+             Title="Login"
+             BackgroundColor="LightGray">
+
+    <VerticalStackLayout
+        Padding="30,0"
+        Spacing="25"
+        VerticalOptions="CenterAndExpand"
+        HorizontalOptions="CenterAndExpand">
+
+        <Label
+            Text="Login"
+            FontSize="24"
+            HorizontalOptions="Center" />
+
+        <Entry
+            x:Name="UsernameEntry"
+            Placeholder="Username"
+            PlaceholderColor="Gray"
+            TextColor="Black"
+            BackgroundColor="White"
+            Margin="0,10,0,0"
+            HeightRequest="40"
+            HorizontalOptions="FillAndExpand"
+            VerticalOptions="Center" />
+
+        <Entry
+            x:Name="PasswordEntry"
+            Placeholder="Password"
+            PlaceholderColor="Gray"
+            TextColor="Black"
+            BackgroundColor="White"
+            IsPassword="True"
+            Margin="0,10,0,0"
+            HeightRequest="40"
+            HorizontalOptions="FillAndExpand"
+            VerticalOptions="Center" />
+
+        <Button
+            Text="Login"
+            Clicked="OnLoginClicked"
+            HorizontalOptions="Center" />
+
+        <Label
+            x:Name="LoginStatusLabel"
+            Text=""
+            TextColor="Red"
+            HorizontalOptions="Center" />
+    </VerticalStackLayout>
+
+</ContentPage>

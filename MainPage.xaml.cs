@@ -5,22 +5,51 @@
         int count = 0;
         private readonly HttpClient _client = new HttpClient { Timeout = TimeSpan.FromSeconds(300) };
         private const string ApiUrl = "https://eminently-verified-walleye.ngrok-free.app";
+        bool isGuest = true;
 
         public MainPage()
         {
             InitializeComponent();
+            
+            WelcomeMessage.Text = $"Welcome Guest!";
+            LoginBtn.Text = "Login as User";
         }
 
         private void OnCounterClicked(object sender, EventArgs e)
         {
-            count++;
+            //count++;
 
-            if (count == 1)
-                CounterBtn.Text = $"Clicked {count} time";
+            //if (count == 1)
+            //    LoginBtn.Text = $"Clicked {count} time";
+            //else
+            //    LoginBtn.Text = $"Clicked {count} times";
+
+            // Аудио четете на екрана
+            //SemanticScreenReader.Announce(CounterBtn.Text);
+            isGuest = !isGuest;
+
+            if (isGuest)
+            {
+                WelcomeMessage.Text = "Welcome Guest!";
+                WelcomeInfo.Text = "The logged-in users have access to additional features.";
+                LoginBtn.Text = "Login as User";
+
+                InputEntry.IsEnabled = false;
+                InputEntry.IsVisible = false;
+            }
             else
-                CounterBtn.Text = $"Clicked {count} times";
+            {
+                WelcomeMessage.Text = "Welcome User!";
+                WelcomeInfo.Text = "Adding a prompt field for creation an image.";
+                LoginBtn.Text = "Logout";
 
-            SemanticScreenReader.Announce(CounterBtn.Text);
+                InputEntry.IsEnabled = true;
+                InputEntry.IsVisible = true;
+            }
+
+            ResponseImage.IsVisible = false;
+            ResponseText.IsVisible = false;
+            InputEntry.Text = "";
         }
 
         private async void OnLoadClicked(object sender, EventArgs e)
@@ -32,7 +61,7 @@
                 ResponseText.IsVisible = false;
 
                 var inputText = InputEntry.Text?.Trim();
-                if (string.IsNullOrEmpty(inputText))
+                if (string.IsNullOrEmpty(inputText) && InputEntry.IsEnabled)
                 {
                     ResponseText.Text = "Please enter some text.";
                     ResponseText.IsVisible = true;
@@ -40,7 +69,7 @@
                     return;
                 }
 
-                var requestUrl = $"{ApiUrl}?input={Uri.EscapeDataString(inputText)}";
+                var requestUrl = $"{ApiUrl}?input={Uri.EscapeDataString(isGuest ? "bottle" : inputText)}";
 
                 var response = await _client.GetAsync(requestUrl);
 
