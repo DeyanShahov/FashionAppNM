@@ -1,15 +1,10 @@
-﻿using System;
-using System.Net.Http;
-using System.Threading.Tasks;
-using Microsoft.Maui.Controls;
-
-namespace FashionApp
+﻿namespace FashionApp
 {
     public partial class MainPage : ContentPage
     {
         int count = 0;
         private readonly HttpClient _client = new HttpClient { Timeout = TimeSpan.FromSeconds(300) };
-        private const string ApiUrl = "https://eminently-verified-walleye.ngrok-free.app/run-test1";
+        private const string ApiUrl = "https://eminently-verified-walleye.ngrok-free.app";
 
 
         public MainPage()
