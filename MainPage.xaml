@@ -9,6 +9,10 @@
         <VerticalStackLayout
             Padding="30,0"
             Spacing="25">
+            <Button x:Name="NavigateButton"
+                Text="Go to Empty Page"
+                Clicked="OnNavigateClicked"
+                HorizontalOptions="Center"/>
             <Image
                 Source="dotnet_bot.png"
                 HeightRequest="185"
