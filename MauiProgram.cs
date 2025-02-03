@@ -1,11 +1,12 @@
 ﻿using Microsoft.Extensions.Logging;
+using CommunityToolkit.Maui.Core;
 
 namespace FashionApp
 {
     public static class MauiProgram
     {
         public static MauiApp CreateMauiApp()
-        {
+        {          
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
@@ -15,8 +16,10 @@ namespace FashionApp
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
 
+            builder.UseMauiApp<App>().UseMauiCommunityToolkitCore();
+
 #if DEBUG
-    		builder.Logging.AddDebug();
+            builder.Logging.AddDebug();
 #endif
 
             return builder.Build();

@@ -34,6 +34,11 @@
                 Clicked="OnCounterClicked"
                 HorizontalOptions="Fill" />
 
+            <Button x:Name="LoadButton" 
+                    Text="Load Content" 
+                    Clicked="OnLoadClicked"
+                    HorizontalOptions="Center"/>
+
             <Entry x:Name="InputEntry" 
                    Placeholder="Enter text here"
                    PlaceholderColor="Gray"
@@ -46,9 +51,13 @@
                    IsEnabled="False"
                    IsVisible="False"/>
 
-            <Button x:Name="LoadButton" 
-                Text="Load Content" 
-                Clicked="OnLoadClicked"
+          
+
+            <Button x:Name="SaveButton"
+                Text="Save Image"
+                Clicked="OnSaveClicked"
+                IsVisible="False"
+                IsEnabled="False"
                 HorizontalOptions="Center"/>
 
             <ActivityIndicator x:Name="LoadingIndicator"
@@ -61,8 +70,17 @@
                IsVisible="False"
                Aspect="AspectFit"/>
 
+            
+
             <Label x:Name="ResponseText" 
                IsVisible="False"
+               FontSize="18"
+               HorizontalOptions="Center"/>
+
+            <Label x:Name="CounterLabel" 
+               Text="Created by RedFox - AI Айляк"
+               Style="{StaticResource Headline}"
+               TextColor="Black"
                FontSize="18"
                HorizontalOptions="Center"/>
         </VerticalStackLayout>
