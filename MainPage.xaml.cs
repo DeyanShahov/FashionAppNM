@@ -165,7 +165,7 @@ namespace FashionApp
                     os.Flush();
                     os.Close();
 
-                    await DisplayAlert("Success", $"Image saved", "OK");
+                    await DisplayAlert("Success", $"Image saved on DCIM / FashionApp!", "OK");
                 }
                 else
                 {

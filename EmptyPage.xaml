@@ -3,19 +3,83 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="FashionApp.EmptyPage"
              Title="Empty Page">
-    <VerticalStackLayout
-        Spacing="25"
-        Padding="30,0"
-        VerticalOptions="Center">
-        
-        <Label 
-            Text="This is an empty page"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
+    <Grid RowDefinitions="Auto,*,Auto">
+        <VerticalStackLayout Grid.Row="0"
+            Spacing="10"
+            Padding="30,10">
+            
+            <Label 
+                Text="Select an image from your device"
+                VerticalOptions="Center" 
+                HorizontalOptions="Center" />
 
-        <Button 
-            Text="Back to Main Page"
-            Clicked="OnBackButtonClicked"
-            HorizontalOptions="Center"/>
-    </VerticalStackLayout>
+            <Button 
+                x:Name="SelectImageButton"
+                Text="Select Image"
+                Clicked="OnSelectImageClicked"
+                HorizontalOptions="Center"/>
+        </VerticalStackLayout>
+
+        <Grid Grid.Row="1" x:Name="ImageContainer" HorizontalOptions="Center" VerticalOptions="Center">
+            <Image
+                x:Name="SelectedImage"
+                HeightRequest="300"
+                WidthRequest="300"
+                Aspect="AspectFit"
+                IsVisible="False"
+                SizeChanged="OnImageSizeChanged"/>
+            
+            <GraphicsView
+                x:Name="DrawingView"
+                IsVisible="False"
+                StartInteraction="OnStartInteraction"
+                DragInteraction="OnDragInteraction"
+                EndInteraction="OnEndInteraction"
+                HorizontalOptions="Start"
+                VerticalOptions="Start"/>
+        </Grid>
+
+        <VerticalStackLayout Grid.Row="2"
+            Spacing="10"
+            Padding="30,10">
+            
+            <HorizontalStackLayout 
+                x:Name="DrawingTools" 
+                Spacing="10" 
+                HorizontalOptions="Center"
+                IsVisible="False">
+                
+                <VerticalStackLayout Spacing="5">
+                    <Label 
+                        Text="{Binding Source={x:Reference BrushSlider}, Path=Value, StringFormat='Brush Size: {0:F0}'}"
+                        HorizontalOptions="Center"/>
+                    <Slider
+                        x:Name="BrushSlider"
+                        Minimum="1"
+                        Maximum="50"
+                        Value="5"
+                        WidthRequest="200"/>
+                </VerticalStackLayout>
+            </HorizontalStackLayout>
+
+            <HorizontalStackLayout 
+                Spacing="10" 
+                HorizontalOptions="Center">
+                <Button 
+                    Text="Clear" 
+                    Clicked="OnClearClicked"/>
+                <Button 
+                    Text="Undo" 
+                    Clicked="OnUndoClicked"/>
+                <Button 
+                    Text="Save" 
+                    Clicked="OnSaveImageClicked"/>
+            </HorizontalStackLayout>
+
+            <Button 
+                Text="Back to Main Page"
+                Clicked="OnBackButtonClicked"
+                HorizontalOptions="Center"/>
+        </VerticalStackLayout>
+    </Grid>
 </ContentPage> 
