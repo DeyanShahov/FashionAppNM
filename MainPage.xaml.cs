@@ -189,6 +189,11 @@ namespace FashionApp
         {
             await Navigation.PushAsync(new EmptyPage());
         }
+
+        private async void OnNavigateClickedToPage2(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new Page2());
+        }
         private void ToggleLoading(bool isLoading)
         {
             LoadButton.IsEnabled = !isLoading;

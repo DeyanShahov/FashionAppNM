@@ -6,7 +6,7 @@ namespace FashionApp
     public static class MauiProgram
     {
         public static MauiApp CreateMauiApp()
-        {          
+        {
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
@@ -16,7 +16,7 @@ namespace FashionApp
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
 
-            builder.UseMauiApp<App>().UseMauiCommunityToolkitCore();
+            builder.UseMauiCommunityToolkitCore();
 
 #if DEBUG
             builder.Logging.AddDebug();
@@ -26,3 +26,5 @@ namespace FashionApp
         }
     }
 }
+
+

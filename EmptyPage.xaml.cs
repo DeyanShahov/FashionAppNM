@@ -44,6 +44,7 @@ public partial class EmptyPage : ContentPage
                     SelectedImage.IsVisible = true;
                     DrawingView.IsVisible = true;
                     DrawingTools.IsVisible = true;
+                    DrawingBottons.IsVisible = true;
                 }
                 else
                 {

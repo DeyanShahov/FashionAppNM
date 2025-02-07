@@ -55,16 +55,18 @@
                         HorizontalOptions="Center"/>
                     <Slider
                         x:Name="BrushSlider"
-                        Minimum="1"
+                        Minimum="5"
                         Maximum="50"
-                        Value="5"
+                        Value="20"
                         WidthRequest="200"/>
                 </VerticalStackLayout>
             </HorizontalStackLayout>
 
-            <HorizontalStackLayout 
+            <HorizontalStackLayout
+                x:Name="DrawingBottons"
                 Spacing="10" 
-                HorizontalOptions="Center">
+                HorizontalOptions="Center"
+                IsVisible="False">
                 <Button 
                     Text="Clear" 
                     Clicked="OnClearClicked"/>
