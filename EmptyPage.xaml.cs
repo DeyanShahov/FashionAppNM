@@ -127,13 +127,6 @@ public partial class EmptyPage : ContentPage
         }
     }
 
-    private async Task<byte[]> ConvertImageToByteArray(IImage image)
-    {
-        using var stream = new MemoryStream();
-        await image.SaveAsync(stream, ImageFormat.Png);
-        return stream.ToArray();
-    }
-
     private async void OnSaveImageClicked(object sender, EventArgs e)
     {
         if (SelectedImage.Source == null) return;
@@ -141,21 +134,27 @@ public partial class EmptyPage : ContentPage
         try
         {
             var image = await DrawingView.CaptureAsync();
-
-
             var fileName = $"masked_image_{DateTime.Now:yyyyMMdd_HHmmss}.png";
-
-            var imageStream = await image.OpenReadAsync();
-            imageStream.Position = 0;
-            //var bitmap = Android.Graphics.BitmapFactory.DecodeStream(imageStream);
 
 
 #if WINDOWS
-            var result = await ConvertImageToByteArray(image as IImage);
-            await File.WriteAllBytesAsync($"C:\\Users\\Public\\Pictures\\{fileName}", result);
+            byte[] imageBytes;
+            using ( var imageStream = await image.OpenReadAsync())
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    memoryStream.Position = 0;
+                    await imageStream.CopyToAsync(memoryStream);
+                    imageBytes = memoryStream.ToArray();
+                }
+            }
+            //var result = await ConvertImageToByteArray(image as IImage);
+            await File.WriteAllBytesAsync($"C:\\Users\\Public\\Pictures\\{fileName}", imageBytes);
             await DisplayAlert("Success", $"Image saved to C:\\Users\\Public\\Pictures", "OK");
 
 #elif ANDROID
+                var imageStream2 = await image.OpenReadAsync();
+            imageStream2.Position = 0;
             var context = Platform.CurrentActivity;
 
             if (OperatingSystem.IsAndroidVersionAtLeast(29))
@@ -186,7 +185,7 @@ public partial class EmptyPage : ContentPage
                 var os = resolver.OpenOutputStream(imageUri);
                 Android.Graphics.BitmapFactory.Options options = new();
                 options.InJustDecodeBounds = true;
-                var bitmap = Android.Graphics.BitmapFactory.DecodeStream(imageStream);
+                var bitmap = Android.Graphics.BitmapFactory.DecodeStream(imageStream2);
                 //var bitmap = _imageData;
                 bitmap.Compress(Android.Graphics.Bitmap.CompressFormat.Png, 100, os);
                 os.Flush();

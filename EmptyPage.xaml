@@ -7,6 +7,11 @@
         <VerticalStackLayout Grid.Row="0"
             Spacing="10"
             Padding="30,10">
+            <Label
+                x:Name="ImageParams"
+                Text="Image paramaeters"
+                VerticalOptions="Center"
+                HorizontalOptions="Center" />
 
             <Label 
                 Text="Select an image from your device"
@@ -23,11 +28,12 @@
         <Grid Grid.Row="1" x:Name="ImageContainer" HorizontalOptions="Center" VerticalOptions="Center">
             <Image
                 x:Name="SelectedImage"
-                HeightRequest="300"
-                WidthRequest="300"
+                HeightRequest="700"
+                WidthRequest="500"
                 Aspect="AspectFit"
                 IsVisible="False"
-                SizeChanged="OnImageSizeChanged"/>
+             SizeChanged="OnImageSizeChanged"/>
+                
 
             <GraphicsView
                 x:Name="DrawingView"
