@@ -2,6 +2,7 @@ using Microsoft.Maui.Graphics;
 using Microsoft.Maui.Graphics.Platform;
 using IImage = Microsoft.Maui.Graphics.IImage;
 using Microsoft.Maui.Controls;
+using CommunityToolkit.Maui.Views;
 
 namespace FashionApp;
 
@@ -64,7 +65,7 @@ public partial class EmptyPage : ContentPage
         {
             DrawingView.WidthRequest = SelectedImage.Width;
             DrawingView.HeightRequest = SelectedImage.Height;
-            
+
             DrawingView.TranslationX = SelectedImage.X;
             DrawingView.TranslationY = SelectedImage.Y;
         }
@@ -73,7 +74,7 @@ public partial class EmptyPage : ContentPage
     void OnStartInteraction(object sender, TouchEventArgs e)
     {
         var touch = e.Touches[0];
-        
+
         if (touch.X >= 0 && touch.X <= DrawingView.Width &&
             touch.Y >= 0 && touch.Y <= DrawingView.Height)
         {
@@ -94,8 +95,8 @@ public partial class EmptyPage : ContentPage
         if (_currentLine != null)
         {
             var touch = e.Touches[0];
-            
-            // ÐŸÑ€Ð¾Ð²ÐµÑ€ÑÐ²Ð°Ð¼Ðµ Ð´Ð°Ð»Ð¸ Ð´Ð¾ÐºÐ¾ÑÐ²Ð°Ð½ÐµÑ‚Ð¾ Ðµ Ð² Ñ€Ð°Ð¼ÐºÐ¸Ñ‚Ðµ Ð½Ð° DrawingView
+
+            // Ïðîâåðÿâàìå äàëè äîêîñâàíåòî å â ðàìêèòå íà DrawingView
             if (touch.X >= 0 && touch.X <= DrawingView.Width &&
                 touch.Y >= 0 && touch.Y <= DrawingView.Height)
             {
@@ -113,7 +114,7 @@ public partial class EmptyPage : ContentPage
     void OnClearClicked(object sender, EventArgs e)
     {
         _lines.Clear();
-        _markedPixels.Clear(); // Ð˜Ð·Ñ‡Ð¸ÑÑ‚Ð²Ð°Ð¼Ðµ Ð¸ Ð¼Ð°Ñ€ÐºÐ¸Ñ€Ð°Ð½Ð¸Ñ‚Ðµ Ð¿Ð¸ÐºÑÐµÐ»Ð¸
+        _markedPixels.Clear(); // Èç÷èñòâàìå è ìàðêèðàíèòå ïèêñåëè
         DrawingView.Invalidate();
     }
 
@@ -175,7 +176,7 @@ public partial class EmptyPage : ContentPage
                 //await outputStream.WriteAsync(ms.ToArray());
 
 
-                
+
                 Android.Content.ContentResolver resolver = context.ContentResolver;
                 Android.Content.ContentValues contentValues = new();
                 contentValues.Put(Android.Provider.MediaStore.IMediaColumns.DisplayName, fileName);
@@ -190,7 +191,7 @@ public partial class EmptyPage : ContentPage
                 bitmap.Compress(Android.Graphics.Bitmap.CompressFormat.Png, 100, os);
                 os.Flush();
                 os.Close();   
-                
+
                 await DisplayAlert("Success", "Image saved on DCIM / FashionApp!", "OK");
             }
             else
@@ -247,4 +248,4 @@ public class DrawingViewDrawable : IDrawable
             }
         }
     }
-} 
+}

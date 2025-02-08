@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="bg">
+
+<head>
+    <meta charset="UTF-8">
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+    <meta name="referrer" content="no-referrer">
+    <!-- <meta name="referrer" content="width=device-width, initial-scale=1.0"> -->
+    <script src="https://kit.fontawesome.com/c472474e4a.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        #opacityValue {
+            cursor: pointer;
+            margin-right: 10%;
+        }
+
+        #opacitySlider {
+            display: none;
+            position: absolute;
+            top: 70px;
+            left: 0;
+            width: 150px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="startPage">
+        <button id="startButton">Load image</button>
+    </div>
+    <div id="drawingPage" style="display: none;">
+        <div class="controls">
+            <div class="control-group">
+                <div class="color-picker-wrapper">
+                    <i id="colorPicker" class="fa-solid fa-palette fa-2x"></i>
+                    <input type="color" id="colorInput">
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="slider-wrapper">
+                    <i id="brushSize" class="fa-solid fa-sliders fa-2x"></i>
+                    <input type="range" id="brushSlider" min="1" max="50" value="5">
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="slider-wrapper2">
+                    <i id="opacityValue" class="fa-solid fa-stroopwafel fa-2x"></i>
+                    <input type="range" id="opacitySlider" min="1" max="100" value="100">
+                </div>
+            </div>
+            <i id="penBtn" class="fa-solid fa-pen fa-2x"></i>
+            <i id="eraserBtn" class="fa-solid fa-eraser fa-2x"></i>
+            <i id="undoBtn" class="fa-solid fa-left-long fa-2x"></i>
+            <i id="redoBtn" class="fa-solid fa-right-long fa-2x"></i>
+            <!-- <label for="imageInput" class="file-input">Зареди друго изображение</label>
+            <input type="file" id="imageInput" accept="image/*"> -->
+            <i id="zoom-in" class="fa-solid fa-magnifying-glass-plus fa-2x"></i>
+            <i id="zoom-out" class="fa-solid fa-magnifying-glass-minus fa-2x"></i>
+            <i id="file-download" class="fa-solid fa-file-arrow-down fa-2x"></i>
+        </div>
+        <canvas id="drawingCanvas"></canvas>
+    </div>
+
+    <script>
+        const startPage = document.getElementById('startPage');
+        const drawingPage = document.getElementById('drawingPage');
+        const startButton = document.getElementById('startButton');
+        const canvas = document.getElementById('drawingCanvas');
+        const ctx = canvas.getContext('2d');
+        const colorPicker = document.getElementById('colorInput');
+        const brushSize = document.getElementById('brushSlider');
+        const opacityValue = document.getElementById('opacitySlider');
+        const penBtn = document.getElementById('penBtn');
+        const eraserBtn = document.getElementById('eraserBtn');
+        // const clearBtn = document.getElementById('clearBtn');
+        const undoBtn = document.getElementById('undoBtn');
+        const redoBtn = document.getElementById('redoBtn');
+        // const imageInput = document.getElementById('imageInput');
+        const zoomInButton = document.getElementById('zoom-in');
+        const zoomOutButton = document.getElementById('zoom-out');
+        const downloadButton = document.getElementById('file-download');
+        const secretKey = "redfox";
+
+        let isDrawing = false;
+        let lastX = 0;
+        let lastY = 0;
+        let color = colorPicker.value;
+        let size = brushSize.value;
+        let isEraser = false;
+        let scale = 1;
+        let opacity = opacityValue.value / 100;
+        let hexColor = '#000000';
+
+        const history = [];
+        let historyIndex = -1;
+
+        //function getImageIndexFromQR() {
+        //    const urlParams = new URLSearchParams(window.location.search);
+        //    //return parseInt(urlParams.get('image')) || 0;
+        //    return urlParams.get('image');
+        //}
+
+        function hexToRgba(hex, opacity) {
+            hex = hex.replace('#', '');
+
+            if (hex.length === 3) {
+                hex = hex.split('').map(hexChar => hexChar + hexChar).join('');
+            }
+
+            const bigint = parseInt(hex, 16);
+            const r = (bigint >> 16) & 255;
+            const g = (bigint >> 8) & 255;
+            const b = bigint & 255;
+
+            return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+        }
+
+        //async function getImageData(imageId) {
+        //    const url = `https://api.imgur.com/3/image/${imageId}`;
+        //    try {
+        //        const response = await fetch(url, {
+        //            method: 'GET',
+        //            headers: {
+        //                Authorization: `Client-ID ccf270e9e702ec2`,
+        //            },
+        //            referrer: "",
+        //        });
+
+        //        if (!response.ok) {
+        //            throw new Error('Error requesting image');
+        //        }
+
+        //        const data = await response.json();
+        //        return data.data.link;
+        //    } catch (error) {
+        //        console.error(error);
+        //    }
+        //}
+
+        //function isImgurLink(url) {
+        //    const flickrPattern = /https:\/\/live\.staticflickr\.com\/.*/;
+        //    return !flickrPattern.test(url);
+        //}
+
+        //function extractImageId(url) {
+        //    const imgurPattern = /https:\/\/i\.imgur\.com\/([a-zA-Z0-9]+)\.(png|jpe?g)/;
+        //    const match = url.match(imgurPattern);
+        //    if (match) return match[1];
+
+        //    return null;
+        //}
+
+        //function decryptImageId(encryptedId, secretKey) {
+        //    try {
+        //        const decrypted = CryptoJS.AES.decrypt(encryptedId, secretKey).toString(CryptoJS.enc.Utf8);
+        //        const [galleryIndex, imageIndex] = decrypted.split(':').map(Number);
+        //        return { galleryIndex, imageIndex };
+        //    } catch (e) {
+        //        console.error("Error during decryption", e);
+        //        return null;
+        //    }
+        //}
+
+        function resizeCanvas(width, height) {
+            const maxWidth = window.innerWidth * 0.9;
+            const maxHeight = window.innerHeight * 0.85;
+
+            const scale = Math.min(maxWidth / width, maxHeight / height);
+
+            canvas.width = width * scale;
+            canvas.height = height * scale;
+
+            redrawCanvas();
+        }
+
+        function startDrawing(e) {
+            closeAllSliders();
+            isDrawing = true;
+            [lastX, lastY] = getCoordinates(e);
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            const [x, y] = getCoordinates(e);
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(x, y);
+            ctx.globalCompositeOperation = isEraser ? 'destination-out' : 'source-over';
+            ctx.strokeStyle = isEraser ? 'rgba(0,0,0,1)' : hexToRgba(color, opacity);
+            //ctx.strokeStyle = isEraser ? '#FFFFFF' : hexToRgba(color, opacity);
+            ctx.lineWidth = size;
+            ctx.lineCap = 'round';
+            ctx.stroke();
+            [lastX, lastY] = [x, y];
+        }
+
+        function stopDrawing() {
+            if (isDrawing) {
+                isDrawing = false;
+                saveState();
+            }
+        }
+
+        function getCoordinates(e) {
+            const rect = canvas.getBoundingClientRect();
+            return [
+                e.clientX - rect.left,
+                e.clientY - rect.top
+            ];
+        }
+
+        function saveState() {
+            historyIndex++;
+            history.splice(historyIndex);
+            history.push(canvas.toDataURL());
+        }
+
+        function redrawCanvas() {
+            if (historyIndex >= 0) {
+                const img = new Image();
+                img.src = history[historyIndex];
+                img.onload = () => ctx.drawImage(img, 0, 0);
+            } else {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+
+        function downloadImage() {
+            const link = document.createElement('a');
+            link.download = 'my_colored_image.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        };
+
+
+        async function loadImage(src) {
+            const img = new Image();
+            img.crossOrigin = "Anonymous";  // This line is important for loading images from other domains         
+            img.onload = function () {
+                resizeCanvas(this.width, this.height);
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                const scale = Math.min(canvas.width / img.width, canvas.height / img.height);
+                const x = (canvas.width / 2) - (img.width / 2) * scale;
+                const y = (canvas.height / 2) - (img.height / 2) * scale;
+                ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
+                saveState();
+            }
+            img.onerror = function () {
+                console.error("Error loading image");
+                alert("The image could not be loaded. Please try another image.");
+            }
+            img.src = src;
+        }
+
+        startButton.addEventListener('click', async () => {
+            //const encryptedIds = getImageIndexFromQR();
+            //const { galleryIndex, imageIndex } = decryptImageId(encryptedIds, secretKey);
+            //const gallery = await loadGallery(galleryIndex);
+            const imageSorce = await new Promise((resolve) => {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = 'image/*';
+
+                input.onchange = (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (event) => {
+                            resolve(event.target.result);
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                };
+
+                input.click();
+            });
+            startPage.style.display = 'none';
+            drawingPage.style.display = 'block';
+            resizeCanvas();
+            loadImage(imageSorce);
+        });
+
+        //async function loadGallery(galleryIndex) {
+        //    try {
+        //        const response = await fetch('galleries.json');
+        //        const data = await response.json();
+        //        if (galleryIndex !== null) {
+        //            if (galleryIndex !== null && data[galleryIndex]) {
+        //                return data[galleryIndex].slice(1);
+        //            } else {
+        //                console.error("Invalid gallery ID");
+        //            }
+        //        } else {
+        //            console.error("No gallery parameter found in URL");
+        //        }
+        //    } catch (error) {
+        //        console.error('Error loading galleries:', error);
+        //    }
+        //}
+
+        colorPicker.addEventListener('click', () => closeAllSliders());
+
+        colorPicker.addEventListener('change', () => {
+            color = colorPicker.value;
+            isEraser = false;
+        });
+
+        opacityValue.addEventListener('input', function () {
+            opacity = this.value / 100;
+            isEraser = false;
+        });
+
+        document.getElementById('brushSize').addEventListener('click', function () {
+            opacityValue.style.display = 'none';
+            if (brushSize.style.display === 'none' || brushSize.style.display === '') {
+                brushSize.style.display = 'block';
+            } else {
+                brushSize.style.display = 'none';
+            }
+        });
+
+        document.getElementById('opacityValue').addEventListener('click', function () {
+            brushSize.style.display = 'none';
+            if (opacityValue.style.display === 'none' || opacityValue.style.display === '') {
+                opacityValue.style.display = 'block';
+            } else {
+                opacityValue.style.display = 'none';
+            }
+        });
+
+        brushSize.addEventListener('input', function () {
+            size = this.value;
+        });
+
+        penBtn.addEventListener('click', () => {
+            closeAllSliders();
+            isEraser = false;
+        });
+
+        eraserBtn.addEventListener('click', () => {
+            closeAllSliders();
+            isEraser = true;
+        });
+
+        function closeAllSliders() {
+            brushSize.style.display = 'none';
+            opacityValue.style.display = 'none';
+        };
+
+        // clearBtn.addEventListener('click', () => {
+        //     ctx.clearRect(0, 0, canvas.width, canvas.height);
+        //     saveState();
+        // });
+
+        undoBtn.addEventListener('click', () => {
+            closeAllSliders();
+            if (historyIndex > 0) {
+                historyIndex--;
+                redrawCanvas();
+            }
+        });
+
+        redoBtn.addEventListener('click', () => {
+            closeAllSliders();
+            if (historyIndex < history.length - 1) {
+                historyIndex++;
+                redrawCanvas();
+            }
+        });
+
+        zoomInButton.addEventListener('click', () => {
+            closeAllSliders();
+            scale += 0.1;
+            canvas.style.transform = `scale(${scale})`;
+        });
+
+        zoomOutButton.addEventListener('click', () => {
+            closeAllSliders();
+            scale -= 0.1;
+            canvas.style.transform = `scale(${scale})`;
+        });
+
+        downloadButton.addEventListener('click', () => {
+            closeAllSliders();
+            downloadImage()
+        });
+
+        // imageInput.addEventListener('change', (e) => {
+        //     if (e.target.files && e.target.files[0]) {
+        //         const reader = new FileReader();
+        //         reader.onload = function(event) {
+        //             loadImage(event.target.result);
+        //         }
+        //         reader.readAsDataURL(e.target.files[0]);
+        //     }
+        // });
+
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mouseout', stopDrawing);
+
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            startDrawing(e.touches[0]);
+        });
+        canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            draw(e.touches[0]);
+        });
+        canvas.addEventListener('touchend', stopDrawing);
+
+        window.addEventListener('resize', resizeCanvas);
+    </script>
+</body>
+
+</html>

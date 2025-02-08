@@ -11,12 +11,22 @@
             Spacing="25">
             <Button 
                 x:Name="NavigateButton"
-                Text="Go to Empty Page"
+                Text="Go to Editor"
                 Clicked="OnNavigateClicked"
+                HorizontalOptions="Center"/>
+            <Button
+                x:Name="NavigateButtonToMaskJS"
+                Text="Go to MaskJS"
+                Clicked="OnNavigateClickedToMaskJS"
+                HorizontalOptions="Center"/>
+            <Button
+                x:Name="NavigateButtonToWeb"
+                Text="Go to WebView"
+                Clicked="OnNavigateClickedToWeb"
                 HorizontalOptions="Center"/>
             <Button 
                 x:Name="NavigateButtonToPage2"
-                Text="Go to Page 2"
+                Text="Go to Combine Images"
                 Clicked="OnNavigateClickedToPage2"
                 HorizontalOptions="Center"/>
             <Image

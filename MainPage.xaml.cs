@@ -194,6 +194,16 @@ namespace FashionApp
         {
             await Navigation.PushAsync(new Page2());
         }
+
+        private async void OnNavigateClickedToWeb(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new WebViewPage());
+        }
+
+        private async void OnNavigateClickedToMaskJS(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new MaskJS());
+        }
         private void ToggleLoading(bool isLoading)
         {
             LoadButton.IsEnabled = !isLoading;

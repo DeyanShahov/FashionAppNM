@@ -7,7 +7,7 @@
         <VerticalStackLayout Grid.Row="0"
             Spacing="10"
             Padding="30,10">
-            
+
             <Label 
                 Text="Select an image from your device"
                 VerticalOptions="Center" 
@@ -28,7 +28,7 @@
                 Aspect="AspectFit"
                 IsVisible="False"
                 SizeChanged="OnImageSizeChanged"/>
-            
+
             <GraphicsView
                 x:Name="DrawingView"
                 IsVisible="False"
@@ -42,13 +42,13 @@
         <VerticalStackLayout Grid.Row="2"
             Spacing="10"
             Padding="30,10">
-            
+
             <HorizontalStackLayout 
                 x:Name="DrawingTools" 
                 Spacing="10" 
                 HorizontalOptions="Center"
                 IsVisible="False">
-                
+
                 <VerticalStackLayout Spacing="5">
                     <Label 
                         Text="{Binding Source={x:Reference BrushSlider}, Path=Value, StringFormat='Brush Size: {0:F0}'}"
@@ -84,4 +84,4 @@
                 HorizontalOptions="Center"/>
         </VerticalStackLayout>
     </Grid>
-</ContentPage> 
+</ContentPage>
