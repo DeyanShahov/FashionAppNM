@@ -5,6 +5,7 @@ public partial class LoginPage : ContentPage
     public LoginPage()
     {
         InitializeComponent();
+        //this.BackgroundImageSource = "Resources/Images/loading_page_image.png";
     }
 
     private async void OnLoginClicked(object sender, EventArgs e)
@@ -36,5 +37,10 @@ public partial class LoginPage : ContentPage
     {
         // Replace with actual authentication logic
         return Task.FromResult(username == "user" && password == "password");
+    }
+
+    private async void LoginAsGuestButton_Clicked(object sender, EventArgs e)
+    {
+        await Navigation.PushAsync(new MainPage());
     }
 }

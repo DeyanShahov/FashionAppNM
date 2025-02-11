@@ -3,52 +3,121 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="FashionApp.LoginPage"
              Title="Login"
-             BackgroundColor="LightGray">
+             BackgroundImageSource="loading_page_image.png">
 
-    <VerticalStackLayout
-        Padding="30,0"
-        Spacing="25"
-        VerticalOptions="CenterAndExpand"
-        HorizontalOptions="CenterAndExpand">
+    <Grid>
+        <VerticalStackLayout
+            Padding="30,0"
+            Spacing="25"
+            IsVisible="False"
+            VerticalOptions="CenterAndExpand"
+            HorizontalOptions="CenterAndExpand">
 
-        <Label
-            Text="Login"
-            FontSize="24"
-            HorizontalOptions="Center" />
+            <Label
+                Text="Login"
+                FontSize="24"
+                HorizontalOptions="Center" />
 
-        <Entry
-            x:Name="UsernameEntry"
-            Placeholder="Username"
-            PlaceholderColor="Gray"
-            TextColor="Black"
-            BackgroundColor="White"
-            Margin="0,10,0,0"
-            HeightRequest="40"
-            HorizontalOptions="FillAndExpand"
-            VerticalOptions="Center" />
+            <Entry
+                x:Name="UsernameEntry"
+                Placeholder="Username"
+                PlaceholderColor="Gray"
+                TextColor="Black"
+                BackgroundColor="White"
+                Margin="0,10,0,0"
+                HeightRequest="40"
+                HorizontalOptions="FillAndExpand"
+                VerticalOptions="Center" />
 
-        <Entry
-            x:Name="PasswordEntry"
-            Placeholder="Password"
-            PlaceholderColor="Gray"
-            TextColor="Black"
-            BackgroundColor="White"
-            IsPassword="True"
-            Margin="0,10,0,0"
-            HeightRequest="40"
-            HorizontalOptions="FillAndExpand"
-            VerticalOptions="Center" />
+            <Entry
+                x:Name="PasswordEntry"
+                Placeholder="Password"
+                PlaceholderColor="Gray"
+                TextColor="Black"
+                BackgroundColor="White"
+                IsPassword="True"
+                Margin="0,10,0,0"
+                HeightRequest="40"
+                HorizontalOptions="FillAndExpand"
+                VerticalOptions="Center" />
 
-        <Button
-            Text="Login"
-            Clicked="OnLoginClicked"
-            HorizontalOptions="Center" />
+            <Button
+                Text="Login"
+                Clicked="OnLoginClicked"
+                HorizontalOptions="Center" />
 
-        <Label
-            x:Name="LoginStatusLabel"
-            Text=""
-            TextColor="Red"
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+            <Label
+                x:Name="LoginStatusLabel"
+                Text=""
+                TextColor="Red"
+                HorizontalOptions="Center" />
+        </VerticalStackLayout>
+
+        <VerticalStackLayout
+            HorizontalOptions="End"
+            VerticalOptions="Center"
+            Spacing="20"
+            Margin="0,0,10,0">
+            
+            <Button
+                Text="Sign In"
+                WidthRequest="150"
+                HeightRequest="50"
+                BackgroundColor="#512BD4"
+                TextColor="White"
+                CornerRadius="25"/>
+
+            <Button
+                Text="Register"
+                WidthRequest="150"
+                HeightRequest="50"
+                BackgroundColor="#512BD4"
+                TextColor="White"
+                CornerRadius="25"/>
+
+            <Grid Margin="0,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                
+                <Line 
+                    Grid.Column="0"
+                    X1="0" Y1="10"
+                    X2="50" Y2="10"
+                    Stroke="#512BD4"
+                    StrokeThickness="2"
+                    HorizontalOptions="Fill"/>
+                
+                <Label 
+                    Grid.Column="1"
+                    Text=" OR "
+                    TextColor="#512BD4"
+                    FontSize="16"
+                    VerticalOptions="Center"
+                    Margin="10,0"/>
+                
+                <Line 
+                    Grid.Column="2"
+                    X1="0" Y1="10"
+                    X2="50" Y2="10"
+                    Stroke="#512BD4"
+                    StrokeThickness="2"
+                    HorizontalOptions="Fill"/>
+            </Grid>
+
+            <Button
+                x:Name="LoginAsGuestButton"
+                Text="Login as GUEST"
+                WidthRequest="150"
+                HeightRequest="50"
+                BackgroundColor="#512BD4"
+                TextColor="White"
+                CornerRadius="25"
+                Clicked="LoginAsGuestButton_Clicked"/>
+                
+        </VerticalStackLayout>
+    </Grid>
 
 </ContentPage>
