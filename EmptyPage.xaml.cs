@@ -5,6 +5,7 @@ using Microsoft.Maui.Controls;
 using CommunityToolkit.Maui.Views;
 using FashionApp.core;
 using SkiaSharp;
+using System.IO;
 
 
 namespace FashionApp;
@@ -102,7 +103,7 @@ public partial class EmptyPage : ContentPage
         }
 
         var imageWithAlphaStream = new MemoryStream();
-        bitmapWithAlpha.Encode(imageWithAlphaStream, SKEncodedImageFormat.Png, 100);
+        bitmapWithAlpha.Encode(imageWithAlphaStream, SKEncodedImageFormat.Png, 80);
 
         imageWithAlphaStream.Position = 0;
         return imageWithAlphaStream;
@@ -110,16 +111,16 @@ public partial class EmptyPage : ContentPage
 
     private void OnImageSizeChanged(object sender, EventArgs e)
     {
-        //if (SelectedImage.Width > 0 && SelectedImage.Height > 0)
-        //{
-           
-        //}
+        if (SelectedImage.Width > 0 && SelectedImage.Height > 0)
+        {
+            DrawingView.WidthRequest = SelectedImage.Width;
+            DrawingView.HeightRequest = SelectedImage.Height;
 
-        DrawingView.WidthRequest = SelectedImage.Width;
-        DrawingView.HeightRequest = SelectedImage.Height;
+            DrawingView.TranslationX = SelectedImage.X;
+            DrawingView.TranslationY = SelectedImage.Y;
+        }
 
-        DrawingView.TranslationX = SelectedImage.X;
-        DrawingView.TranslationY = SelectedImage.Y;
+       
     }
 
     void OnStartInteraction(object sender, TouchEventArgs e)
@@ -154,6 +155,10 @@ public partial class EmptyPage : ContentPage
                 _currentLine.Points.Add(touch);
                 DrawingView.Invalidate();
             }
+            else
+            {
+                throw new Exception("Touch is outside the DrawingView");
+            }
         }
     }
 
@@ -187,6 +192,21 @@ public partial class EmptyPage : ContentPage
             //var imageOriginal = await SelectedImage.CaptureAsync();
             //var resultStream = await AddMaskToImage.AddMaskToImageMetadata(SelectedImage.Source, DrawingView);
             var resultStream = await AddMaskToImage.AddMaskToImageMetadata(SelectedImage, DrawingView);
+            //Stream resultStream;// = new MemoryStream();
+
+            //using (var ms = new MemoryStream())
+            //{
+            //    //ms.Position = 0;
+            //    await resultStreamTemp.CopyToAsync(ms);
+            //    var resultStream2 =  await ImageStreamResize.ResizeImageStream(ms, 500, 700);
+            //    resultStream = resultStream2.ResizedStream;
+            //}
+
+
+            //var resultStreamTemp = await AddMaskToImage.AddMaskToImageMetadata(SelectedImage, DrawingView);
+
+            //var resultStream2 = await ImageStreamResize.ResizeImageStream(resultStreamTemp, 500, 700);
+            //var resultStream = resultStream2.ResizedStream;
 
             var fileName = $"masked_image_{DateTime.Now:yyyyMMdd_HHmmss}.png";
 

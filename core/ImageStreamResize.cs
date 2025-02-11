@@ -4,7 +4,7 @@ namespace FashionApp.core
 {
     internal class ImageStreamResize
     {
-        public static async Task<ResizedImageResult> ResizeImageStream ( Stream imageStream, int maxWidth, int maxHeight)
+        public static async Task<ResizedImageResult> ResizeImageStream(Stream imageStream, int maxWidth, int maxHeight)
         {
             // Зареждане на изображението
             imageStream.Position = 0; // Нулиране на позицията
@@ -13,7 +13,7 @@ namespace FashionApp.core
             // Проверка дали е необходимо преоразмеряване
             if (original.Width <= maxWidth && original.Height <= maxHeight)
             {
-                imageStream.Position = 0;
+                //imageStream.Position = 0;
                 return new ResizedImageResult
                 {
                     ResizedStream = imageStream,
@@ -22,16 +22,16 @@ namespace FashionApp.core
                 };
             }
 
-
             // Изчисляване на новите размери с запазване на пропорциите
             float ratio = Math.Min((float)maxWidth / original.Width, (float)maxHeight / original.Height);
             int newWidth = (int)(original.Width * ratio);
             int newHeight = (int)(original.Height * ratio);
 
             // Преоразмеряване
-            using var resized = original.Resize(new SKImageInfo(newWidth, newHeight), SKFilterQuality.High);
+            var samplingOptions = new SKSamplingOptions(SKFilterMode.Linear, SKMipmapMode.None);
+            using var resized = original.Resize(new SKImageInfo(newWidth, newHeight), samplingOptions);
             using var image = SKImage.FromBitmap(resized);
-            using var data = image.Encode(SKEncodedImageFormat.Jpeg, 80); // JPEG с качество 80%
+            using var data = image.Encode(SKEncodedImageFormat.Png, 80); // Png с качество 80%
 
             // Записване в нов поток
             var outputStream = new MemoryStream();

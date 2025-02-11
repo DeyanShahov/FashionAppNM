@@ -6,6 +6,7 @@ using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 //using Microsoft.Maui.Controls;
 using CommunityToolkit.Maui.Views;
+using System.IO;
 
 namespace FashionApp.core
 {
@@ -54,8 +55,10 @@ namespace FashionApp.core
             // Връщаме резултата като поток
             var resultStream = new MemoryStream();
             await resultImage.SaveAsPngAsync(resultStream);
+            //var resizedImageResult = await ImageStreamResize.ResizeImageStream(resultStream, 500, 700);
             resultStream.Position = 0;
             return resultStream;
+            //return resizedImageResult.ResizedStream;
         }
     }
 }

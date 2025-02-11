@@ -17,11 +17,13 @@
             <Button
                 x:Name="NavigateButtonToMaskJS"
                 Text="Go to MaskJS"
+                IsEnabled="False"
                 Clicked="OnNavigateClickedToMaskJS"
                 HorizontalOptions="Center"/>
             <Button
                 x:Name="NavigateButtonToWeb"
                 Text="Go to WebView"
+                IsEnabled="False"
                 Clicked="OnNavigateClickedToWeb"
                 HorizontalOptions="Center"/>
             <Button 

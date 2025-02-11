@@ -2,7 +2,8 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="FashionApp.EmptyPage"
-             Title="Empty Page">
+             Title="Editor Page"
+             BackgroundColor="LightGray">
     <Grid RowDefinitions="Auto,*,Auto">
         <VerticalStackLayout Grid.Row="0"
             Spacing="10"
@@ -28,8 +29,6 @@
         <Grid Grid.Row="1" x:Name="ImageContainer" HorizontalOptions="Center" VerticalOptions="Center">
             <Image
                 x:Name="SelectedImage"
-                HeightRequest="700"
-                WidthRequest="500"
                 Aspect="AspectFit"
                 IsVisible="False"
                 SizeChanged="OnImageSizeChanged"/>
