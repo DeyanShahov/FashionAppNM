@@ -3,6 +3,9 @@ using Microsoft.Maui.Graphics.Platform;
 using IImage = Microsoft.Maui.Graphics.IImage;
 using Microsoft.Maui.Controls;
 using CommunityToolkit.Maui.Views;
+using FashionApp.core;
+using SkiaSharp;
+
 
 namespace FashionApp;
 
@@ -41,7 +44,22 @@ public partial class EmptyPage : ContentPage
                     result.FileName.EndsWith("png", StringComparison.OrdinalIgnoreCase))
                 {
                     var stream = await result.OpenReadAsync();
-                    SelectedImage.Source = ImageSource.FromStream(() => stream);
+                    var resizedImageResult = await ImageStreamResize.ResizeImageStream(stream, 500, 700); // ÐŸÑ€ÐµÐ¾Ñ€Ð°Ð·Ð¼ÐµÑ€ÑÐ²Ð°Ð½Ðµ Ð½Ð° Ð¸Ð·Ð¾Ð±Ñ€Ð°Ð¶ÐµÐ½Ð¸ÐµÑ‚Ð¾
+
+                    // Convert the image to include an alpha channel
+                    var imageWithAlpha = await AddAlphaChanel(resizedImageResult.ResizedStream);
+
+                    //SelectedImage.Source = ImageSource.FromStream(() => resizedImageResult.ResizedStream);
+                    SelectedImage.Source = ImageSource.FromStream(() => imageWithAlpha);
+                    SelectedImage.WidthRequest = resizedImageResult.Width;
+                    SelectedImage.HeightRequest = resizedImageResult.Height;
+
+                    //DrawingView.HeightRequest = SelectedImage.Height;
+                    //DrawingView.WidthRequest = SelectedImage.Width;
+
+                    //DrawingView.TranslationX = SelectedImage.X;
+                    //DrawingView.TranslationY = SelectedImage.Y;
+
                     SelectedImage.IsVisible = true;
                     DrawingView.IsVisible = true;
                     DrawingTools.IsVisible = true;
@@ -59,16 +77,49 @@ public partial class EmptyPage : ContentPage
         }
     }
 
+    private async Task<Stream> AddAlphaChanel(Stream imageStream)
+    {
+        //// Load the image
+        //using var image = SKBitmap.Decode(imageStream);
+        //// Create a new image with an alpha channel
+        //using var imageWithAlpha = new SKBitmap(image.Width, image.Height, SKColorType.Rgba8888, SKAlphaType.Premul);
+        //// Copy the original image to the new image
+        //using var canvas = new SKCanvas(imageWithAlpha);
+        //canvas.DrawBitmap(image, 0, 0);
+        //// Save the new image to a stream
+        //var stream = new MemoryStream();
+        //imageWithAlpha.Encode(SKEncodedImageFormat.Png, 100).SaveTo(stream);
+        //stream.Position = 0;
+        //return stream;
+
+        using var originalBitmap = SKBitmap.Decode(imageStream);
+        var bitmapWithAlpha = new SKBitmap(originalBitmap.Width, originalBitmap.Height, true);
+
+        using (var canvas = new SKCanvas(bitmapWithAlpha))
+        {
+            canvas.Clear(SKColors.Transparent);
+            canvas.DrawBitmap(originalBitmap, 0, 0);
+        }
+
+        var imageWithAlphaStream = new MemoryStream();
+        bitmapWithAlpha.Encode(imageWithAlphaStream, SKEncodedImageFormat.Png, 100);
+
+        imageWithAlphaStream.Position = 0;
+        return imageWithAlphaStream;
+    }
+
     private void OnImageSizeChanged(object sender, EventArgs e)
     {
-        if (SelectedImage.Width > 0 && SelectedImage.Height > 0)
-        {
-            DrawingView.WidthRequest = SelectedImage.Width;
-            DrawingView.HeightRequest = SelectedImage.Height;
+        //if (SelectedImage.Width > 0 && SelectedImage.Height > 0)
+        //{
+           
+        //}
 
-            DrawingView.TranslationX = SelectedImage.X;
-            DrawingView.TranslationY = SelectedImage.Y;
-        }
+        DrawingView.WidthRequest = SelectedImage.Width;
+        DrawingView.HeightRequest = SelectedImage.Height;
+
+        DrawingView.TranslationX = SelectedImage.X;
+        DrawingView.TranslationY = SelectedImage.Y;
     }
 
     void OnStartInteraction(object sender, TouchEventArgs e)
@@ -96,7 +147,7 @@ public partial class EmptyPage : ContentPage
         {
             var touch = e.Touches[0];
 
-            // Ïðîâåðÿâàìå äàëè äîêîñâàíåòî å â ðàìêèòå íà DrawingView
+            // ÐŸÑ€Ð¾Ð²ÐµÑ€ÑÐ²Ð°Ð¼Ðµ Ð´Ð°Ð»Ð¸ Ð´Ð¾ÐºÐ¾ÑÐ²Ð°Ð½ÐµÑ‚Ð¾ Ðµ Ð² Ñ€Ð°Ð¼ÐºÐ¸Ñ‚Ðµ Ð½Ð° DrawingView
             if (touch.X >= 0 && touch.X <= DrawingView.Width &&
                 touch.Y >= 0 && touch.Y <= DrawingView.Height)
             {
@@ -114,7 +165,7 @@ public partial class EmptyPage : ContentPage
     void OnClearClicked(object sender, EventArgs e)
     {
         _lines.Clear();
-        _markedPixels.Clear(); // Èç÷èñòâàìå è ìàðêèðàíèòå ïèêñåëè
+        _markedPixels.Clear(); // Ð˜Ð·Ñ‡Ð¸ÑÑ‚Ð²Ð°Ð¼Ðµ Ð¸ Ð¼Ð°Ñ€ÐºÐ¸Ñ€Ð°Ð½Ð¸Ñ‚Ðµ Ð¿Ð¸ÐºÑÐµÐ»Ð¸
         DrawingView.Invalidate();
     }
 
@@ -133,49 +184,35 @@ public partial class EmptyPage : ContentPage
 
         try
         {
-            var image = await DrawingView.CaptureAsync();
+            //var imageOriginal = await SelectedImage.CaptureAsync();
+            //var resultStream = await AddMaskToImage.AddMaskToImageMetadata(SelectedImage.Source, DrawingView);
+            var resultStream = await AddMaskToImage.AddMaskToImageMetadata(SelectedImage, DrawingView);
+
             var fileName = $"masked_image_{DateTime.Now:yyyyMMdd_HHmmss}.png";
 
-
 #if WINDOWS
-            byte[] imageBytes;
-            using ( var imageStream = await image.OpenReadAsync())
-            {
-                using (var memoryStream = new MemoryStream())
-                {
-                    memoryStream.Position = 0;
-                    await imageStream.CopyToAsync(memoryStream);
-                    imageBytes = memoryStream.ToArray();
-                }
-            }
-            //var result = await ConvertImageToByteArray(image as IImage);
+            byte[] imageBytes = await ConvertStreamToByteArrayAsync(resultStream);
+            
+            //using ( var imageStream = await resultStream.OpenReadAsync())
+            //{
+            //    using (var memoryStream = new MemoryStream())
+            //    {
+            //        memoryStream.Position = 0;
+            //        await imageStream.CopyToAsync(memoryStream);
+            //        imageBytes = memoryStream.ToArray();
+            //    }
+            //}
+
             await File.WriteAllBytesAsync($"C:\\Users\\Public\\Pictures\\{fileName}", imageBytes);
             await DisplayAlert("Success", $"Image saved to C:\\Users\\Public\\Pictures", "OK");
 
 #elif ANDROID
-                var imageStream2 = await image.OpenReadAsync();
-            imageStream2.Position = 0;
+            //var imageStream2 = await resultStream.OpenReadAsync();
+            //imageStream2.Position = 0;
             var context = Platform.CurrentActivity;
 
             if (OperatingSystem.IsAndroidVersionAtLeast(29))
             {
-                //var contentValues = new Android.Content.ContentValues();
-                //contentValues.Put(Android.Provider.MediaStore.IMediaColumns.DisplayName, fileName);
-                //contentValues.Put(Android.Provider.MediaStore.IMediaColumns.MimeType, "image/png");
-                //contentValues.Put(Android.Provider.MediaStore.IMediaColumns.RelativePath, 
-                //                Android.OS.Environment.DirectoryPictures);
-
-                //var resolver = context.ContentResolver;
-                //var uri = resolver.Insert(Android.Provider.MediaStore.Images.Media.ExternalContentUri, 
-                //                        contentValues);
-
-                //using var outputStream = resolver.OpenOutputStream(uri);
-                //using var ms = new MemoryStream();
-                //await image.CopyToAsync(ms);
-                //await outputStream.WriteAsync(ms.ToArray());
-
-
-
                 Android.Content.ContentResolver resolver = context.ContentResolver;
                 Android.Content.ContentValues contentValues = new();
                 contentValues.Put(Android.Provider.MediaStore.IMediaColumns.DisplayName, fileName);
@@ -185,8 +222,7 @@ public partial class EmptyPage : ContentPage
                 var os = resolver.OpenOutputStream(imageUri);
                 Android.Graphics.BitmapFactory.Options options = new();
                 options.InJustDecodeBounds = true;
-                var bitmap = Android.Graphics.BitmapFactory.DecodeStream(imageStream2);
-                //var bitmap = _imageData;
+                var bitmap = Android.Graphics.BitmapFactory.DecodeStream(resultStream);
                 bitmap.Compress(Android.Graphics.Bitmap.CompressFormat.Png, 100, os);
                 os.Flush();
                 os.Close();   
@@ -195,13 +231,6 @@ public partial class EmptyPage : ContentPage
             }
             else
             {
-                //Java.IO.File storagePath = Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryPictures);
-                //string path = System.IO.Path.Combine(storagePath.ToString(), fileName);
-                //System.IO.File.WriteAllBytes(path, imageStream.ToArray());
-                ////System.IO.File.WriteAllBytes(path, _imageData);
-                //var mediaScanIntent = new Android.Content.Intent(Android.Content.Intent.ActionMediaScannerScanFile);
-                //mediaScanIntent.SetData(Android.Net.Uri.FromFile(new Java.IO.File(path)));
-                //context.SendBroadcast(mediaScanIntent);
             }
 #endif
         }
@@ -210,6 +239,21 @@ public partial class EmptyPage : ContentPage
             await DisplayAlert("Error", $"Failed to save image: {ex.Message}", "OK");
         }
     }
+
+
+
+    public async Task<byte[]> ConvertStreamToByteArrayAsync(Stream stream)
+    {
+        if (stream == null)
+            return null;
+
+        using (MemoryStream memoryStream = new MemoryStream())
+        {
+            await stream.CopyToAsync(memoryStream); // ÐÑÐ¸Ð½Ñ…Ñ€Ð¾Ð½Ð½Ð¾ ÐºÐ¾Ð¿Ð¸Ñ€Ð°Ð½Ðµ
+            return memoryStream.ToArray();
+        }
+    }
+
 }
 
 
@@ -247,4 +291,35 @@ public class DrawingViewDrawable : IDrawable
             }
         }
     }
+
+    //public void DrawToCanvas(SKCanvas canvas, SKRect rect)
+    //{
+    //    foreach (var line in _lines)
+    //    {
+    //        if (line.Points.Count > 1)
+    //        {
+    //            using var paint = new SKPaint
+    //            {
+
+
+    //            // Replace the problematic line with the following
+    //                Color = line.Color.ToSKColor(),
+    //                StrokeWidth = line.Thickness,
+    //                StrokeCap = SKStrokeCap.Round,
+    //                StrokeJoin = SKStrokeJoin.Round,
+    //                Style = SKPaintStyle.Stroke
+    //            };
+
+    //            var path = new SKPath();
+    //            path.MoveTo(line.Points[0].X, line.Points[0].Y);
+
+    //            for (int i = 1; i < line.Points.Count; i++)
+    //            {
+    //                path.LineTo(line.Points[i].X, line.Points[i].Y);
+    //            }
+    //            canvas.DrawPath(path, paint);
+    //        }
+    //    }
+    //}
 }
+

@@ -32,7 +32,7 @@
                 WidthRequest="500"
                 Aspect="AspectFit"
                 IsVisible="False"
-             SizeChanged="OnImageSizeChanged"/>
+                SizeChanged="OnImageSizeChanged"/>
                 
 
             <GraphicsView
