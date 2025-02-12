@@ -16,12 +16,15 @@ public partial class EmptyPage : ContentPage
     private DrawingLine _currentLine;
     private IDrawable _drawable;
     private HashSet<(int x, int y)> _markedPixels = new();
+    private bool isClosedJacketActive = true;
+    private string imageFileName = "closed_jacket_mask.png";
 
     public EmptyPage()
     {
         InitializeComponent();
         _drawable = new DrawingViewDrawable(_lines, _markedPixels);
         DrawingView.Drawable = _drawable;
+        //SetActiveButton(true); // Задаваме начално състояние
     }
 
     private async void OnBackButtonClicked(object sender, EventArgs e)
@@ -187,57 +190,52 @@ public partial class EmptyPage : ContentPage
     {
         if (SelectedImage.Source == null) return;
 
+        //((ImageButton)sender).IsEnabled = false; //Ima nqkakwa drama tuka i krashva 
+
         try
         {
-            //var imageOriginal = await SelectedImage.CaptureAsync();
-            //var resultStream = await AddMaskToImage.AddMaskToImageMetadata(SelectedImage.Source, DrawingView);
             var resultStream = await AddMaskToImage.AddMaskToImageMetadata(SelectedImage, DrawingView);
-            //Stream resultStream;// = new MemoryStream();
-
-            //using (var ms = new MemoryStream())
-            //{
-            //    //ms.Position = 0;
-            //    await resultStreamTemp.CopyToAsync(ms);
-            //    var resultStream2 =  await ImageStreamResize.ResizeImageStream(ms, 500, 700);
-            //    resultStream = resultStream2.ResizedStream;
-            //}
-
-
-            //var resultStreamTemp = await AddMaskToImage.AddMaskToImageMetadata(SelectedImage, DrawingView);
-
-            //var resultStream2 = await ImageStreamResize.ResizeImageStream(resultStreamTemp, 500, 700);
-            //var resultStream = resultStream2.ResizedStream;
-
-            var fileName = $"masked_image_{DateTime.Now:yyyyMMdd_HHmmss}.png";
 
 #if WINDOWS
-            byte[] imageBytes = await ConvertStreamToByteArrayAsync(resultStream);
-            
-            //using ( var imageStream = await resultStream.OpenReadAsync())
-            //{
-            //    using (var memoryStream = new MemoryStream())
-            //    {
-            //        memoryStream.Position = 0;
-            //        await imageStream.CopyToAsync(memoryStream);
-            //        imageBytes = memoryStream.ToArray();
-            //    }
-            //}
+            string picturesPath = Path.Combine("C:", "Users", "Public", "Pictures");
 
-            await File.WriteAllBytesAsync($"C:\\Users\\Public\\Pictures\\{fileName}", imageBytes);
-            await DisplayAlert("Success", $"Image saved to C:\\Users\\Public\\Pictures", "OK");
+            bool shouldGenerateRandomName = String.IsNullOrEmpty(imageFileName) || 
+              (imageFileName == "closed_jacket_mask.png" && File.Exists(Path.Combine(picturesPath, "closed_jacket_mask.png"))) ||
+              (imageFileName == "open_jacket_mask.png" && File.Exists(Path.Combine(picturesPath, "open_jacket_mask.png")));
+
+            if (shouldGenerateRandomName)
+            {
+                imageFileName = $"masked_image_{DateTime.Now:yyyyMMdd_HHmmss}.png";
+            }
+
+            byte[] imageBytes = await ConvertStreamToByteArrayAsync(resultStream);         
+
+            await File.WriteAllBytesAsync($"C:\\Users\\Public\\Pictures\\{imageFileName}", imageBytes);
+            await DisplayAlert("Success", $"Image saved to C:\\Users\\Public\\Pictures as {imageFileName}", "OK");
+
+            imageFileName = string.Empty; // Reset value of paramether
+            ((ImageButton)sender).IsEnabled = true;
 
 #elif ANDROID
-            //var imageStream2 = await resultStream.OpenReadAsync();
-            //imageStream2.Position = 0;
             var context = Platform.CurrentActivity;
+            string directoryPath = Path.Combine(Android.OS.Environment.DirectoryDcim, "FashionApp", "MasksImages");
+
+            bool shouldGenerateRandomName = String.IsNullOrEmpty(imageFileName) ||
+              (imageFileName == "closed_jacket_mask.png" && File.Exists(Path.Combine(directoryPath, "closed_jacket_mask.png"))) ||
+              (imageFileName == "open_jacket_mask.png" && File.Exists(Path.Combine(directoryPath, "open_jacket_mask.png")));
+
+            if (shouldGenerateRandomName)
+            {
+                imageFileName = $"masked_image_{DateTime.Now:yyyyMMdd_HHmmss}.png";
+            }
 
             if (OperatingSystem.IsAndroidVersionAtLeast(29))
             {
                 Android.Content.ContentResolver resolver = context.ContentResolver;
                 Android.Content.ContentValues contentValues = new();
-                contentValues.Put(Android.Provider.MediaStore.IMediaColumns.DisplayName, fileName);
+                contentValues.Put(Android.Provider.MediaStore.IMediaColumns.DisplayName, imageFileName);
                 contentValues.Put(Android.Provider.MediaStore.IMediaColumns.MimeType, "image/png");
-                contentValues.Put(Android.Provider.MediaStore.IMediaColumns.RelativePath, "DCIM/" + "FashionApp");
+                contentValues.Put(Android.Provider.MediaStore.IMediaColumns.RelativePath, directoryPath);
                 Android.Net.Uri imageUri = resolver.Insert(Android.Provider.MediaStore.Images.Media.ExternalContentUri, contentValues);
                 var os = resolver.OpenOutputStream(imageUri);
                 Android.Graphics.BitmapFactory.Options options = new();
@@ -245,12 +243,16 @@ public partial class EmptyPage : ContentPage
                 var bitmap = Android.Graphics.BitmapFactory.DecodeStream(resultStream);
                 bitmap.Compress(Android.Graphics.Bitmap.CompressFormat.Png, 100, os);
                 os.Flush();
-                os.Close();   
+                os.Close();
 
-                await DisplayAlert("Success", "Image saved on DCIM / FashionApp!", "OK");
+                await DisplayAlert("Success", $"Image saved on DCIM / FashionApp / MasksImages as {imageFileName}", "OK");
+
+                imageFileName = string.Empty; // Reset value of paramether
+                //((ImageButton)sender).IsEnabled = true; ////Ima nqkakwa drama tuka i krashva 
             }
             else
             {
+                // Handle older Android versions if needed
             }
 #endif
         }
@@ -271,6 +273,47 @@ public partial class EmptyPage : ContentPage
         {
             await stream.CopyToAsync(memoryStream); // Асинхронно копиране
             return memoryStream.ToArray();
+        }
+    }
+
+    private void ClosedJacketImageButton_Clicked(object sender, EventArgs e)
+    {
+        SetActiveButton(sender as ImageButton);
+        imageFileName = "closed_jacket_mask.png";
+    }
+
+    private void OpenJacketImageButton_Clicked(object sender, EventArgs e)
+    {
+        SetActiveButton(sender as ImageButton);
+        imageFileName = "open_jacket_mask.png";
+    }
+
+    private void SetActiveButton(ImageButton activeButton)
+    {
+        // Списък с всички бутони, които трябва да се управляват
+        var allButtons = new List<ImageButton>
+        {
+            ClosedJacketImageButton,
+            OpenJacketImageButton
+            // Тук можете да добавите нови бутони в бъдеще
+        };
+        
+        // Премахваме ефектите от всички бутони
+        foreach (var button in allButtons)
+        {
+            button.BackgroundColor = Colors.Transparent;
+            button.BorderColor = Colors.Black;
+            button.BorderWidth = 3;
+            button.Scale = 1.0;
+        }
+        
+        // Прилагаме ефектите само на активния бутон
+        if (activeButton != null)
+        {
+            activeButton.BackgroundColor = Color.FromArgb("#E6F3FF");
+            activeButton.BorderColor = Color.FromArgb("#0066CC");
+            activeButton.BorderWidth = 4;
+            activeButton.Scale = 1.1;
         }
     }
 

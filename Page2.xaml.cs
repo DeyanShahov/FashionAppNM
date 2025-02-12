@@ -1,6 +1,11 @@
 using System.Text.Json;
 using System.Text;
 using System.IO;
+using System.Collections.Generic;
+using SkiaSharp;
+using Microsoft.Maui.Controls.PlatformConfiguration;
+//using static AndroidX.Concurrent.Futures.CallbackToFutureAdapter;
+using Microsoft.Maui.Controls;
 
 namespace FashionApp;
 
@@ -13,10 +18,18 @@ public partial class Page2 : ContentPage
     private byte[] _imageData;
     private string _clothImagePath;
     private string _bodyImagePath;
+    private bool isClosedJacketActive = true;
 
     public Page2()
     {
         InitializeComponent();
+        //SetActiveButton(true); // Set initial state
+
+#if WINDOWS
+        CheckAvailableMasksWindows();
+#elif ANDROID
+        CheckAvailableMasksAndroid();
+#endif
     }
 
     private async void OnNavigateClicked(object sender, EventArgs e)
@@ -259,4 +272,239 @@ public partial class Page2 : ContentPage
         LoadingIndicator.IsRunning = isLoading;
         LoadingIndicator.IsVisible = isLoading;
     }
+
+
+    private async void OpenJacketImageButton_Clicked(object sender, EventArgs e)
+    {
+        SetActiveButton(sender as ImageButton);
+#if WINDOWS
+        await LoadCorrectImageMaskWindows("open_jacket_mask.png");
+#elif ANDROID
+        await LoadCorrectImageMaskAndroid("open_jacket_mask.png");
+#endif
+    }
+
+    private async void ClosedJacketImageButton_Clicked(object sender, EventArgs e)
+    {
+        SetActiveButton(sender as ImageButton);
+#if WINDOWS
+        await LoadCorrectImageMaskWindows("closed_jacket_mask.png");
+#elif ANDROID
+        await LoadCorrectImageMaskAndroid("closed_jacket_mask.png");
+#endif
+    }
+
+
+#if ANDROID
+    private async Task LoadCorrectImageMaskAndroid(string fileName)
+    {
+        try
+        {
+            // Проверка за permissions
+            var status = await Permissions.CheckStatusAsync<Permissions.StorageRead>();
+            if (status != PermissionStatus.Granted)
+            {
+                status = await Permissions.RequestAsync<Permissions.StorageRead>();
+                if (status != PermissionStatus.Granted)
+                {
+                    await DisplayAlert("Permission required", 
+                        "Storage permission is required to load images", "OK");
+                    return;
+                }
+            }
+
+            var context = Platform.CurrentActivity;
+            var resolver = context?.ContentResolver;
+            
+            if (resolver != null)
+            {
+                var imageUri = Android.Provider.MediaStore.Images.Media.ExternalContentUri;
+                var selection = $"{Android.Provider.MediaStore.IMediaColumns.DisplayName} = ? AND " +
+                              $"{Android.Provider.MediaStore.IMediaColumns.RelativePath} LIKE ?";
+                var selectionArgs = new string[] { fileName, "%DCIM/FashionApp/MasksImages%" };
+                
+                var cursor = resolver.Query(imageUri, null, selection, selectionArgs, null);
+                
+                if (cursor != null && cursor.MoveToFirst())
+                {
+                    var columnIndex = cursor.GetColumnIndex(Android.Provider.MediaStore.IMediaColumns.Data);
+                    if (columnIndex != -1)
+                    {
+                        var imagePath = cursor.GetString(columnIndex);
+                        using var inputStream = resolver.OpenInputStream(Android.Net.Uri.Parse("file://" + imagePath));
+                        if (inputStream != null)
+                        {
+                            var memoryStream = new MemoryStream();
+                            await inputStream.CopyToAsync(memoryStream);
+                            memoryStream.Position = 0;
+                            
+                            SelectedBodyImage.Source = ImageSource.FromStream(() => new MemoryStream(memoryStream.ToArray()));
+                            _bodyImagePath = imagePath;
+                        }
+                    }
+                    cursor.Close();
+                }
+                else
+                {
+                    await DisplayAlert("Error", $"File not found: {fileName}", "OK");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Error", 
+                $"An error occurred: {ex.Message}\nStack: {ex.StackTrace}", "OK");
+        }
+    }
+#endif
+
+    private async Task LoadCorrectImageMaskWindows(string maskName)
+    {
+        try
+        {
+            string filePath = Path.Combine("C:", "Users", "Public", "Pictures", maskName);
+
+            if (File.Exists(filePath))
+            {
+                var stream = File.OpenRead(filePath);
+                var memoryStream = new MemoryStream();
+                await stream.CopyToAsync(memoryStream);
+                memoryStream.Position = 0;
+                SelectedBodyImage.Source = ImageSource.FromStream(() => new MemoryStream(memoryStream.ToArray()));
+                //SelectedBodyImage.IsVisible = true;
+                _bodyImagePath = filePath; // Запазваме пътя на избрания файл
+            }
+            else
+            {
+                await DisplayAlert("Error", "File not found: closed_jacket_mask.png", "OK");
+            }
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Error", $"An error occurred: {ex.Message}", "OK");
+        }
+    }
+
+    private void SetActiveButton(ImageButton activeButton)
+    {
+        // Списък с всички бутони, които трябва да се управляват
+        var allButtons = new List<ImageButton>
+        {
+            ClosedJacketImageButton,
+            OpenJacketImageButton
+            // Тук можете да добавите нови бутони в бъдеще
+        };
+        
+        // Премахваме ефектите от всички бутони
+        foreach (var button in allButtons)
+        {
+            button.BackgroundColor = Colors.Transparent;
+            button.BorderColor = Colors.Black;
+            button.BorderWidth = 3;
+            button.Scale = 1.0;
+        }
+        
+        // Прилагаме ефектите само на активния бутон
+        if (activeButton != null)
+        {
+            activeButton.BackgroundColor = Color.FromArgb("#E6F3FF");
+            activeButton.BorderColor = Color.FromArgb("#0066CC");
+            activeButton.BorderWidth = 4;
+            activeButton.Scale = 1.1;
+        }
+    }
+
+#if WINDOWS
+    private void CheckAvailableMasksWindows()
+    {
+        try
+        {
+            string picturesPath = Path.Combine("C:", "Users", "Public", "Pictures");
+            string closedJacketMaskPath = Path.Combine(picturesPath, "closed_jacket_mask.png");
+            string openJacketMaskPath = Path.Combine(picturesPath, "open_jacket_mask.png");
+
+            // Проверка за closed_jacket_mask.png
+            if (File.Exists(closedJacketMaskPath))
+            {
+                ClosedJacketImageButton.IsEnabled = true;
+                ClosedJacketImageButton.IsVisible = true;
+            }
+
+            // Проверка за open_jacket_mask.png
+            if (File.Exists(openJacketMaskPath))
+            {
+                OpenJacketImageButton.IsEnabled = true;
+                OpenJacketImageButton.IsVisible = true;
+            }
+
+            // Ако поне един бутон е активен, активираме първия наличен
+            //if (ClosedJacketImageButton.IsEnabled)
+            //{
+            //    SetActiveButton(true);
+            //}
+            //else if (OpenJacketImageButton.IsEnabled)
+            //{
+            //    SetActiveButton(false);
+            //}
+        }
+        catch (Exception ex)
+        {
+            // В случай на грешка при достъп до файловата система
+            Console.WriteLine($"Error checking masks: {ex.Message}");
+        }
+    }
+#elif ANDROID
+    
+    private void CheckAvailableMasksAndroid()
+    {
+        try 
+        {
+            var context = Platform.CurrentActivity;
+            var resolver = context?.ContentResolver;
+            
+            if (resolver != null)
+            {
+                // Проверка за closed_jacket_mask.png
+                var closedJacketUri = Android.Provider.MediaStore.Images.Media.ExternalContentUri;
+                var closedJacketSelection = $"{Android.Provider.MediaStore.IMediaColumns.DisplayName} = ? AND " +
+                                          $"{Android.Provider.MediaStore.IMediaColumns.RelativePath} LIKE ?";
+                var closedJacketSelectionArgs = new string[] { "closed_jacket_mask.png", "%DCIM/FashionApp/MasksImages%" };
+                
+                var closedJacketCursor = resolver.Query(closedJacketUri, null, closedJacketSelection, 
+                                                       closedJacketSelectionArgs, null);
+                
+                if (closedJacketCursor != null && closedJacketCursor.Count > 0)
+                {
+                    ClosedJacketImageButton.IsEnabled = true;
+                    ClosedJacketImageButton.IsVisible = true;
+                }
+                closedJacketCursor?.Close();
+                
+                // Проверка за open_jacket_mask.png
+                var openJacketUri = Android.Provider.MediaStore.Images.Media.ExternalContentUri;
+                var openJacketSelection = $"{Android.Provider.MediaStore.IMediaColumns.DisplayName} = ? AND " +
+                                        $"{Android.Provider.MediaStore.IMediaColumns.RelativePath} LIKE ?";
+                var openJacketSelectionArgs = new string[] { "open_jacket_mask.png", "%DCIM/FashionApp/MasksImages%" };
+                
+                var openJacketCursor = resolver.Query(openJacketUri, null, openJacketSelection, 
+                                                       openJacketSelectionArgs, null);
+                
+                if (openJacketCursor != null && openJacketCursor.Count > 0)
+                {
+                    OpenJacketImageButton.IsEnabled = true;
+                    OpenJacketImageButton.IsVisible = true;
+                }
+                openJacketCursor?.Close();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error checking masks: {ex.Message}");
+        }
+    }
+
+
+#endif
+
+
 }
