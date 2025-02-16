@@ -6,6 +6,7 @@ using CommunityToolkit.Maui.Views;
 using FashionApp.core;
 using SkiaSharp;
 using System.IO;
+using static Microsoft.Maui.ApplicationModel.Permissions;
 
 
 namespace FashionApp;
@@ -218,7 +219,7 @@ public partial class EmptyPage : ContentPage
 
 #elif ANDROID
             var context = Platform.CurrentActivity;
-            string directoryPath = Path.Combine(Android.OS.Environment.DirectoryDcim, "FashionApp", "MasksImages");
+            string directoryPath = Path.Combine(Android.OS.Environment.DirectoryPictures, "FashionApp", "MasksImages");
 
             bool shouldGenerateRandomName = String.IsNullOrEmpty(imageFileName) ||
               (imageFileName == "closed_jacket_mask.png" && File.Exists(Path.Combine(directoryPath, "closed_jacket_mask.png"))) ||
@@ -245,7 +246,7 @@ public partial class EmptyPage : ContentPage
                 os.Flush();
                 os.Close();
 
-                await DisplayAlert("Success", $"Image saved on DCIM / FashionApp / MasksImages as {imageFileName}", "OK");
+                await DisplayAlert("Success", $"Image saved on Pictures / FashionApp / MasksImages as {imageFileName}", "OK");
 
                 imageFileName = string.Empty; // Reset value of paramether
                 //((ImageButton)sender).IsEnabled = true; ////Ima nqkakwa drama tuka i krashva 
@@ -385,4 +386,16 @@ public class DrawingViewDrawable : IDrawable
     //    }
     //}
 }
+
+//internal class MyPhotosPermissionService : BasePlatformPermission
+//{
+//   public override (string androidPermission, bool isRuntime)[] RequiredPermissions => 
+//        new List<(string androidPermission, bool isRuntime)>
+//   {
+//        ("android.permission.READ_EXTERNAL_STORAGE", true),
+//        ("android.permission.WRITE_EXTERNAL_STORAGE", true)
+//       //(Android.Manifest.Permission.ReadExternalStorage, true),
+//       //(Android.Manifest.Permission.WriteExternalStorage, true)
+//   }.ToArray();
+//}
 

@@ -7,6 +7,7 @@ using System;
 using Microsoft.Maui.Controls.PlatformConfiguration;
 using CommunityToolkit.Maui.Core.Handlers;
 using CommunityToolkit.Maui.Core.Views;
+using FashionApp.Pages;
 
 namespace FashionApp
 {
@@ -209,6 +210,11 @@ namespace FashionApp
             LoadButton.IsEnabled = !isLoading;
             LoadingIndicator.IsRunning = isLoading;
             LoadingIndicator.IsVisible = isLoading;
+        }
+
+        private async void GalleryButton_Clicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new GalleryPage());
         }
     }
 

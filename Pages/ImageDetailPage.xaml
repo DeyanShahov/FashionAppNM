@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FashionApp.Pages.ImageDetailPage"
+             Title="ImageDetailPage"
+             BackgroundColor="Black">
+    <Grid>
+        <!-- Показва избраната снимка в цял екран -->
+        <Image 
+            x:Name="DetailImage" 
+            Aspect="AspectFill" />
+        <!-- Overlay с бутоните Delete и Close -->
+        <StackLayout 
+                Orientation="Horizontal"
+                HorizontalOptions="FillAndExpand"
+                VerticalOptions="End"
+                BackgroundColor="#80000000"
+                Padding="10"
+                Spacing="20">
+            <Button 
+                Text="Delete"
+                TextColor="White"
+                BackgroundColor="Transparent"
+                Clicked="DeleteButton_Clicked" />
+            <Button 
+                Text="Close"
+                TextColor="White"
+                BackgroundColor="Transparent"
+                HorizontalOptions="EndAndExpand"
+                Clicked="CloseButton_Clicked" />
+        </StackLayout>
+    </Grid>
+</ContentPage>

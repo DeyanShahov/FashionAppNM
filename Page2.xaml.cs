@@ -6,6 +6,7 @@ using SkiaSharp;
 using Microsoft.Maui.Controls.PlatformConfiguration;
 //using static AndroidX.Concurrent.Futures.CallbackToFutureAdapter;
 using Microsoft.Maui.Controls;
+using FashionApp.core.services;
 
 namespace FashionApp;
 
@@ -235,7 +236,7 @@ public partial class Page2 : ContentPage
                 Android.Content.ContentValues contentValues = new();
                 contentValues.Put(Android.Provider.MediaStore.IMediaColumns.DisplayName, fileName);
                 contentValues.Put(Android.Provider.MediaStore.IMediaColumns.MimeType, "image/png");
-                contentValues.Put(Android.Provider.MediaStore.IMediaColumns.RelativePath, "DCIM/" + "FashionApp");
+                contentValues.Put(Android.Provider.MediaStore.IMediaColumns.RelativePath, "Pictures/" + "FashionApp");
                 Android.Net.Uri imageUri = resolver.Insert(Android.Provider.MediaStore.Images.Media.ExternalContentUri, contentValues);
                 var os = resolver.OpenOutputStream(imageUri);
                 Android.Graphics.BitmapFactory.Options options = new();
@@ -246,7 +247,7 @@ public partial class Page2 : ContentPage
                 os.Flush();
                 os.Close();
 
-                await DisplayAlert("Success", $"Image saved on DCIM / FashionApp!", "OK");
+                await DisplayAlert("Success", $"Image saved on Pictures / FashionApp!", "OK");
             }
             else
             {
@@ -301,6 +302,22 @@ public partial class Page2 : ContentPage
         try
         {
             // Проверка за permissions
+            var testPermission = PermissionStatus.Unknown;
+            testPermission = await Permissions.CheckStatusAsync<Permissions.Photos>();
+            //if(testPermission == PermissionStatus.Granted) return;
+            if (Permissions.ShouldShowRationale<Permissions.Photos>())
+            {
+                await DisplayAlert("Permission required", "Location permission is required to load images", "OK");
+            }
+            testPermission = await Permissions.RequestAsync<Permissions.Photos>();
+            if(testPermission != PermissionStatus.Granted)
+            {
+                await DisplayAlert("Permission required", "Location permission is required to load images", "OK");
+                return;
+            }
+
+            var test2 = await Permissions.RequestAsync<Permissions.Media>();
+
             var status = await Permissions.CheckStatusAsync<Permissions.StorageRead>();
             if (status != PermissionStatus.Granted)
             {
@@ -319,19 +336,21 @@ public partial class Page2 : ContentPage
             if (resolver != null)
             {
                 var imageUri = Android.Provider.MediaStore.Images.Media.ExternalContentUri;
-                var selection = $"{Android.Provider.MediaStore.IMediaColumns.DisplayName} = ? AND " +
-                              $"{Android.Provider.MediaStore.IMediaColumns.RelativePath} LIKE ?";
-                var selectionArgs = new string[] { fileName, "%DCIM/FashionApp/MasksImages%" };
+                var selection = Android.Provider.MediaStore.IMediaColumns.RelativePath + "=? AND " +
+                              Android.Provider.MediaStore.IMediaColumns.DisplayName + "=?";
+                var selectionArgs = new string[] { "Pictures/FashionApp/MasksImages/", fileName };
                 
-                var cursor = resolver.Query(imageUri, null, selection, selectionArgs, null);
+                using var cursor = resolver.Query(imageUri, null, selection, selectionArgs, null);
                 
                 if (cursor != null && cursor.MoveToFirst())
                 {
-                    var columnIndex = cursor.GetColumnIndex(Android.Provider.MediaStore.IMediaColumns.Data);
-                    if (columnIndex != -1)
+                    var dataColumn = cursor.GetColumnIndex(Android.Provider.MediaStore.IMediaColumns.Data);
+                    if (dataColumn != -1)
                     {
-                        var imagePath = cursor.GetString(columnIndex);
-                        using var inputStream = resolver.OpenInputStream(Android.Net.Uri.Parse("file://" + imagePath));
+                        var filePath = cursor.GetString(dataColumn);
+                        var contentUri = Android.Net.Uri.Parse("file://" + filePath);
+                        
+                        using var inputStream = resolver.OpenInputStream(contentUri);
                         if (inputStream != null)
                         {
                             var memoryStream = new MemoryStream();
@@ -339,10 +358,9 @@ public partial class Page2 : ContentPage
                             memoryStream.Position = 0;
                             
                             SelectedBodyImage.Source = ImageSource.FromStream(() => new MemoryStream(memoryStream.ToArray()));
-                            _bodyImagePath = imagePath;
+                            _bodyImagePath = filePath;
                         }
                     }
-                    cursor.Close();
                 }
                 else
                 {
@@ -453,48 +471,25 @@ public partial class Page2 : ContentPage
             Console.WriteLine($"Error checking masks: {ex.Message}");
         }
     }
-#elif ANDROID
-    
-    private void CheckAvailableMasksAndroid()
+#elif ANDROID 
+    private async void CheckAvailableMasksAndroid()
     {
         try 
         {
-            var context = Platform.CurrentActivity;
-            var resolver = context?.ContentResolver;
-            
-            if (resolver != null)
+            var fileChecker = App.Current.Handler.MauiContext.Services.GetService<IFileChecker>();
+
+            var fileExists = await fileChecker.CheckFileExistsAsync("closed_jacket_mask.png");
+            if (fileExists)
             {
-                // Проверка за closed_jacket_mask.png
-                var closedJacketUri = Android.Provider.MediaStore.Images.Media.ExternalContentUri;
-                var closedJacketSelection = $"{Android.Provider.MediaStore.IMediaColumns.DisplayName} = ? AND " +
-                                          $"{Android.Provider.MediaStore.IMediaColumns.RelativePath} LIKE ?";
-                var closedJacketSelectionArgs = new string[] { "closed_jacket_mask.png", "%DCIM/FashionApp/MasksImages%" };
-                
-                var closedJacketCursor = resolver.Query(closedJacketUri, null, closedJacketSelection, 
-                                                       closedJacketSelectionArgs, null);
-                
-                if (closedJacketCursor != null && closedJacketCursor.Count > 0)
-                {
-                    ClosedJacketImageButton.IsEnabled = true;
-                    ClosedJacketImageButton.IsVisible = true;
-                }
-                closedJacketCursor?.Close();
-                
-                // Проверка за open_jacket_mask.png
-                var openJacketUri = Android.Provider.MediaStore.Images.Media.ExternalContentUri;
-                var openJacketSelection = $"{Android.Provider.MediaStore.IMediaColumns.DisplayName} = ? AND " +
-                                        $"{Android.Provider.MediaStore.IMediaColumns.RelativePath} LIKE ?";
-                var openJacketSelectionArgs = new string[] { "open_jacket_mask.png", "%DCIM/FashionApp/MasksImages%" };
-                
-                var openJacketCursor = resolver.Query(openJacketUri, null, openJacketSelection, 
-                                                       openJacketSelectionArgs, null);
-                
-                if (openJacketCursor != null && openJacketCursor.Count > 0)
-                {
-                    OpenJacketImageButton.IsEnabled = true;
-                    OpenJacketImageButton.IsVisible = true;
-                }
-                openJacketCursor?.Close();
+                ClosedJacketImageButton.IsEnabled = true;
+                ClosedJacketImageButton.IsVisible = true;
+            }
+
+            fileExists = await fileChecker.CheckFileExistsAsync("open_jacket_mask.png");
+            if (fileExists)
+            {
+                OpenJacketImageButton.IsEnabled = true;
+                OpenJacketImageButton.IsVisible = true;
             }
         }
         catch (Exception ex)
@@ -502,9 +497,16 @@ public partial class Page2 : ContentPage
             Console.WriteLine($"Error checking masks: {ex.Message}");
         }
     }
-
-
 #endif
-
-
 }
+
+
+//public enum PermissionStatus
+//{
+//    Unknown = 0,
+//    Denied = 1,
+//    Disabled = 2,
+//    Granted = 3,
+//    Restricted = 4,
+//    Limited = 5
+//}

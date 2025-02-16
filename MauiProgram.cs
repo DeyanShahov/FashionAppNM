@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui;
+using FashionApp.core.services;
 
 namespace FashionApp
 {
@@ -19,6 +20,7 @@ namespace FashionApp
                 });
 
             builder.UseMauiCommunityToolkitCore();
+            builder.Services.AddSingleton<IFileChecker, FileChecker>();
 
 #if DEBUG
             builder.Logging.AddDebug();

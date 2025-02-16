@@ -15,6 +15,11 @@
                 Clicked="OnNavigateClicked"
                 HorizontalOptions="Center"/>
             <Button
+                x:Name="GalleryButton"
+                Text="Go to Gallery"
+                Clicked="GalleryButton_Clicked"
+                HorizontalOptions="Center"/>
+            <Button
                 x:Name="NavigateButtonToMaskJS"
                 Text="Go to MaskJS"
                 IsEnabled="False"
