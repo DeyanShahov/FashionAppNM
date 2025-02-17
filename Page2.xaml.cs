@@ -8,6 +8,13 @@ using Microsoft.Maui.Controls.PlatformConfiguration;
 using Microsoft.Maui.Controls;
 using FashionApp.core.services;
 
+#if __ANDROID__
+using Android.Content;
+using Android.Database;
+using Android.Net;
+using Android.Provider;
+#endif
+
 namespace FashionApp;
 
 public partial class Page2 : ContentPage
@@ -21,10 +28,17 @@ public partial class Page2 : ContentPage
     private string _bodyImagePath;
     private bool isClosedJacketActive = true;
 
+    private readonly SingleImageLoader singleImageLoader;
+
     public Page2()
     {
         InitializeComponent();
         //SetActiveButton(true); // Set initial state
+
+        singleImageLoader = new SingleImageLoader(
+            setErrorMessage: (msg) => ResponseText.Text = msg,
+            setImage: (uri) => SelectedBodyImage.Source = Microsoft.Maui.Controls.ImageSource.FromUri(new System.Uri(uri))
+        );
 
 #if WINDOWS
         CheckAvailableMasksWindows();
@@ -281,7 +295,8 @@ public partial class Page2 : ContentPage
 #if WINDOWS
         await LoadCorrectImageMaskWindows("open_jacket_mask.png");
 #elif ANDROID
-        await LoadCorrectImageMaskAndroid("open_jacket_mask.png");
+        //await LoadCorrectImageMaskAndroid("open_jacket_mask.png");
+        LoadLargeImage("open_jacket_mask.png");
 #endif
     }
 
@@ -291,12 +306,76 @@ public partial class Page2 : ContentPage
 #if WINDOWS
         await LoadCorrectImageMaskWindows("closed_jacket_mask.png");
 #elif ANDROID
-        await LoadCorrectImageMaskAndroid("closed_jacket_mask.png");
+        //await LoadCorrectImageMaskAndroid("closed_jacket_mask.png");
+        //LoadLargeImage(_bodyImagePath);
+        LoadLargeImage("closed_jacket_mask.png");
 #endif
     }
 
 
 #if ANDROID
+    private async void LoadLargeImage(string imageUri)
+    {
+        // Проверка дали списъкът с изображения не е празен
+        //if (ImagesList.Count == 0) return;
+        
+        // Извличане на пътя на първото изображение в списъка
+        //var imagePath = Path.GetFileName(GetRealPathFromUri(Android.App.Application.Context.ContentResolver, ImagesList.FirstOrDefault()));
+        //var imagePath = GetRealPathFromUri(Android.App.Application.Context.ContentResolver, imageUri);
+        var imagePath = ConvertCachePathToImagePath(imageUri);
+        
+        // Зареждане на изображението асинхронно
+        await singleImageLoader.LoadSingleImageAsync(imagePath);
+    }
+
+    private string ConvertCachePathToImagePath(string cachePath)
+    {
+        // Проверка дали пътят започва с кеш директорията
+        //string cacheDirectory = "/storage/emulated/0/Android/data/com.companyname.fashionapp/cache/";
+        string imagesDirectory = "/storage/emulated/0/Pictures/FashionApp/MasksImages/";
+    
+        if (true)
+        {
+            // Извличане на името на файла от кеш пътя
+            //string fileName = Path.GetFileName(cachePath);
+            // Създаване на новия път в директорията с изображения
+            string newPath = Path.Combine(imagesDirectory, cachePath);
+            return newPath;
+        }
+    
+        // Връща оригиналния път, ако не започва с кеш директорията
+        return cachePath;
+    }
+
+
+    public string GetRealPathFromUri(ContentResolver contentResolver, string imageUri)
+    {
+        // Проверка дали URI-то започва с "content://"
+        if (imageUri.StartsWith("content://"))
+        {
+            var uri = Android.Net.Uri.Parse(imageUri);
+            string filePath = null;
+
+            // Извличане на пътя на файла от MediaStore
+            using (var cursor = contentResolver.Query(uri, null, null, null, null))
+            {
+                if (cursor != null && cursor.MoveToFirst())
+                {
+                    int columnIndex = cursor.GetColumnIndex(MediaStore.MediaColumns.Data);
+                    filePath = cursor.GetString(columnIndex);
+                }
+            }
+
+            // Проверка дали файлът съществува
+            if (!string.IsNullOrEmpty(filePath) && File.Exists(filePath))
+            {
+                return filePath; // Връща пълния път до файла
+            }
+        }
+
+        return null; // Връща null, ако не е намерен път
+    }
+
     private async Task LoadCorrectImageMaskAndroid(string fileName)
     {
         try

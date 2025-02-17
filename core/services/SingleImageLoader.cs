@@ -17,20 +17,20 @@ namespace FashionApp.core.services
             this.setImage = setImage;
         }
 
-        public async Task LoadSingleImageAsync(string fileName)
+        public async Task LoadSingleImageAsync(string fileNameFullPath)
         {
 #if WINDOWS
             // Използваме същата директория, както в ImageLoader.cs за Windows
             var imageDirectory = @"C:\Users\redfo\Downloads\AI Girls\AI Daenerys Targaryen";
-            var filePath = Path.Combine(imageDirectory, fileName);
+            var filePath = Path.Combine(imageDirectory, fileNameFullPath);
             //if (File.Exists(filePath))
-            if (File.Exists(fileName))
+            if (File.Exists(fileNameFullPath))
             {
                 setImage($"file://{filePath}");
             }
             else
             {
-                setErrorMessage($"Error: File {fileName} not found in directory: {imageDirectory}");
+                setErrorMessage($"Error: File {fileNameFullPath} not found in directory: {imageDirectory}");
             }
 #elif __ANDROID__
             if (OperatingSystem.IsAndroidVersionAtLeast(29))
@@ -42,7 +42,7 @@ namespace FashionApp.core.services
                 };
                 // Пълният път на файла
                 //string filePath = $"/storage/emulated/0/Pictures/FashionApp/MasksImages/{fileName}";
-                string filePath = fileName;
+                string filePath = fileNameFullPath;
                 string selection = $"{Android.Provider.MediaStore.IMediaColumns.Data} = ?";
                 string[] selectionArgs = new[] { filePath };
                 string? sortOrder = null;
@@ -70,21 +70,21 @@ namespace FashionApp.core.services
                 }
                 else
                 {
-                    setErrorMessage($"Error: File {fileName} not found in MediaStore.");
+                    setErrorMessage($"Error: File {fileNameFullPath} not found in MediaStore.");
                 }
             }
             else
             {
                 // За Android стари версии (legacy) използваме директен достъп до файловата система
                 string directory = "/storage/emulated/0/Pictures/FashionApp/MasksImages";
-                var filePath = Path.Combine(directory, fileName);
+                var filePath = Path.Combine(directory, fileNameFullPath);
                 if (File.Exists(filePath))
                 {
                     setImage($"file://{filePath}");
                 }
                 else
                 {
-                    setErrorMessage($"Error: File {fileName} not found in directory: {directory}");
+                    setErrorMessage($"Error: File {fileNameFullPath} not found in directory: {directory}");
                 }
             }
 #endif

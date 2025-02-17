@@ -54,7 +54,7 @@ public partial class GalleryPage : ContentPage
         }
     }
 
-    private readonly ImagesLoader imageLoader;
+    private readonly ImagesLoader imagesLoader;
     private readonly SingleImageLoader singleImageLoader;
 
     public GalleryPage()
@@ -62,7 +62,7 @@ public partial class GalleryPage : ContentPage
 		InitializeComponent();
 
         BindingContext = this;
-        imageLoader = new ImagesLoader(
+        imagesLoader = new ImagesLoader(
             setErrorMessage: (msg) => ErrorMessage = msg,
             setBusy: (busy) => IsBusy = busy,
             setImagesList: (images) => ImagesList = images
@@ -78,7 +78,7 @@ public partial class GalleryPage : ContentPage
 #endif
     }
 
-    private async void LoadAllImagesForGallery() => await imageLoader.LoadImagesAsync("/storage/emulated/0/Pictures/FashionApp/Images%");
+    private async void LoadAllImagesForGallery() => await imagesLoader.LoadImagesAsync("/storage/emulated/0/Pictures/FashionApp/Images%");
 
 #if ANDROID
     private async void LoadLargeImage()
