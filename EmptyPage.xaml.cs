@@ -7,6 +7,7 @@ using FashionApp.core;
 using SkiaSharp;
 using System.IO;
 using static Microsoft.Maui.ApplicationModel.Permissions;
+using FashionApp.core.services;
 
 
 namespace FashionApp;
@@ -221,14 +222,14 @@ public partial class EmptyPage : ContentPage
             var context = Platform.CurrentActivity;
             string directoryPath = Path.Combine(Android.OS.Environment.DirectoryPictures, "FashionApp", "MasksImages");
 
-            bool shouldGenerateRandomName = String.IsNullOrEmpty(imageFileName) ||
-              (imageFileName == "closed_jacket_mask.png" && File.Exists(Path.Combine(directoryPath, "closed_jacket_mask.png"))) ||
-              (imageFileName == "open_jacket_mask.png" && File.Exists(Path.Combine(directoryPath, "open_jacket_mask.png")));
+            //bool shouldGenerateRandomName = String.IsNullOrEmpty(imageFileName) ||
+            //  (imageFileName == "closed_jacket_mask.png" && File.Exists(Path.Combine(directoryPath, "closed_jacket_mask.png"))) ||
+            //  (imageFileName == "open_jacket_mask.png" && File.Exists(Path.Combine(directoryPath, "open_jacket_mask.png")));
 
-            if (shouldGenerateRandomName)
-            {
-                imageFileName = $"masked_image_{DateTime.Now:yyyyMMdd_HHmmss}.png";
-            }
+            //if (shouldGenerateRandomName)
+            //{
+            //    imageFileName = $"masked_image_{DateTime.Now:yyyyMMdd_HHmmss}.png";
+            //}
 
             if (OperatingSystem.IsAndroidVersionAtLeast(29))
             {
@@ -277,8 +278,19 @@ public partial class EmptyPage : ContentPage
         }
     }
 
-    private void ClosedJacketImageButton_Clicked(object sender, EventArgs e)
+    private async void ClosedJacketImageButton_Clicked(object sender, EventArgs e)
     {
+#if ANDROID
+        var result = await CheckAvailableMasksAndroid("closed_jacket_mask.png");
+
+        if(result)
+        {
+             bool conifirmation = await Application.Current.MainPage.DisplayAlert("Change Confirmation", "Are you sure you want to replace the mask?", "Yes", "Cancel");
+
+             if(!conifirmation) return;
+        }
+#endif
+
         SetActiveButton(sender as ImageButton);
         imageFileName = "closed_jacket_mask.png";
     }
@@ -318,6 +330,43 @@ public partial class EmptyPage : ContentPage
         }
     }
 
+
+
+#if ANDROID
+    private async Task<bool> CheckAvailableMasksAndroid(string fileName)
+    {
+        try
+        {
+            var fileChecker = App.Current.Handler.MauiContext.Services.GetService<IFileChecker>();
+
+            var fileExists = await fileChecker.CheckFileExistsAsync(fileName);
+            if (fileExists)
+            {
+                return true;
+                //ClosedJacketImageButton.IsEnabled = true;
+                //ClosedJacketImageButton.IsVisible = true;
+            }
+            else
+            {
+                return false;
+            }
+
+
+            //fileExists = await fileChecker.CheckFileExistsAsync("open_jacket_mask.png");
+            //if (fileExists)
+            //{
+            //    OpenJacketImageButton.IsEnabled = true;
+            //    OpenJacketImageButton.IsVisible = true;
+            //}
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error checking masks: {ex.Message}");
+            await Application.Current.MainPage.DisplayAlert("Error checking masks", ex.Message, "Ok");
+            return false;
+        }
+    }
+#endif
 }
 
 
