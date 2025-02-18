@@ -8,11 +8,19 @@ using SkiaSharp;
 using System.IO;
 using static Microsoft.Maui.ApplicationModel.Permissions;
 using FashionApp.core.services;
+using Microsoft.Maui.Controls.PlatformConfiguration;
 
+#if __ANDROID__
+using Android.Content;
+using Android.Database;
+using Android.Net;
+using Android.Provider;
+using Android.OS;
+#endif
 
 namespace FashionApp;
 
-public partial class EmptyPage : ContentPage
+public partial class MaskEditor : ContentPage
 {
     private List<DrawingLine> _lines = new();
     private DrawingLine _currentLine;
@@ -21,7 +29,7 @@ public partial class EmptyPage : ContentPage
     private bool isClosedJacketActive = true;
     private string imageFileName = "closed_jacket_mask.png";
 
-    public EmptyPage()
+    public MaskEditor()
     {
         InitializeComponent();
         _drawable = new DrawingViewDrawable(_lines, _markedPixels);
@@ -192,7 +200,9 @@ public partial class EmptyPage : ContentPage
     {
         if (SelectedImage.Source == null) return;
 
-        //((ImageButton)sender).IsEnabled = false; //Ima nqkakwa drama tuka i krashva 
+        // Деактивиране на бутона
+        SaveMaskImageButton.IsEnabled = false;
+        DrawingBottons.IsVisible = false;
 
         try
         {
@@ -216,41 +226,43 @@ public partial class EmptyPage : ContentPage
             await DisplayAlert("Success", $"Image saved to C:\\Users\\Public\\Pictures as {imageFileName}", "OK");
 
             imageFileName = string.Empty; // Reset value of paramether
-            ((ImageButton)sender).IsEnabled = true;
 
 #elif ANDROID
             var context = Platform.CurrentActivity;
             string directoryPath = Path.Combine(Android.OS.Environment.DirectoryPictures, "FashionApp", "MasksImages");
 
-            //bool shouldGenerateRandomName = String.IsNullOrEmpty(imageFileName) ||
-            //  (imageFileName == "closed_jacket_mask.png" && File.Exists(Path.Combine(directoryPath, "closed_jacket_mask.png"))) ||
-            //  (imageFileName == "open_jacket_mask.png" && File.Exists(Path.Combine(directoryPath, "open_jacket_mask.png")));
-
-            //if (shouldGenerateRandomName)
-            //{
-            //    imageFileName = $"masked_image_{DateTime.Now:yyyyMMdd_HHmmss}.png";
-            //}
-
             if (OperatingSystem.IsAndroidVersionAtLeast(29))
             {
                 Android.Content.ContentResolver resolver = context.ContentResolver;
                 Android.Content.ContentValues contentValues = new();
+
+                //await DeleteExistingImageAsync(resolver, imageFileName, directoryPath);
+
+                // Създаване на нов запис
                 contentValues.Put(Android.Provider.MediaStore.IMediaColumns.DisplayName, imageFileName);
                 contentValues.Put(Android.Provider.MediaStore.IMediaColumns.MimeType, "image/png");
                 contentValues.Put(Android.Provider.MediaStore.IMediaColumns.RelativePath, directoryPath);
-                Android.Net.Uri imageUri = resolver.Insert(Android.Provider.MediaStore.Images.Media.ExternalContentUri, contentValues);
-                var os = resolver.OpenOutputStream(imageUri);
-                Android.Graphics.BitmapFactory.Options options = new();
-                options.InJustDecodeBounds = true;
-                var bitmap = Android.Graphics.BitmapFactory.DecodeStream(resultStream);
-                bitmap.Compress(Android.Graphics.Bitmap.CompressFormat.Png, 100, os);
-                os.Flush();
-                os.Close();
 
+                Android.Net.Uri? imageUri = resolver.Insert(Android.Provider.MediaStore.Images.Media.ExternalContentUri, contentValues);
+                if (imageUri == null)
+                {
+                    await DisplayAlert("Error", "Failed to create image file.", "OK");
+                    return;
+                }
+
+                using (var os = resolver.OpenOutputStream(imageUri))
+                {
+                    if (os != null)
+                    {
+                        var bitmap = Android.Graphics.BitmapFactory.DecodeStream(resultStream);
+                        bitmap.Compress(Android.Graphics.Bitmap.CompressFormat.Png, 100, os);
+                        os.Flush();
+                    }
+                }
+                
                 await DisplayAlert("Success", $"Image saved on Pictures / FashionApp / MasksImages as {imageFileName}", "OK");
 
                 imageFileName = string.Empty; // Reset value of paramether
-                //((ImageButton)sender).IsEnabled = true; ////Ima nqkakwa drama tuka i krashva 
             }
             else
             {
@@ -262,8 +274,94 @@ public partial class EmptyPage : ContentPage
         {
             await DisplayAlert("Error", $"Failed to save image: {ex.Message}", "OK");
         }
+        finally
+        {
+            // Включване на бутона отново
+            SaveMaskImageButton.IsEnabled = true;
+            DrawingBottons.IsVisible = true;
+        }
     }
 
+
+#if ANDROID
+    private async Task DeleteExistingImageAsync(ContentResolver resolver, string imageFileName, string directoryPath)
+    {
+        string[] projection = { IBaseColumns.Id, MediaStore.MediaColumns.DisplayName };
+        Android.Net.Uri collection = MediaStore.Images.Media.ExternalContentUri;
+        
+        // Добавяне на условие за търсене по fileName
+        string selection = $"{MediaStore.MediaColumns.DisplayName} = ?";
+        string[] selectionArgs = { imageFileName };
+        
+        var cursor = resolver.Query(collection, projection, selection, selectionArgs, null);
+        if (cursor != null && cursor.MoveToFirst())
+        {
+            int idColumn = cursor.GetColumnIndex(IBaseColumns.Id);
+            long imageId = cursor.GetLong(idColumn); // Уникален ID на изображението
+            Android.Net.Uri deleteUri = ContentUris.WithAppendedId(MediaStore.Images.Media.ExternalContentUri, imageId);
+            int deletedRows = resolver.Delete(deleteUri, null, null);
+            if (deletedRows > 0)
+            {
+                await DisplayAlert("Succes", $"{imageFileName} dellet succesful.", "OK");
+            }
+            else
+            {
+                //Console.WriteLine("Failed to delete image. It might not be owned by the app.");
+                await DisplayAlert("Error", "Failed to delete image. It might not be owned by the app.", "OK");
+            }
+            //Console.WriteLine($"Image ID: {imageId}");
+        }
+        cursor?.Close();
+
+        if (true)
+        {
+            // Scoped Storage (Android 10+) - само файлове, създадени от приложението, могат да се изтриват
+            //string selection = $"{MediaStore.MediaColumns.DisplayName} = ? AND {MediaStore.MediaColumns.RelativePath} = ?";
+            //string[] selectionArgs = new string[] { imageFileName, directoryPath };
+    
+            //Android.Net.Uri collection = MediaStore.Images.Media.ExternalContentUri;
+            //Android.Database.ICursor? cursor = resolver.Query(collection, new string[] { IBaseColumns.Id }, selection, selectionArgs, null);
+    
+            //if (cursor != null && cursor.MoveToFirst())
+            //{
+            //    int idColumn = cursor.GetColumnIndex(IBaseColumns.Id);
+            //    long id = cursor.GetLong(idColumn);
+            //    Android.Net.Uri deleteUri = ContentUris.WithAppendedId(MediaStore.Images.Media.ExternalContentUri, id);
+    
+            //    try
+            //    {
+            //        int rowsDeleted = resolver.Delete(deleteUri, null, null);
+            //        if (rowsDeleted > 0)
+            //        {
+            //            await DisplayAlert("Succes", $"{imageFileName} dellet succesful.", "OK");
+            //        }
+            //        else
+            //        {
+            //            await DisplayAlert("Error", $"{imageFileName} dont delete", "OK");
+            //        }
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        await DisplayAlert("Error", $"Error on delete: {ex.Message}", "OK");
+            //    }
+            //}
+    
+            //cursor?.Close();
+        }
+        else
+        {
+            // Android 9 или по-старо - използвай директно File API
+            string filePath = Path.Combine(Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryPictures)?.AbsolutePath ?? "", directoryPath, imageFileName);
+            Java.IO.File file = new Java.IO.File(filePath);
+    
+            if (file.Exists())
+            {
+                bool deleted = file.Delete();
+                Console.WriteLine(deleted ? $"Файлът {imageFileName} беше изтрит." : $"Неуспешно изтриване на {imageFileName}.");
+            }
+        }
+    }
+#endif
 
 
     public async Task<byte[]> ConvertStreamToByteArrayAsync(Stream stream)
@@ -285,9 +383,13 @@ public partial class EmptyPage : ContentPage
 
         if(result)
         {
-             bool conifirmation = await Application.Current.MainPage.DisplayAlert("Change Confirmation", "Are you sure you want to replace the mask?", "Yes", "Cancel");
+             bool conifirmation = await Application.Current.MainPage.DisplayAlert("Replace Confirmation", "Are you sure you want to replace the mask?", "Yes", "Cancel");
 
              if(!conifirmation) return;
+        }
+        else
+        {
+            await DisplayAlert("Set Confirmation", "You will save a new mask image. ", "OK");
         }
 #endif
 

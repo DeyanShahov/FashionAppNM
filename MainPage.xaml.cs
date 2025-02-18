@@ -8,6 +8,11 @@ using Microsoft.Maui.Controls.PlatformConfiguration;
 using CommunityToolkit.Maui.Core.Handlers;
 using CommunityToolkit.Maui.Core.Views;
 using FashionApp.Pages;
+using Microsoft.Maui.Platform;
+
+#if ANDROID
+using Android.OS;
+#endif
 
 namespace FashionApp
 {
@@ -26,6 +31,18 @@ namespace FashionApp
 
             WelcomeMessage.Text = $"Welcome Guest!";
             LoginBtn.Text = "Login as User";
+
+            SetContentLabel();
+        }
+
+        private void SetContentLabel()
+        {
+            ContentLabel.Text = $"Created by RedFox - AI Айляк";
+
+#if ANDROID
+            // Проверка на текущата Андроид версия и съответната API версия
+            ContentLabel.Text += $"\n Android: {Build.VERSION.Release}  API: {(int)(int)Build.VERSION.SdkInt}";
+#endif
         }
 
         private void OnCounterClicked(object sender, EventArgs e)
@@ -187,24 +204,17 @@ namespace FashionApp
         }
 
         private async void OnNavigateClicked(object sender, EventArgs e)
-        {
-            await Navigation.PushAsync(new EmptyPage());
-        }
+            => await Navigation.PushAsync(new MaskEditor());
 
-        private async void OnNavigateClickedToPage2(object sender, EventArgs e)
-        {
-            await Navigation.PushAsync(new Page2());
-        }
+        private async void CombineImagesButton_Clicked(object sender, EventArgs e)
+            => await Navigation.PushAsync(new CombineImages());
 
         private async void OnNavigateClickedToWeb(object sender, EventArgs e)
-        {
-            await Navigation.PushAsync(new WebViewPage());
-        }
+            => await Navigation.PushAsync(new WebViewPage());
 
         private async void OnNavigateClickedToMaskJS(object sender, EventArgs e)
-        {
-            await Navigation.PushAsync(new MaskJS());
-        }
+            => await Navigation.PushAsync(new MaskJS());
+
         private void ToggleLoading(bool isLoading)
         {
             LoadButton.IsEnabled = !isLoading;
@@ -213,9 +223,9 @@ namespace FashionApp
         }
 
         private async void GalleryButton_Clicked(object sender, EventArgs e)
-        {
-            await Navigation.PushAsync(new GalleryPage());
-        }
-    }
+            => await Navigation.PushAsync(new GalleryImagesPage());
 
+        private async void MaskGalleryButton_Clicked(object sender, EventArgs e)
+            => await Navigation.PushAsync(new GalleryMasksPage());
+    }
 }

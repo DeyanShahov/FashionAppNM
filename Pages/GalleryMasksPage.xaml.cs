@@ -3,14 +3,12 @@ using Microsoft.Maui.Controls.PlatformConfiguration;
 
 #if __ANDROID__
 using Android.Content;
-using Android.Database;
-using Android.Net;
 using Android.Provider;
 #endif
 
 namespace FashionApp.Pages;
 
-public partial class GalleryPage : ContentPage
+public partial class GalleryMasksPage : ContentPage
 {
     private string selectedImageUri;
 
@@ -56,8 +54,7 @@ public partial class GalleryPage : ContentPage
 
     private readonly ImagesLoader imagesLoader;
     private readonly SingleImageLoader singleImageLoader;
-
-    public GalleryPage()
+    public GalleryMasksPage()
 	{
 		InitializeComponent();
 
@@ -78,7 +75,7 @@ public partial class GalleryPage : ContentPage
 #endif
     }
 
-    private async void LoadAllImagesForGallery() => await imagesLoader.LoadImagesAsync("/storage/emulated/0/Pictures/FashionApp/Images%");
+    private async void LoadAllImagesForGallery() => await imagesLoader.LoadImagesAsync("/storage/emulated/0/Pictures/FashionApp/MasksImages%");
 
 #if ANDROID
     private async void LoadLargeImage()
@@ -98,7 +95,7 @@ public partial class GalleryPage : ContentPage
 
     private async void SelectedBodyImage_Tapped(object sender, TappedEventArgs e)
     {
-        if(selectedImageUri != null)
+        if (selectedImageUri != null)
         {
             await Navigation.PushModalAsync(new ImageDetailPage(selectedImageUri));
         }

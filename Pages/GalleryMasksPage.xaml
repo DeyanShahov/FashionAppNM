@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="FashionApp.Pages.GalleryPage"
-             Title="Gallery"
+             x:Class="FashionApp.Pages.GalleryMasksPage"
+             Title="GalleryMasksPage"
              BackgroundColor="Black">
-
     <!-- Използваме AbsoluteLayout за да можем да поставим ActivityIndicator над съдържанието -->
     <AbsoluteLayout>
         <!-- Главно съдържание: Grid с редове за съобщение за грешка, единичната снимка и галерията -->
         <Grid AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="0,0,1,1">
-            
+
             <Grid.RowDefinitions>
                 <!-- Ред за съобщение за грешка -->
                 <RowDefinition Height="Auto"/>
@@ -21,61 +20,61 @@
 
             <!-- Елемент 1: Текст за грешка -->
             <Label
-                x:Name="ErrorLabel"
-                Grid.Row="0"
-                Text=""
-                IsVisible="False"
-                TextColor="Red"
-                HorizontalOptions="Center"/>
+            x:Name="ErrorLabel"
+            Grid.Row="0"
+            Text=""
+            IsVisible="False"
+            TextColor="Red"
+            HorizontalOptions="Center"/>
 
             <!-- Елемент 2: Изображението с единичната снимка -->
             <Frame 
-                Grid.Row="1"
-                Padding="5"
-                HasShadow="True"
-                BorderColor="Black"
-                Margin="10,10,10,0">
+            Grid.Row="1"
+            Padding="5"
+            HasShadow="True"
+            BorderColor="Black"
+            Margin="10,10,10,0">
                 <Image 
-                    x:Name="SelectedBodyImage"
-                    HeightRequest="400"
-                    WidthRequest="300"
-                    Aspect="AspectFit">
+                x:Name="SelectedBodyImage"
+                HeightRequest="400"
+                WidthRequest="300"
+                Aspect="AspectFit">
                     <Image.GestureRecognizers>
                         <TapGestureRecognizer 
-                            Tapped="SelectedBodyImage_Tapped"/>
+                        Tapped="SelectedBodyImage_Tapped"/>
                     </Image.GestureRecognizers>
                 </Image>
             </Frame>
 
             <!-- Елемент 3: Галерията със снимки (CollectionView скролира)
-            Този контрол ще запълни оставащото пространство (RowDefinition="*") -->
+        Този контрол ще запълни оставащото пространство (RowDefinition="*") -->
             <CollectionView 
-                x:Name="GalleryCollectionView"
-                Grid.Row="2"
-                ItemsSource="{Binding ImagesList}"
-                SelectionMode="Single"
-                Margin="10,0,10,10">
+            x:Name="GalleryCollectionView"
+            Grid.Row="2"
+            ItemsSource="{Binding ImagesList}"
+            SelectionMode="Single"
+            Margin="10,0,10,10">
                 <CollectionView.ItemsLayout>
                     <GridItemsLayout 
-                        Orientation="Vertical"
-                        Span="3"
-                        HorizontalItemSpacing="5"
-                        VerticalItemSpacing="5"/>
+                    Orientation="Vertical"
+                    Span="3"
+                    HorizontalItemSpacing="5"
+                    VerticalItemSpacing="5"/>
                 </CollectionView.ItemsLayout>
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Frame 
-                            Padding="0"
-                            IsClippedToBounds="True"
-                            CornerRadius="0">
+                        Padding="0"
+                        IsClippedToBounds="True"
+                        CornerRadius="0">
                             <Image 
-                                Source="{Binding .}"
-                                Aspect="AspectFill"
-                                HeightRequest="120"
-                                WidthRequest="120">
+                            Source="{Binding .}"
+                            Aspect="AspectFill"
+                            HeightRequest="120"
+                            WidthRequest="120">
                                 <Image.GestureRecognizers>
                                     <TapGestureRecognizer 
-                                        Tapped="TapGestureRecognizer_Tapped"/>
+                                    Tapped="TapGestureRecognizer_Tapped"/>
                                 </Image.GestureRecognizers>
                             </Image>
                         </Frame>
@@ -87,9 +86,9 @@
 
         <!-- ActivityIndicator, като overlay, центриран върху съдържанието -->
         <ActivityIndicator IsRunning="{Binding IsBusy}"
-                    IsVisible="{Binding IsBusy}"
-                    AbsoluteLayout.LayoutFlags="PositionProportional"
-                    AbsoluteLayout.LayoutBounds="0.5,0.5,-1,-1"/>
+                IsVisible="{Binding IsBusy}"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                AbsoluteLayout.LayoutBounds="0.5,0.5,-1,-1"/>
 
     </AbsoluteLayout>
 </ContentPage>

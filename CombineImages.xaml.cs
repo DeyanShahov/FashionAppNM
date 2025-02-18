@@ -17,7 +17,7 @@ using Android.Provider;
 
 namespace FashionApp;
 
-public partial class Page2 : ContentPage
+public partial class CombineImages : ContentPage
 {
     private readonly HttpClient _client = new HttpClient { Timeout = TimeSpan.FromSeconds(300) };
     private const string ApiUrl = "https://eminently-verified-walleye.ngrok-free.app";
@@ -30,7 +30,7 @@ public partial class Page2 : ContentPage
 
     private readonly SingleImageLoader singleImageLoader;
 
-    public Page2()
+    public CombineImages()
     {
         InitializeComponent();
         //SetActiveButton(true); // Set initial state
@@ -122,7 +122,7 @@ public partial class Page2 : ContentPage
         }
     }
 
-    private async void CombineImagesClicked(object sender, EventArgs e)
+    private async void OnCombineImages_Clicked(object sender, EventArgs e)
     {
         if (SelectedClothImage.Source == null || SelectedBodyImage.Source == null)
         {
@@ -283,7 +283,7 @@ public partial class Page2 : ContentPage
 
     private void ToggleLoading(bool isLoading)
     {
-        CombineImages.IsEnabled = !isLoading;
+        CombineImagesButton.IsEnabled = !isLoading;
         LoadingIndicator.IsRunning = isLoading;
         LoadingIndicator.IsVisible = isLoading;
     }
@@ -511,6 +511,7 @@ public partial class Page2 : ContentPage
         }
     }
 
+
 #if WINDOWS
     private void CheckAvailableMasksWindows()
     {
@@ -550,7 +551,7 @@ public partial class Page2 : ContentPage
             Console.WriteLine($"Error checking masks: {ex.Message}");
         }
     }
-#elif ANDROID 
+#elif ANDROID
     private async void CheckAvailableMasksAndroid()
     {
         try 
@@ -578,14 +579,3 @@ public partial class Page2 : ContentPage
     }
 #endif
 }
-
-
-//public enum PermissionStatus
-//{
-//    Unknown = 0,
-//    Denied = 1,
-//    Disabled = 2,
-//    Granted = 3,
-//    Restricted = 4,
-//    Limited = 5
-//}

@@ -79,6 +79,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="CombineImages.xaml.cs">
+	    <DependentUpon>CombineImages.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="MaskEditor.xaml.cs">
+	    <DependentUpon>MaskEditor.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Pages\GalleryImagesPage.xaml.cs">
+	    <DependentUpon>GalleryImagesPage.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="Pages\ImageDetailPage.xaml.cs">
 	    <DependentUpon>ImageDetailPage.xaml</DependentUpon>
 	  </Compile>
@@ -91,10 +100,13 @@
 	  <MauiXaml Update="MaskJS.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Page2.xaml">
+	  <MauiXaml Update="CombineImages.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Pages\GalleryPage.xaml">
+	  <MauiXaml Update="Pages\GalleryImagesPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\GalleryMasksPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Pages\ImageDetailPage.xaml">

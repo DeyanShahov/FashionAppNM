@@ -10,14 +10,19 @@
             Padding="30,0"
             Spacing="25">
             <Button 
-                x:Name="NavigateButton"
+                x:Name="EditorButton"
                 Text="Go to Editor"
                 Clicked="OnNavigateClicked"
                 HorizontalOptions="Center"/>
             <Button
-                x:Name="GalleryButton"
+                x:Name="GalleryImagesButton"
                 Text="Go to Gallery"
                 Clicked="GalleryButton_Clicked"
+                HorizontalOptions="Center"/>
+            <Button
+                x:Name="MaskGalleryButton"
+                Text="Go to Mask Gallery"
+                Clicked="MaskGalleryButton_Clicked"
                 HorizontalOptions="Center"/>
             <Button
                 x:Name="NavigateButtonToMaskJS"
@@ -32,9 +37,9 @@
                 Clicked="OnNavigateClickedToWeb"
                 HorizontalOptions="Center"/>
             <Button 
-                x:Name="NavigateButtonToPage2"
+                x:Name="CombineImagesButton"
                 Text="Go to Combine Images"
-                Clicked="OnNavigateClickedToPage2"
+                Clicked="CombineImagesButton_Clicked"
                 HorizontalOptions="Center"/>
             <Image
                 Source="dotnet_bot.png"
@@ -104,8 +109,7 @@
                FontSize="18"
                HorizontalOptions="Center"/>
 
-            <Label x:Name="CounterLabel" 
-               Text="Created by RedFox - AI Айляк"
+            <Label x:Name="ContentLabel" 
                Style="{StaticResource Headline}"
                TextColor="Black"
                FontSize="18"

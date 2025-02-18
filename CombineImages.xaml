@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="FashionApp.Page2"
-             Title="Page2"
+             x:Class="FashionApp.CombineImages"
+             Title="Combine Images"
              BackgroundColor="LightGray">
     <ScrollView>
         <VerticalStackLayout>
@@ -74,9 +74,9 @@
             </HorizontalStackLayout>
 
             <Button 
-            x:Name="CombineImages"
+            x:Name="CombineImagesButton"
             Text="Create new image"
-            Clicked="CombineImagesClicked"
+            Clicked="OnCombineImages_Clicked"
             HorizontalOptions="Center"/>
 
 
