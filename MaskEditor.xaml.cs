@@ -9,8 +9,11 @@ using System.IO;
 using static Microsoft.Maui.ApplicationModel.Permissions;
 using FashionApp.core.services;
 using Microsoft.Maui.Controls.PlatformConfiguration;
+using FashionApp.Data.Constants;
+
 
 #if __ANDROID__
+using AndroidX.Emoji2.Text.FlatBuffer;
 using Android.Content;
 using Android.Database;
 using Android.Net;
@@ -27,7 +30,7 @@ public partial class MaskEditor : ContentPage
     private IDrawable _drawable;
     private HashSet<(int x, int y)> _markedPixels = new();
     private bool isClosedJacketActive = true;
-    private string imageFileName = "closed_jacket_mask.png";
+    private string imageFileName = $"masked_image_{DateTime.Now:yyyyMMdd_HHmmss}.png";
 
     public MaskEditor()
     {
@@ -93,19 +96,6 @@ public partial class MaskEditor : ContentPage
 
     private async Task<Stream> AddAlphaChanel(Stream imageStream)
     {
-        //// Load the image
-        //using var image = SKBitmap.Decode(imageStream);
-        //// Create a new image with an alpha channel
-        //using var imageWithAlpha = new SKBitmap(image.Width, image.Height, SKColorType.Rgba8888, SKAlphaType.Premul);
-        //// Copy the original image to the new image
-        //using var canvas = new SKCanvas(imageWithAlpha);
-        //canvas.DrawBitmap(image, 0, 0);
-        //// Save the new image to a stream
-        //var stream = new MemoryStream();
-        //imageWithAlpha.Encode(SKEncodedImageFormat.Png, 100).SaveTo(stream);
-        //stream.Position = 0;
-        //return stream;
-
         using var originalBitmap = SKBitmap.Decode(imageStream);
         var bitmapWithAlpha = new SKBitmap(originalBitmap.Width, originalBitmap.Height, true);
 
@@ -145,7 +135,6 @@ public partial class MaskEditor : ContentPage
         {
             _currentLine = new DrawingLine
             {
-                //Color = Colors.Gray.WithAlpha(0.8f),
                 Color = Colors.Gray,
                 Thickness = (float)BrushSlider.Value
             };
@@ -168,10 +157,10 @@ public partial class MaskEditor : ContentPage
                 _currentLine.Points.Add(touch);
                 DrawingView.Invalidate();
             }
-            else
-            {
-                throw new Exception("Touch is outside the DrawingView");
-            }
+            //else
+            //{
+            //    throw new Exception("Touch is outside the DrawingView");
+            //}
         }
     }
 
@@ -236,7 +225,8 @@ public partial class MaskEditor : ContentPage
                 Android.Content.ContentResolver resolver = context.ContentResolver;
                 Android.Content.ContentValues contentValues = new();
 
-                //await DeleteExistingImageAsync(resolver, imageFileName, directoryPath);
+                // Изтриване на предишната Макро снимка ако системата е андроид 11+
+                if(OperatingSystem.IsAndroidVersionAtLeast(30)) await DeleteExistingImageAsync(resolver, imageFileName, directoryPath);
 
                 // Създаване на нов запис
                 contentValues.Put(Android.Provider.MediaStore.IMediaColumns.DisplayName, imageFileName);
@@ -364,78 +354,20 @@ public partial class MaskEditor : ContentPage
 #endif
 
 
-    public async Task<byte[]> ConvertStreamToByteArrayAsync(Stream stream)
-    {
-        if (stream == null)
-            return null;
-
-        using (MemoryStream memoryStream = new MemoryStream())
-        {
-            await stream.CopyToAsync(memoryStream); // Асинхронно копиране
-            return memoryStream.ToArray();
-        }
-    }
-
     private async void ClosedJacketImageButton_Clicked(object sender, EventArgs e)
     {
-#if ANDROID
-        var result = await CheckAvailableMasksAndroid("closed_jacket_mask.png");
-
-        if(result)
-        {
-             bool conifirmation = await Application.Current.MainPage.DisplayAlert("Replace Confirmation", "Are you sure you want to replace the mask?", "Yes", "Cancel");
-
-             if(!conifirmation) return;
-        }
-        else
-        {
-            await DisplayAlert("Set Confirmation", "You will save a new mask image. ", "OK");
-        }
-#endif
-
-        SetActiveButton(sender as ImageButton);
-        imageFileName = "closed_jacket_mask.png";
+        await MacroMechanics(sender, AppConstants.CLOSED_JACKET_MASK);
     }
 
-    private void OpenJacketImageButton_Clicked(object sender, EventArgs e)
+
+    private async void OpenJacketImageButton_Clicked(object sender, EventArgs e)
     {
-        SetActiveButton(sender as ImageButton);
-        imageFileName = "open_jacket_mask.png";
+        await MacroMechanics(sender, AppConstants.OPEN_JACKET_MASK);
     }
+  
 
-    private void SetActiveButton(ImageButton activeButton)
-    {
-        // Списък с всички бутони, които трябва да се управляват
-        var allButtons = new List<ImageButton>
-        {
-            ClosedJacketImageButton,
-            OpenJacketImageButton
-            // Тук можете да добавите нови бутони в бъдеще
-        };
-        
-        // Премахваме ефектите от всички бутони
-        foreach (var button in allButtons)
-        {
-            button.BackgroundColor = Colors.Transparent;
-            button.BorderColor = Colors.Black;
-            button.BorderWidth = 3;
-            button.Scale = 1.0;
-        }
-        
-        // Прилагаме ефектите само на активния бутон
-        if (activeButton != null)
-        {
-            activeButton.BackgroundColor = Color.FromArgb("#E6F3FF");
-            activeButton.BorderColor = Color.FromArgb("#0066CC");
-            activeButton.BorderWidth = 4;
-            activeButton.Scale = 1.1;
-        }
-    }
-
-
-
-#if ANDROID
-    private async Task<bool> CheckAvailableMasksAndroid(string fileName)
+    // ------------------------------------------- SUPORT METHODS ----------------------------------------------------------------
+    private async Task<bool> CheckAvailableMasksAndroidAsync(string fileName)
     {
         try
         {
@@ -468,10 +400,90 @@ public partial class MaskEditor : ContentPage
             return false;
         }
     }
-#endif
+    private async Task MacroMechanics(object sender, string appConstants)
+    {
+        if (imageFileName != appConstants)
+        {
+            bool resultFromMessage = await MessageForMacroChangesAsync(appConstants);
+
+            if (!resultFromMessage) return;
+
+            SetActiveButton(sender as ImageButton);
+            imageFileName = appConstants;
+        }
+        else
+        {
+            SetActiveButton(new ImageButton());
+            imageFileName = $"masked_image_{DateTime.Now:yyyyMMdd_HHmmss}.png";
+        }
+    }
+    private async Task<bool> MessageForMacroChangesAsync(string macroImageFullName)
+    {
+        // Проверка за съществуваща вече маска към даденото Макро
+        var isMaskExist = await CheckAvailableMasksAndroidAsync(macroImageFullName);
+        if (isMaskExist)
+        {
+            // Питане за потвърждение дали да подмени маската или не с нова
+            bool confirmation = await DisplayAlert("Replace Confirmation", $"Are you sure you want to replace the {macroImageFullName.Replace('_', ' ').Remove(macroImageFullName.Length - 4)}?", "Yes", "Cancel");
+            return confirmation;
+        }
+        else
+        {
+            // Цъобщение че ще се запази като маска към незаето Макро
+            await DisplayAlert("Set Confirmation", "You will save a new mask image. ", "OK");
+            return true;
+        }         
+    }
+    private void SetActiveButton(ImageButton activeButton)
+    {
+        // Списък с всички бутони, които трябва да се управляват
+        var allButtons = new List<ImageButton>
+        {
+            ClosedJacketImageButton,
+            OpenJacketImageButton
+            // Тук можете да добавите нови бутони в бъдеще
+        };
+
+        // Премахваме ефектите от всички бутони
+        foreach (var button in allButtons)
+        {
+            button.BackgroundColor = Colors.Transparent;
+            button.BorderColor = Colors.Black;
+            button.BorderWidth = 4;
+            button.Scale = 1.0;
+        }
+
+        // Прилагаме ефектите само на активния бутон
+        if (activeButton != null && allButtons.Contains(activeButton))
+        {
+            activeButton.BackgroundColor = Color.FromArgb("#E6F3FF");
+            activeButton.BorderColor = Color.FromArgb("#0066CC");
+            activeButton.BorderWidth = 6;
+            activeButton.Scale = 1.3;
+        }
+    }
+
+
+
+    public async Task<byte[]> ConvertStreamToByteArrayAsync(Stream stream)
+    {
+        if (stream == null)
+            return null;
+
+        using (MemoryStream memoryStream = new MemoryStream())
+        {
+            await stream.CopyToAsync(memoryStream); // Асинхронно копиране
+            return memoryStream.ToArray();
+        }
+    }
 }
 
 
+
+
+
+
+// ----------------------------------------------- CLASS ---------------------------------------------------------------------
 public class DrawingViewDrawable : IDrawable
 {
     private readonly List<DrawingLine> _lines;
@@ -506,47 +518,6 @@ public class DrawingViewDrawable : IDrawable
             }
         }
     }
-
-    //public void DrawToCanvas(SKCanvas canvas, SKRect rect)
-    //{
-    //    foreach (var line in _lines)
-    //    {
-    //        if (line.Points.Count > 1)
-    //        {
-    //            using var paint = new SKPaint
-    //            {
-
-
-    //            // Replace the problematic line with the following
-    //                Color = line.Color.ToSKColor(),
-    //                StrokeWidth = line.Thickness,
-    //                StrokeCap = SKStrokeCap.Round,
-    //                StrokeJoin = SKStrokeJoin.Round,
-    //                Style = SKPaintStyle.Stroke
-    //            };
-
-    //            var path = new SKPath();
-    //            path.MoveTo(line.Points[0].X, line.Points[0].Y);
-
-    //            for (int i = 1; i < line.Points.Count; i++)
-    //            {
-    //                path.LineTo(line.Points[i].X, line.Points[i].Y);
-    //            }
-    //            canvas.DrawPath(path, paint);
-    //        }
-    //    }
-    //}
 }
 
-//internal class MyPhotosPermissionService : BasePlatformPermission
-//{
-//   public override (string androidPermission, bool isRuntime)[] RequiredPermissions => 
-//        new List<(string androidPermission, bool isRuntime)>
-//   {
-//        ("android.permission.READ_EXTERNAL_STORAGE", true),
-//        ("android.permission.WRITE_EXTERNAL_STORAGE", true)
-//       //(Android.Manifest.Permission.ReadExternalStorage, true),
-//       //(Android.Manifest.Permission.WriteExternalStorage, true)
-//   }.ToArray();
-//}
 

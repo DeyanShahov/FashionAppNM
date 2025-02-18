@@ -1,3 +1,4 @@
+using Microsoft.Maui.Controls.PlatformConfiguration;
 using System.Text.RegularExpressions;
 #if __ANDROID__
 using Android.Content;
@@ -17,6 +18,9 @@ public partial class ImageDetailPage : ContentPage
         _imageUri = imageUri;
         // Задаваме източник на изображението
         DetailImage.Source = ImageSource.FromUri(new System.Uri(_imageUri));
+#if ANDROID
+        ImageName.Text = Path.GetFileName(GetRealPathFromUri(Android.App.Application.Context.ContentResolver, _imageUri));
+#endif
     }
 
     private async void CloseButton_Clicked(object sender, EventArgs e)

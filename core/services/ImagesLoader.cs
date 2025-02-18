@@ -74,7 +74,7 @@ namespace FashionApp.core.services
                 setErrorMessage("Error: Storage permission is required to load images.");
                 return;
             }
-        
+
             var images = new List<string>();
         
             if (OperatingSystem.IsAndroidVersionAtLeast(29))

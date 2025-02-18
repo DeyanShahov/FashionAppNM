@@ -554,6 +554,18 @@ public partial class CombineImages : ContentPage
 #elif ANDROID
     private async void CheckAvailableMasksAndroid()
     {
+        var testPermission = await Permissions.CheckStatusAsync<Permissions.StorageRead>();
+        if (Permissions.ShouldShowRationale<Permissions.StorageRead>())
+        {
+            await DisplayAlert("Error", "Storage permission is required to access storage.", "OK");
+        }
+        testPermission = await Permissions.RequestAsync<Permissions.StorageRead>();
+        if (testPermission != PermissionStatus.Granted)
+        {
+            await DisplayAlert("Error", "Storage permission is required to load images.", "OK");
+            return;
+        }
+
         try 
         {
             var fileChecker = App.Current.Handler.MauiContext.Services.GetService<IFileChecker>();
