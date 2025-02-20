@@ -28,21 +28,15 @@ public partial class MaskEditor : ContentPage
     private List<DrawingLine> _lines = new();
     private DrawingLine _currentLine;
     private IDrawable _drawable;
-    private HashSet<(int x, int y)> _markedPixels = new();
-    private bool isClosedJacketActive = true;
+    //private HashSet<(int x, int y)> _markedPixels = new();
     private string imageFileName = $"masked_image_{DateTime.Now:yyyyMMdd_HHmmss}.png";
 
     public MaskEditor()
     {
         InitializeComponent();
-        _drawable = new DrawingViewDrawable(_lines, _markedPixels);
+        //_drawable = new DrawingViewDrawable(_lines, _markedPixels);
+        _drawable = new DrawingViewDrawable(_lines);
         DrawingView.Drawable = _drawable;
-        //SetActiveButton(true); // Задаваме начално състояние
-        MessagingCenter.Subscribe<CameraModalPage, Stream>(this, "ImageCaptured", (sender, image) =>
-        {
-            SelectedImage.Source = ImageSource.FromStream(() => image);
-            SelectedImage.IsVisible = true;
-        });
 
         MyCameraView.StopCameraPreview();
     }
@@ -100,8 +94,6 @@ public partial class MaskEditor : ContentPage
 
         CameraPanel.IsVisible = false;
         CameraPanel.IsEnabled = false;
-
-
     }
 
     private async Task<Stream> AddAlphaChanel(Stream imageStream)
@@ -131,9 +123,7 @@ public partial class MaskEditor : ContentPage
 
             DrawingView.TranslationX = SelectedImage.X;
             DrawingView.TranslationY = SelectedImage.Y;
-        }
-
-       
+        }     
     }
 
     void OnStartInteraction(object sender, TouchEventArgs e)
@@ -166,11 +156,7 @@ public partial class MaskEditor : ContentPage
             {
                 _currentLine.Points.Add(touch);
                 DrawingView.Invalidate();
-            }
-            //else
-            //{
-            //    throw new Exception("Touch is outside the DrawingView");
-            //}
+            }           
         }
     }
 
@@ -182,7 +168,7 @@ public partial class MaskEditor : ContentPage
     void OnClearClicked(object sender, EventArgs e)
     {
         _lines.Clear();
-        _markedPixels.Clear(); // Изчистваме и маркираните пиксели
+        //_markedPixels.Clear(); // Изчистваме и маркираните пиксели
         DrawingView.Invalidate();
     }
 
@@ -232,18 +218,18 @@ public partial class MaskEditor : ContentPage
 
             if (OperatingSystem.IsAndroidVersionAtLeast(29))
             {
-                Android.Content.ContentResolver resolver = context.ContentResolver;
-                Android.Content.ContentValues contentValues = new();
+                ContentResolver resolver = context.ContentResolver;
+                ContentValues contentValues = new();
 
                 // Изтриване на предишната Макро снимка ако системата е андроид 11+
                 if(OperatingSystem.IsAndroidVersionAtLeast(30)) await DeleteExistingImageAsync(resolver, imageFileName, directoryPath);
 
                 // Създаване на нов запис
-                contentValues.Put(Android.Provider.MediaStore.IMediaColumns.DisplayName, imageFileName);
-                contentValues.Put(Android.Provider.MediaStore.IMediaColumns.MimeType, "image/png");
-                contentValues.Put(Android.Provider.MediaStore.IMediaColumns.RelativePath, directoryPath);
+                contentValues.Put(MediaStore.IMediaColumns.DisplayName, imageFileName);
+                contentValues.Put(MediaStore.IMediaColumns.MimeType, "image/png");
+                contentValues.Put(MediaStore.IMediaColumns.RelativePath, directoryPath);
 
-                Android.Net.Uri? imageUri = resolver.Insert(Android.Provider.MediaStore.Images.Media.ExternalContentUri, contentValues);
+                Android.Net.Uri? imageUri = resolver.Insert(MediaStore.Images.Media.ExternalContentUri, contentValues);
                 if (imageUri == null)
                 {
                     await DisplayAlert("Error", "Failed to create image file.", "OK");
@@ -267,6 +253,7 @@ public partial class MaskEditor : ContentPage
             else
             {
                 // Handle older Android versions if needed
+                await DisplayAlert("Error", "OS is invalid!", "OK");
             }
 #endif
         }
@@ -286,11 +273,11 @@ public partial class MaskEditor : ContentPage
 #if ANDROID
     private async Task DeleteExistingImageAsync(ContentResolver resolver, string imageFileName, string directoryPath)
     {
-        string[] projection = { IBaseColumns.Id, MediaStore.MediaColumns.DisplayName };
+        string[] projection = { IBaseColumns.Id, MediaStore.IMediaColumns.DisplayName };
         Android.Net.Uri collection = MediaStore.Images.Media.ExternalContentUri;
         
         // Добавяне на условие за търсене по fileName
-        string selection = $"{MediaStore.MediaColumns.DisplayName} = ?";
+        string selection = $"{MediaStore.IMediaColumns.DisplayName} = ?";
         string[] selectionArgs = { imageFileName };
         
         var cursor = resolver.Query(collection, projection, selection, selectionArgs, null);
@@ -301,65 +288,29 @@ public partial class MaskEditor : ContentPage
             Android.Net.Uri deleteUri = ContentUris.WithAppendedId(MediaStore.Images.Media.ExternalContentUri, imageId);
             int deletedRows = resolver.Delete(deleteUri, null, null);
             if (deletedRows > 0)
-            {
-                await DisplayAlert("Succes", $"{imageFileName} dellet succesful.", "OK");
-            }
+                await DisplayAlert("Success", $"{imageFileName} delete successful.", "OK");
             else
-            {
-                //Console.WriteLine("Failed to delete image. It might not be owned by the app.");
                 await DisplayAlert("Error", "Failed to delete image. It might not be owned by the app.", "OK");
-            }
-            //Console.WriteLine($"Image ID: {imageId}");
+        
         }
         cursor?.Close();
 
-        if (true)
-        {
-            // Scoped Storage (Android 10+) - само файлове, създадени от приложението, могат да се изтриват
-            //string selection = $"{MediaStore.MediaColumns.DisplayName} = ? AND {MediaStore.MediaColumns.RelativePath} = ?";
-            //string[] selectionArgs = new string[] { imageFileName, directoryPath };
+        //if (OperatingSystem.IsAndroidVersionAtLeast(29))
+        //{
+           
+        //}
+        //else
+        //{
+        //    // Android 9 или по-старо - използвай директно File API
+        //    string filePath = Path.Combine(Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryPictures)?.AbsolutePath ?? "", directoryPath, imageFileName);
+        //    Java.IO.File file = new Java.IO.File(filePath);
     
-            //Android.Net.Uri collection = MediaStore.Images.Media.ExternalContentUri;
-            //Android.Database.ICursor? cursor = resolver.Query(collection, new string[] { IBaseColumns.Id }, selection, selectionArgs, null);
-    
-            //if (cursor != null && cursor.MoveToFirst())
-            //{
-            //    int idColumn = cursor.GetColumnIndex(IBaseColumns.Id);
-            //    long id = cursor.GetLong(idColumn);
-            //    Android.Net.Uri deleteUri = ContentUris.WithAppendedId(MediaStore.Images.Media.ExternalContentUri, id);
-    
-            //    try
-            //    {
-            //        int rowsDeleted = resolver.Delete(deleteUri, null, null);
-            //        if (rowsDeleted > 0)
-            //        {
-            //            await DisplayAlert("Succes", $"{imageFileName} dellet succesful.", "OK");
-            //        }
-            //        else
-            //        {
-            //            await DisplayAlert("Error", $"{imageFileName} dont delete", "OK");
-            //        }
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        await DisplayAlert("Error", $"Error on delete: {ex.Message}", "OK");
-            //    }
-            //}
-    
-            //cursor?.Close();
-        }
-        else
-        {
-            // Android 9 или по-старо - използвай директно File API
-            string filePath = Path.Combine(Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryPictures)?.AbsolutePath ?? "", directoryPath, imageFileName);
-            Java.IO.File file = new Java.IO.File(filePath);
-    
-            if (file.Exists())
-            {
-                bool deleted = file.Delete();
-                Console.WriteLine(deleted ? $"Файлът {imageFileName} беше изтрит." : $"Неуспешно изтриване на {imageFileName}.");
-            }
-        }
+        //    if (file.Exists())
+        //    {
+        //        bool deleted = file.Delete();
+        //        Console.WriteLine(deleted ? $"Файлът {imageFileName} беше изтрит." : $"Неуспешно изтриване на {imageFileName}.");
+        //    }
+        //}
     }
 #endif
 
@@ -374,31 +325,6 @@ public partial class MaskEditor : ContentPage
     {
         await MacroMechanics(sender, AppConstants.OPEN_JACKET_MASK);
     }
-
-    //private void MyCamera_MediaCaptured(object sender, MediaCapturedEventArgs e)
-    //{
-    //    if (Dispatcher.IsDispatchRequired)
-    //    {
-    //        Dispatcher.Dispatch(() => SelectedImage.Source = ImageSource.FromStream(() => e.Media));
-    //        return;
-    //    }
-
-    //    SelectedImage.Source = ImageSource.FromStream(() => e.Media);
-    //}
-
-    //private async void CameraCaptureButton_Clicked(object sender, EventArgs e)
-    //{
-    //    await MyCamera.CaptureImage(CancellationToken.None);
-    //    SelectedImage.IsVisible = true;
-    //    SelectedImage.HeightRequest = 200;
-    //}
-
-    private async void OnOpenCameraClicked(object sender, EventArgs e)
-    {
-        var cameraPage = new CameraModalPage();
-        await Navigation.PushModalAsync(cameraPage);
-    }
-
 
     private void PanelButton_Clicked(object sender, EventArgs e)
     {
@@ -457,7 +383,6 @@ public partial class MaskEditor : ContentPage
             MyCameraView.IsVisible = true;
         }
     }
-
 
     private async void OnCaptureClicked(object sender, EventArgs e)
     {
@@ -542,8 +467,6 @@ public partial class MaskEditor : ContentPage
         }
     }
 
-
-
     public async Task<byte[]> ConvertStreamToByteArrayAsync(Stream stream)
     {
         if (stream == null)
@@ -558,20 +481,16 @@ public partial class MaskEditor : ContentPage
 }
 
 
-
-
-
-
 // ----------------------------------------------- CLASS ---------------------------------------------------------------------
 public class DrawingViewDrawable : IDrawable
 {
     private readonly List<DrawingLine> _lines;
-    private readonly HashSet<(int x, int y)> _markedPixels;
+    //private readonly HashSet<(int x, int y)> _markedPixels;
 
-    public DrawingViewDrawable(List<DrawingLine> lines, HashSet<(int x, int y)> markedPixels)
+    public DrawingViewDrawable(List<DrawingLine> lines)
     {
         _lines = lines;
-        _markedPixels = markedPixels;
+        //_markedPixels = markedPixels;
     }
 
     public void Draw(ICanvas canvas, RectF dirtyRect)

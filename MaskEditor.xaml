@@ -26,26 +26,26 @@
                 Clicked="OnSelectImageClicked"
                 HorizontalOptions="Center"/>
 
-            <Button 
-                x:Name="OpenCameraButton"
-                Text="Open Camera"
-                Clicked="OnOpenCameraClicked"
-                HorizontalOptions="Center"/>
-
             <Button
                 x:Name="PanelButton"
                 Text="Open Panel"
                 Clicked="PanelButton_Clicked"
                 HorizontalOptions="Center"/>
 
-            <Frame x:Name="CameraPanel" IsVisible="False" IsEnabled="False" Padding="20" BackgroundColor="LightGray" CornerRadius="10">
+            <Frame 
+                x:Name="CameraPanel" 
+                IsVisible="False" 
+                IsEnabled="False" 
+                Padding="20" 
+                BackgroundColor="LightGray" 
+                CornerRadius="10">
                 <VerticalStackLayout Spacing="10">
                     <Button 
-     Text="Capture"
-     Clicked="OnCaptureClicked" />
+                        Text="Capture"
+                        Clicked="OnCaptureClicked" />
                     <Button 
-Text="Затвори"
-Clicked="HidePanelCommand"/>
+                        Text="Затвори"
+                        Clicked="HidePanelCommand"/>
                     <toolkit:CameraView
                         x:Name="MyCameraView"                       
                         MediaCaptured="MyCameraView_MediaCaptured"  
@@ -54,61 +54,9 @@ Clicked="HidePanelCommand"/>
                         SelectedCamera="{Binding SelectedCamera}"
                         ZoomFactor="{Binding CurrentZoom}"
                         CameraFlashMode="{Binding FlashMode}" />
-                  
+
                 </VerticalStackLayout>
             </Frame>
-
-            <!--<Border 
-                x:Name="CameraPanel"
-                BackgroundColor="LightGray"
-                Padding="20"
-                StrokeThickness="2"
-                Stroke="Black"
-                VerticalOptions="FillAndExpand"
-                HorizontalOptions="FillAndExpand">
-                <VerticalStackLayout>
-                    <Button 
-                        Text="Capture"
-                        Clicked="OnCaptureClicked" />
-                    <Button 
-                        Text="Затвори"
-                        Clicked="HidePanelCommand"/>
-                    <toolkit:CameraView 
-            x:Name="MyCameraView" 
-            MediaCaptured="MyCameraView_MediaCaptured"  
-            HeightRequest="200"
-            VerticalOptions="FillAndExpand"
-            HorizontalOptions="FillAndExpand" 
-            IsVisible="False"/>                
-                
-                </VerticalStackLayout>
-            </Border>-->
-
-            <!-- Пример за команда за заснемане --><!--
-            <Button
-            Grid.Column="0"
-            Grid.Row="2"
-            Command="{Binding CaptureImageCommand, Source={x:Reference MyCameraView}}"
-            Text="Заснеми изображение" />
-
-            <toolkit:CameraView 
-            x:Name="MyCameraView"
-            Grid.ColumnSpan="3" 
-            Grid.Row="0"
-            SelectedCamera="{Binding SelectedCamera}"
-            ZoomFactor="{Binding CurrentZoom}"
-            CameraFlashMode="{Binding FlashMode}" />
-
-            --><!-- Контрол за зум --><!--
-            <Slider 
-            Grid.Column="0"
-            Grid.Row="1"
-            Value="{Binding CurrentZoom}"
-            Maximum="{Binding SelectedCamera.MaximumZoomFactor, FallbackValue=1}"
-            Minimum="{Binding SelectedCamera.MinimumZoomFactor, FallbackValue=1}" />-->
-
-           
-
         </VerticalStackLayout>
 
         <Grid Grid.Row="1" x:Name="ImageContainer" HorizontalOptions="Center" VerticalOptions="Center">
