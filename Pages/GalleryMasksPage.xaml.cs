@@ -101,19 +101,27 @@ public partial class GalleryMasksPage : ContentPage
         }
     }
 
-#if ANDROID
+
     private async void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
     {
         if (sender is Image tappedImage && tappedImage.BindingContext is string imageUri)
         {
+#if ANDROID
+            var contentResolver = Android.App.Application.Context.ContentResolver;
+            if (contentResolver != null)
+            {
+                selectedImageUri = imageUri;
+                var getImageName = GetRealPathFromUri(contentResolver, imageUri);
+                await singleImageLoader.LoadSingleImageAsync(getImageName);
+            }
+#else
             selectedImageUri = imageUri;
-            //await Navigation.PushModalAsync(new ImageDetailPage(imageUri));
-            var getImageName = GetRealPathFromUri(Android.App.Application.Context.ContentResolver, imageUri);
-            await singleImageLoader.LoadSingleImageAsync(getImageName);
+            await singleImageLoader.LoadSingleImageAsync(imageUri);
+#endif
         }
     }
 
-
+#if ANDROID
     public string GetRealPathFromUri(ContentResolver contentResolver, string imageUri)
     {
         // Проверка дали URI-то започва с "content://"

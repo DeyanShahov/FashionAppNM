@@ -74,7 +74,7 @@
                             WidthRequest="120">
                                 <Image.GestureRecognizers>
                                     <TapGestureRecognizer 
-                                    Tapped="TapGestureRecognizer_Tapped"/>
+                                        Tapped="TapGestureRecognizer_Tapped"/>
                                 </Image.GestureRecognizers>
                             </Image>
                         </Frame>

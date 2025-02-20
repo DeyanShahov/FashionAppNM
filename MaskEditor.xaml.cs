@@ -38,6 +38,13 @@ public partial class MaskEditor : ContentPage
         _drawable = new DrawingViewDrawable(_lines, _markedPixels);
         DrawingView.Drawable = _drawable;
         //SetActiveButton(true); // Задаваме начално състояние
+        MessagingCenter.Subscribe<CameraModalPage, Stream>(this, "ImageCaptured", (sender, image) =>
+        {
+            SelectedImage.Source = ImageSource.FromStream(() => image);
+            SelectedImage.IsVisible = true;
+        });
+
+        MyCameraView.StopCameraPreview();
     }
 
     private async void OnBackButtonClicked(object sender, EventArgs e)
@@ -61,26 +68,7 @@ public partial class MaskEditor : ContentPage
                     result.FileName.EndsWith("png", StringComparison.OrdinalIgnoreCase))
                 {
                     var stream = await result.OpenReadAsync();
-                    var resizedImageResult = await ImageStreamResize.ResizeImageStream(stream, 500, 700); // Преоразмеряване на изображението
-
-                    // Convert the image to include an alpha channel
-                    var imageWithAlpha = await AddAlphaChanel(resizedImageResult.ResizedStream);
-
-                    //SelectedImage.Source = ImageSource.FromStream(() => resizedImageResult.ResizedStream);
-                    SelectedImage.Source = ImageSource.FromStream(() => imageWithAlpha);
-                    SelectedImage.WidthRequest = resizedImageResult.Width;
-                    SelectedImage.HeightRequest = resizedImageResult.Height;
-
-                    //DrawingView.HeightRequest = SelectedImage.Height;
-                    //DrawingView.WidthRequest = SelectedImage.Width;
-
-                    //DrawingView.TranslationX = SelectedImage.X;
-                    //DrawingView.TranslationY = SelectedImage.Y;
-
-                    SelectedImage.IsVisible = true;
-                    DrawingView.IsVisible = true;
-                    DrawingTools.IsVisible = true;
-                    DrawingBottons.IsVisible = true;
+                    await ProcessSelectedImage(stream);
                 }
                 else
                 {
@@ -92,6 +80,28 @@ public partial class MaskEditor : ContentPage
         {
             await DisplayAlert("Error", $"An error occurred: {ex.Message}", "OK");
         }
+    }
+
+    private async Task ProcessSelectedImage(Stream? stream)
+    {
+        var resizedImageResult = await ImageStreamResize.ResizeImageStream(stream, 500, 700); // Преоразмеряване на изображението
+
+        // Convert the image to include an alpha channel
+        var imageWithAlpha = await AddAlphaChanel(resizedImageResult.ResizedStream);
+
+        SelectedImage.Source = ImageSource.FromStream(() => imageWithAlpha);
+        SelectedImage.WidthRequest = resizedImageResult.Width;
+        SelectedImage.HeightRequest = resizedImageResult.Height;
+
+        SelectedImage.IsVisible = true;
+        DrawingView.IsVisible = true;
+        DrawingTools.IsVisible = true;
+        DrawingBottons.IsVisible = true;
+
+        CameraPanel.IsVisible = false;
+        CameraPanel.IsEnabled = false;
+
+
     }
 
     private async Task<Stream> AddAlphaChanel(Stream imageStream)
@@ -364,39 +374,108 @@ public partial class MaskEditor : ContentPage
     {
         await MacroMechanics(sender, AppConstants.OPEN_JACKET_MASK);
     }
-  
+
+    //private void MyCamera_MediaCaptured(object sender, MediaCapturedEventArgs e)
+    //{
+    //    if (Dispatcher.IsDispatchRequired)
+    //    {
+    //        Dispatcher.Dispatch(() => SelectedImage.Source = ImageSource.FromStream(() => e.Media));
+    //        return;
+    //    }
+
+    //    SelectedImage.Source = ImageSource.FromStream(() => e.Media);
+    //}
+
+    //private async void CameraCaptureButton_Clicked(object sender, EventArgs e)
+    //{
+    //    await MyCamera.CaptureImage(CancellationToken.None);
+    //    SelectedImage.IsVisible = true;
+    //    SelectedImage.HeightRequest = 200;
+    //}
+
+    private async void OnOpenCameraClicked(object sender, EventArgs e)
+    {
+        var cameraPage = new CameraModalPage();
+        await Navigation.PushModalAsync(cameraPage);
+    }
+
+
+    private void PanelButton_Clicked(object sender, EventArgs e)
+    {
+        CameraPanel.IsVisible = true;
+        CameraPanel.IsEnabled = true;
+        StartCamera();
+    }
+
+    private void HidePanelCommand(object sender, EventArgs e)
+    {
+        CameraPanel.IsVisible = false;
+        CameraPanel.IsEnabled = false;
+
+        MyCameraView.StopCameraPreview();
+    }
+
+    private async void MyCameraView_MediaCaptured(object sender, CommunityToolkit.Maui.Views.MediaCapturedEventArgs e)
+    { 
+        if (e?.Media == null) return;  // Логвайте или обработете грешката, ако няма наличен медия поток.
+
+        try
+        {       
+            byte[] imageBuffer;  // Копиране на съдържанието на входния поток в буфер, за да избегнем затварянето му.
+            using (var tempStream = new MemoryStream())
+            {
+                await e.Media.CopyToAsync(tempStream);
+                imageBuffer = tempStream.ToArray();
+            }
+         
+            async Task ProcessImageAsync() // Функция за обработка на изображението с новосъздаден MemoryStream.
+            {
+                using (var ms = new MemoryStream(imageBuffer))
+                {
+                    ms.Position = 0;
+                    await ProcessSelectedImage(ms);
+                }
+            }
+
+            // Ако Dispatcher изисква превключване, използваме Dispatch.
+            if (Dispatcher.IsDispatchRequired) Dispatcher.Dispatch(async () => await ProcessImageAsync());
+            else await ProcessImageAsync();
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Error", $"Error processing captured media: {ex.Message}", "OK");
+        }
+    }
+
+    private async void StartCamera()
+    {
+        if (MyCameraView != null)
+        {
+            MyCameraView.StopCameraPreview(); // Ensure any existing camera instance is shut down
+            await MyCameraView.StartCameraPreview(CancellationToken.None); // Start the camera
+
+            MyCameraView.IsVisible = true;
+        }
+    }
+
+
+    private async void OnCaptureClicked(object sender, EventArgs e)
+    {
+        await MyCameraView.CaptureImage(CancellationToken.None);
+    }
 
     // ------------------------------------------- SUPORT METHODS ----------------------------------------------------------------
     private async Task<bool> CheckAvailableMasksAndroidAsync(string fileName)
     {
         try
         {
-            var fileChecker = App.Current.Handler.MauiContext.Services.GetService<IFileChecker>();
-
+            var fileChecker = App.Current?.Handler.MauiContext?.Services.GetService<IFileChecker>();
             var fileExists = await fileChecker.CheckFileExistsAsync(fileName);
-            if (fileExists)
-            {
-                return true;
-                //ClosedJacketImageButton.IsEnabled = true;
-                //ClosedJacketImageButton.IsVisible = true;
-            }
-            else
-            {
-                return false;
-            }
-
-
-            //fileExists = await fileChecker.CheckFileExistsAsync("open_jacket_mask.png");
-            //if (fileExists)
-            //{
-            //    OpenJacketImageButton.IsEnabled = true;
-            //    OpenJacketImageButton.IsVisible = true;
-            //}
+            return fileExists;
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error checking masks: {ex.Message}");
-            await Application.Current.MainPage.DisplayAlert("Error checking masks", ex.Message, "Ok");
+            await DisplayAlert("Error checking masks", ex.Message, "Ok");
             return false;
         }
     }
