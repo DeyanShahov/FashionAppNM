@@ -34,33 +34,37 @@ public partial class ImageDetailPage : ContentPage
         {
             bool conifirmation = await Application.Current.MainPage.DisplayAlert("Delete Confirmation", "Are you sure you want to delete?", "Yes", "Cancel");
 
-            if (conifirmation)
-            {
+            if (!conifirmation) return;
 
-                //Ако съм получил потвърждение за изтриване .. кода тука ще се изпълни
-            }
 #if __ANDROID__
-                // Проверка за разрешение
-                if (!await CheckAndRequestStoragePermission())
-                {
-                    await DisplayAlert("Error", "Storage permission is required to delete the image.", "OK");
-                    return;
-                }
+            // Проверка за разрешение
+            if (!await CheckAndRequestStoragePermission())
+            {
+                await DisplayAlert("Error", "Storage permission is required to delete the image.", "OK");
+                return;
+            }
 
-                string realPath = GetRealPathFromUri(Android.App.Application.Context.ContentResolver, _imageUri);
+            string realPath = GetRealPathFromUri(Android.App.Application.Context.ContentResolver, _imageUri);
 
-                LoadAndroidModernImages(realPath);
+            bool isDeleted =  DeleteAndroidModernImage(realPath);
 
-                //if (realPath != null && File.Exists(realPath))
-                //{
-                //    File.Delete(realPath);
-                //    await DisplayAlert("Deleted", "Image deleted successfully.", "OK");
-                //    await Navigation.PopModalAsync();
-                //}
-                //else
-                //{
-                //    await DisplayAlert("Error", "File does not exist.", "OK");
-                //}
+            if(isDeleted)
+            {
+                await DisplayAlert("Success", $"Delete selected photo successful.", "OK");
+                await Navigation.PopModalAsync();
+
+            }
+
+            //if (realPath != null && File.Exists(realPath))
+            //{
+            //    File.Delete(realPath);
+            //    await DisplayAlert("Deleted", "Image deleted successfully.", "OK");
+            //    await Navigation.PopModalAsync();
+            //}
+            //else
+            //{
+            //    await DisplayAlert("Error", "File does not exist.", "OK");
+            //}
 #endif
 
             // Проверяваме дали _imageUri е локален файл (с префикс "file://")
@@ -144,7 +148,7 @@ public partial class ImageDetailPage : ContentPage
     }
 
 #if __ANDROID__
-        private void LoadAndroidModernImages(string pathToFile)
+        private bool DeleteAndroidModernImage(string pathToFile)
         {
             if (OperatingSystem.IsAndroidVersionAtLeast(29))
             {
@@ -167,7 +171,7 @@ public partial class ImageDetailPage : ContentPage
                 if (cursor == null)
                 {
                     //setErrorMessage("Error: Cursor is null. Query failed.");
-                    return;
+                    return false;
                 }
                 if (cursor.MoveToFirst())
                 {
@@ -178,10 +182,12 @@ public partial class ImageDetailPage : ContentPage
                         id);
 
                     // Изтриване на изображението от MediaStore
-                    Android.App.Application.Context.ContentResolver.Delete(contentUri, null, null);
+                    var result = Android.App.Application.Context.ContentResolver.Delete(contentUri, null, null);
+                    return result != 0;
                 }
                 else
                 {
+                    return false;
                     //setErrorMessage($"Error: File not found in MediaStore.");
                 }
             }
@@ -193,11 +199,14 @@ public partial class ImageDetailPage : ContentPage
                 if (File.Exists(filePath))
                 {
                     File.Delete(filePath);
+                    return true;
                 }
                 else
                 {
+                    return true;
                     //setErrorMessage($"Error: File not found in directory: {directory}");
                 }
+                
             }
         }
 #endif

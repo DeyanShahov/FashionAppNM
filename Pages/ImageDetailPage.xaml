@@ -10,26 +10,38 @@
             x:Name="DetailImage" 
             Aspect="AspectFill" />
         <!-- Overlay с бутоните Delete и Close -->
-        <StackLayout 
+        <!-- Top overlay with image name -->
+        <StackLayout
+                Orientation="Horizontal"
+                HorizontalOptions="FillAndExpand"
+                VerticalOptions="Start"
+                BackgroundColor="#80000000"
+                Padding="10"
+                Spacing="20">
+            <Label
+                x:Name="ImageName"
+                TextColor="White"
+                BackgroundColor="Transparent"
+                VerticalTextAlignment="Center"
+                HorizontalTextAlignment="Center"
+                HorizontalOptions="CenterAndExpand" />
+        </StackLayout>
+
+        <!-- Bottom overlay with buttons -->
+        <StackLayout
                 Orientation="Horizontal"
                 HorizontalOptions="FillAndExpand"
                 VerticalOptions="End"
                 BackgroundColor="#80000000"
                 Padding="10"
                 Spacing="20">
-            <Button 
+            <Button
                 Text="Delete"
                 TextColor="White"
                 BackgroundColor="Transparent"
+                HorizontalOptions="Start"
                 Clicked="DeleteButton_Clicked" />
-            <Label
-                x:Name="ImageName"
-                TextColor="White"
-                BackgroundColor="Transparent"
-                VerticalTextAlignment="Center"
-                HorizontalTextAlignment="Center" 
-                Margin="20,0,0,0"/>
-            <Button 
+            <Button
                 Text="Close"
                 TextColor="White"
                 BackgroundColor="Transparent"

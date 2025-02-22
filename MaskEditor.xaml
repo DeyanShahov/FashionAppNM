@@ -5,12 +5,47 @@
              x:Class="FashionApp.MaskEditor"
              Title="Editor Page"
              BackgroundColor="LightGray">
+
     <Grid RowDefinitions="Auto,*,Auto">
-        <VerticalStackLayout Grid.Row="0"
+        <Grid x:Name="CameraPanel" 
+              IsVisible="False" 
+              IsEnabled="False" >
+            <!-- Camera Preview -->
+            <Frame x:Name="test" Grid.Row="0" BackgroundColor="Gray" CornerRadius="0" BorderColor="Black">
+                <!-- Here will be the CameraView when implemented -->
+                <toolkit:CameraView
+                    x:Name="MyCameraView"       
+                    HorizontalOptions="CenterAndExpand"
+                    HeightRequest="600"
+                    SelectedCamera="{Binding SelectedCamera}"
+                    ZoomFactor="{Binding CurrentZoom}"
+                    CameraFlashMode="{Binding FlashMode}" />
+            </Frame>
+
+            <!-- Zoom Slider -->
+            <!--<Slider Grid.Row="1" Minimum="1" Maximum="10" Value="1" x:Name="ZoomSlider"/>-->
+
+            <!-- Bottom Controls -->
+            <Grid Grid.Row="2" ColumnDefinitions="*,Auto,*" Padding="10" VerticalOptions="End">
+                <Frame Grid.Column="1" HeightRequest="80" WidthRequest="80" CornerRadius="40" HorizontalOptions="Center">
+                    <Button x:Name="Capture" Text="REC" BackgroundColor="DarkRed" TextColor="White" HeightRequest="40" WidthRequest="100" Clicked="OnCaptureClicked"/>
+
+                </Frame>
+
+                <Frame  WidthRequest="120" HeightRequest="100" BackgroundColor="Black" HorizontalOptions="Start" ScaleY="0.7" ScaleX="0.7">
+
+                    <Button Text="CLOSE" TextColor="White" VerticalOptions="Center" HorizontalOptions="Center"  Clicked="HidePanelCommand"/>
+                </Frame>
+            </Grid>
+        </Grid>
+
+
+        <VerticalStackLayout  
+            x:Name="Menu1"
+            Grid.Row="0"
             Spacing="10"
             Padding="30,10">
             <Label
-                x:Name="ImageParams"
                 Text="Image paramaeters"
                 VerticalOptions="Center"
                 HorizontalOptions="Center" />
@@ -28,38 +63,12 @@
 
             <Button
                 x:Name="PanelButton"
-                Text="Open Panel"
+                Text="Open Cam"
                 Clicked="PanelButton_Clicked"
                 HorizontalOptions="Center"/>
-
-            <Frame 
-                x:Name="CameraPanel" 
-                IsVisible="False" 
-                IsEnabled="False" 
-                Padding="20" 
-                BackgroundColor="LightGray" 
-                CornerRadius="10">
-                <VerticalStackLayout Spacing="10">
-                    <Button 
-                        Text="Capture"
-                        Clicked="OnCaptureClicked" />
-                    <Button 
-                        Text="Затвори"
-                        Clicked="HidePanelCommand"/>
-                    <toolkit:CameraView
-                        x:Name="MyCameraView"                       
-                        MediaCaptured="MyCameraView_MediaCaptured"  
-                        HeightRequest="300"
-                        WidthRequest="300"
-                        SelectedCamera="{Binding SelectedCamera}"
-                        ZoomFactor="{Binding CurrentZoom}"
-                        CameraFlashMode="{Binding FlashMode}" />
-
-                </VerticalStackLayout>
-            </Frame>
         </VerticalStackLayout>
 
-        <Grid Grid.Row="1" x:Name="ImageContainer" HorizontalOptions="Center" VerticalOptions="Center">
+        <Grid  Grid.Row="1" x:Name="ImageContainer" HorizontalOptions="Center" VerticalOptions="Center">
             <Image
                 x:Name="SelectedImage"
                 Aspect="AspectFit"
@@ -75,7 +84,7 @@
                 VerticalOptions="Start"/>
         </Grid>
 
-        <Grid Grid.Row="1">
+        <Grid  x:Name="Menu2" Grid.Row="1">
             <VerticalStackLayout 
                 Spacing="20" 
                 HorizontalOptions="End"
@@ -105,7 +114,9 @@
             </VerticalStackLayout>
         </Grid>
 
-        <VerticalStackLayout Grid.Row="2"
+        <VerticalStackLayout 
+             x:Name="Menu3"
+            Grid.Row="2"
             Spacing="10"
             Padding="30,10">
 

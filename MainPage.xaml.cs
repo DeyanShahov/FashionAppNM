@@ -209,11 +209,11 @@ namespace FashionApp
         private async void CombineImagesButton_Clicked(object sender, EventArgs e)
             => await Navigation.PushAsync(new CombineImages());
 
-        private async void OnNavigateClickedToWeb(object sender, EventArgs e)
-            => await Navigation.PushAsync(new WebViewPage());
+        //private async void OnNavigateClickedToWeb(object sender, EventArgs e)
+        //    => await Navigation.PushAsync(new WebViewPage());
 
-        private async void OnNavigateClickedToMaskJS(object sender, EventArgs e)
-            => await Navigation.PushAsync(new MaskJS());
+        //private async void OnNavigateClickedToMaskJS(object sender, EventArgs e)
+        //    => await Navigation.PushAsync(new MaskJS());
 
         private void ToggleLoading(bool isLoading)
         {

@@ -1,116 +1,156 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="FashionApp.CombineImages"
              Title="Combine Images"
              BackgroundColor="LightGray">
+
     <ScrollView>
+
         <VerticalStackLayout>
-            <Button 
-            x:Name="NavigateButton"
-            Text="Back to Main Page"
-            Clicked="OnNavigateClicked"
-            HorizontalOptions="Center"/>
-            <Label 
-            Text="Page 2"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
 
-            <Button 
-            x:Name="SelectClothImageButton"
-            Text="Select Cloth Image"
-            Clicked="OnSelectClothImageClicked"
-            HorizontalOptions="Center"/>
+            <Grid x:Name="CameraPanel" IsVisible="False"  IsEnabled="False" >
+                <Frame x:Name="test" Grid.Row="0" BackgroundColor="Gray" CornerRadius="0" BorderColor="Black">
+                    <toolkit:CameraView
+                    x:Name="MyCameraView"       
+                    HorizontalOptions="CenterAndExpand"
+                    HeightRequest="600"
+                    SelectedCamera="{Binding SelectedCamera}"
+                    ZoomFactor="{Binding CurrentZoom}"
+                    CameraFlashMode="{Binding FlashMode}" />
+                </Frame>
 
-            <Image
-            x:Name="SelectedClothImage"
-            HeightRequest="300"
-            WidthRequest="300"
-            Aspect="AspectFit"
-            IsVisible="False"/>
+                <Grid Grid.Row="2" ColumnDefinitions="*,Auto,*" Padding="10" VerticalOptions="End">
+                    <Frame Grid.Column="1" HeightRequest="80" WidthRequest="80" CornerRadius="40" HorizontalOptions="Center">
+                        <Button x:Name="Capture" Text="REC" BackgroundColor="DarkRed" TextColor="White" HeightRequest="40" WidthRequest="100" Clicked="OnCaptureClicked"/>
 
-            <Button 
-            x:Name="SelectBodyImageButton"
-            Text="Select Body Image"
-            Clicked="OnSelectBodyImageClicked"
-            HorizontalOptions="Center"/>
+                    </Frame>
 
-            <Image
-            x:Name="SelectedBodyImage"
-            HeightRequest="300"
-            WidthRequest="300"
-            Aspect="AspectFit"
-            IsVisible="False"/>
+                    <Frame  WidthRequest="120" HeightRequest="100" BackgroundColor="Black" HorizontalOptions="Start" ScaleY="0.7" ScaleX="0.7">
 
-            <HorizontalStackLayout 
-                Spacing="20" 
-                HorizontalOptions="Center"
-                Margin="0,10,0,10">
-                <ImageButton
-                    x:Name="ClosedJacketImageButton"
-                    Source="closed_jacket.png"
-                    Clicked="ClosedJacketImageButton_Clicked"
-                    HeightRequest="70"
-                    WidthRequest="70"
-                    CornerRadius="5"
-                    BorderColor="Black"
-                    BackgroundColor="Transparent"
-                    BorderWidth="3"
+                        <Button Text="CLOSE" TextColor="White" VerticalOptions="Center" HorizontalOptions="Center"  Clicked="HidePanelCommand"/>
+                    </Frame>
+                </Grid>
+            </Grid>
+
+            <Grid>
+                <VerticalStackLayout x:Name="Menu1" Spacing="15" Padding="10">
+                
+                <Button x:Name="NavigateButton"
+                    Text="Back to Main Page"
+                    Clicked="OnNavigateClicked"
+                    HorizontalOptions="Center"
+                    WidthRequest="200"
+                    Margin="0,10"/>
+
+                <HorizontalStackLayout Spacing="20" HorizontalOptions="Center">
+                    <Button x:Name="SelectClothImageButton"
+                        Text="Select Cloth Image"
+                        Clicked="OnSelectClothImageClicked"
+                        WidthRequest="160"
+                        HeightRequest="40"/>
+
+                    <Button x:Name="PanelButton"
+                        Text="Open Cam"
+                        Clicked="PanelButton_Clicked"
+                        WidthRequest="160"
+                        HeightRequest="40"/>
+                </HorizontalStackLayout>
+
+                <Image x:Name="SelectedClothImage"
+                    HeightRequest="300"
+                    WidthRequest="300"
+                    Aspect="AspectFit"
+                    IsVisible="False"
+                    Margin="0,20"/>
+
+                <Button x:Name="SelectBodyImageButton"
+                    Text="Select Body Image"
+                    Clicked="OnSelectBodyImageClicked"
+                    HorizontalOptions="Center"
+                    WidthRequest="200"
+                    Margin="0,10"/>
+
+                <HorizontalStackLayout Spacing="20" HorizontalOptions="Center" Margin="0,10">
+                    <ImageButton x:Name="ClosedJacketImageButton"
+                        Source="closed_jacket.png"
+                        Clicked="ClosedJacketImageButton_Clicked"
+                        HeightRequest="80"
+                        WidthRequest="80"
+                        CornerRadius="8"
+                        BorderColor="#444"
+                        BackgroundColor="White"
+                        BorderWidth="2"
+                        IsEnabled="False"
+                        IsVisible="False"/>
+
+                    <ImageButton x:Name="OpenJacketImageButton"
+                        Source="open_jacket.png"
+                        Clicked="OpenJacketImageButton_Clicked"
+                        HeightRequest="80"
+                        WidthRequest="80"
+                        CornerRadius="8"
+                        BorderColor="#444"
+                        BackgroundColor="White"
+                        BorderWidth="2"
+                        IsEnabled="False"
+                        IsVisible="False"/>
+                </HorizontalStackLayout>
+
+                <Image x:Name="SelectedBodyImage"
+                    HeightRequest="300"
+                    WidthRequest="300"
+                    Aspect="AspectFit"
+                    IsVisible="False"
+                    Margin="0,20"/>
+
+                <Button x:Name="CombineImagesButton"
+                    Text="Create New Image"
+                    Clicked="OnCombineImages_Clicked"
+                    HorizontalOptions="Center"
+                    WidthRequest="220"
+                    HeightRequest="50"
+                    FontSize="16"
+                    Margin="0,20"/>
+
+                <ActivityIndicator x:Name="LoadingIndicator"
+                    IsRunning="False"
+                    IsVisible="False"
+                    Color="Azure"
+                    HorizontalOptions="Center"
+                    Margin="0,20"/>
+
+                <Image x:Name="ResponseImage"
+                    IsVisible="False"
+                    Aspect="AspectFit"
+                    HeightRequest="300"
+                    Margin="0,20"/>
+
+                <Label x:Name="ResponseText"
+                    IsVisible="False"
+                    FontSize="18"
+                    HorizontalOptions="Center"
+                    Margin="0,10"/>
+
+                <Button x:Name="SaveButton"
+                    Text="Save Image"
+                    Clicked="OnSaveClicked"
+                    IsVisible="False"
                     IsEnabled="False"
-                    IsVisible="False"/>
+                    HorizontalOptions="Center"
+                    WidthRequest="160"
+                    Margin="0,20"/>
 
-                <ImageButton
-                    x:Name="OpenJacketImageButton"
-                    Source="open_jacket.png"
-                    Clicked="OpenJacketImageButton_Clicked"
-                    HeightRequest="70"
-                    WidthRequest="70"
-                    CornerRadius="5"
-                    BorderColor="Black"
-                    BackgroundColor="Transparent"
-                    BorderWidth="3"
-                    IsEnabled="False"
-                    IsVisible="False"/>
-            </HorizontalStackLayout>
-
-            <Button 
-            x:Name="CombineImagesButton"
-            Text="Create new image"
-            Clicked="OnCombineImages_Clicked"
-            HorizontalOptions="Center"/>
-
-
-            
-            <ActivityIndicator x:Name="LoadingIndicator"
-            IsRunning="False"
-            IsVisible="False"   
-            Color="Azure"
-            HorizontalOptions="Center"/>
-          
-            <Image x:Name="ResponseImage"
-            IsVisible="False"
-            Aspect="AspectFit"/>
-
-            <Label x:Name="ResponseText" 
-            IsVisible="False"
-            FontSize="18"
-            HorizontalOptions="Center"/>
-
-            <Button x:Name="SaveButton"
-            Text="Save Image"
-            Clicked="OnSaveClicked"
-            IsVisible="False"
-            IsEnabled="False"
-            HorizontalOptions="Center"/>
-
-
-            <Label x:Name="CounterLabel" 
-            Text="Created by RedFox - AI Айляк"
-            Style="{StaticResource Headline}"
-            TextColor="Black"
-            FontSize="18"
-            HorizontalOptions="Center"/>
-
+                <Label x:Name="CounterLabel"
+                    Text="Created by RedFox - AI Айляк"
+                    Style="{StaticResource Headline}"
+                    TextColor="Black"
+                    FontSize="18"
+                    HorizontalOptions="Center"
+                    Margin="0,30"/>
+            </VerticalStackLayout>
+            </Grid>
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

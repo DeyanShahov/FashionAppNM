@@ -7,6 +7,13 @@ using Microsoft.Maui.Controls.PlatformConfiguration;
 //using static AndroidX.Concurrent.Futures.CallbackToFutureAdapter;
 using Microsoft.Maui.Controls;
 using FashionApp.core.services;
+using System;
+using FashionApp.Data.Constants;
+using CommunityToolkit.Maui.Views;
+
+using FashionApp.core;
+using Microsoft.Maui;
+
 
 #if __ANDROID__
 using Android.Content;
@@ -29,11 +36,16 @@ public partial class CombineImages : ContentPage
     private bool isClosedJacketActive = true;
 
     private readonly SingleImageLoader singleImageLoader;
+    private CameraService _cameraService;
 
     public CombineImages()
     {
         InitializeComponent();
         //SetActiveButton(true); // Set initial state
+
+        _cameraService = new CameraService(MyCameraView, CameraPanel);
+        _cameraService.ImageCaptured += OnImageCaptured;
+        _cameraService.StopCamera();
 
         singleImageLoader = new SingleImageLoader(
             setErrorMessage: (msg) => ResponseText.Text = msg,
@@ -132,24 +144,13 @@ public partial class CombineImages : ContentPage
 
         try
         {
-            //var uploader = new ComfyUIUploader(ApiUrl);
-            //if (!string.IsNullOrEmpty(_clothImagePath) && !string.IsNullOrEmpty(_bodyImagePath))
-            //{
-            //    await uploader.UploadImageAsync(_clothImagePath, "input"); // Качваме първата картинка
-            //    await uploader.UploadImageAsync(_bodyImagePath, "input"); // Качваме втората картинка
-            //}
-            //else
-            //{
-            //    await DisplayAlert("Error", "Please select both images first", "OK");
-            //}
-
             ToggleLoading(true);
             ResponseImage.IsVisible = false;
             ResponseText.IsVisible = false;
             SaveButton.IsVisible = false;
             SaveButton.IsEnabled = false;
 
-            UploadImages(); // Качваме двата файла
+            if (!await UploadImages()) return; // Качваме двата файла
 
             // Изпращаме POST заявка към API
             await Task.Delay(5000); // Изчакване от 5 секунди
@@ -206,24 +207,157 @@ public partial class CombineImages : ContentPage
         }
     }
 
-    private async void UploadImages()
+    private async Task<bool> UploadImages()
     {
         var uploader = new ComfyUIUploader(ApiUrl);
         if (!string.IsNullOrEmpty(_clothImagePath) && !string.IsNullOrEmpty(_bodyImagePath))
         {
-            await uploader.UploadImageAsync(_clothImagePath, "input"); // Качваме първата картинка
+            await uploader.UploadImageAsync(_clothImagePath, "input"); // Качваме първата картинка            
             await uploader.UploadImageAsync(_bodyImagePath, "input"); // Качваме втората картинка
+
+            DeleteTemporaryImage();
+
+            return true;
         }
         else
         {
-            await DisplayAlert("Error", "Please select both images first", "OK");
+            await DisplayAlert("Error", "Missing path to files!", "OK");
+            return false;
         }
     }
 
+    private static void DeleteTemporaryImage()
+    {
+        // Получаване на пътя към кеш директорията
+        string cacheDir = FileSystem.CacheDirectory;
+
+        // Изтриване на стари файлове, които съвпадат с шаблона "testImage_*.png"
+        var oldFiles = Directory.GetFiles(cacheDir, "testImage_*.png");
+        foreach (var oldFile in oldFiles)
+        {
+            try
+            {
+                File.Delete(oldFile);
+            }
+            catch (Exception ex)
+            {
+                // Логнете грешката, ако се появи (например чрез Debug)
+                System.Diagnostics.Debug.WriteLine($"Грешка при изтриване на файл {oldFile}: {ex.Message}");
+            }
+        }
+    }
+
+    private async Task<string> SetCameraImageRealPathForSelectedClothImage(Stream stream)
+    {
+        //if (SelectedClothImage.Source is StreamImageSource streamImageSource)
+        //{
+        //    string tempPath = Path.Combine(FileSystem.CacheDirectory, "testImage.png");
+        //    //using (Stream stream = await streamImageSource.Stream(CancellationToken.None))
+        //    //{
+        //    //    using (var fileStream = File.Create(tempPath))
+        //    //    {
+        //    //        await stream.CopyToAsync(fileStream);
+        //    //        _clothImagePath = tempPath; // Запазвате пътя във вашия параметър.
+        //    //    }
+        //    //}
+
+        //    Stream stream = await streamImageSource.Stream(CancellationToken.None);
+        //    using (var fileStream = File.Create(tempPath))
+        //    {
+        //        await stream.CopyToAsync(fileStream);
+        //        _clothImagePath = tempPath; // Запазвате пътя във вашия параметър.
+        //    }
+        //}
+
+        DeleteTemporaryImage(); // Изтриваме ако е имало предищно неизтрита снимка
+
+        // Ако потокът е seekable, може да се наложи да го ресетнете:
+        if (stream.CanSeek)
+        {
+            stream.Position = 0;
+        }
+
+        string tempPath = Path.Combine(FileSystem.CacheDirectory, $"testImage_{DateTime.Now.Ticks}.png");
+
+        using (var fileStream = File.Create(tempPath))
+        {
+            await stream.CopyToAsync(fileStream);
+        }
+
+        return tempPath;
+    }
+
+
+    private void OnCaptureClicked(object sender, EventArgs e)
+    {
+        _cameraService.CaptureClicked();
+    }
+
+    private async void OnImageCaptured(Stream imageStream)
+    {
+        await ProcessSelectedImage(imageStream);
+        _cameraService.StopCamera();
+        HideMenus();
+    }
+
+    private void PanelButton_Clicked(object sender, EventArgs e)
+    {
+        HideMenus();
+
+        _cameraService.StartCamera();
+    }
+
+    private void HidePanelCommand(object sender, EventArgs e)
+    {
+
+        _cameraService.StopCamera();
+        HideMenus();
+    }
+
+    private void HideMenus()
+    {
+        Menu1.IsVisible = !Menu1.IsVisible;
+        //SelectedClothImage.IsVisible = !SelectedClothImage.IsVisible;
+    }
+
+
+    private async Task ProcessSelectedImage(Stream? stream)
+    {
+        // Преоразмеряване на изображението
+        var resizedImageResult = await ImageStreamResize.ResizeImageStream(stream, 500, 700); // Преоразмеряване на изображението
+        var resultPath = await SetCameraImageRealPathForSelectedClothImage(resizedImageResult.ResizedStream);
+        _clothImagePath = resultPath;
+
+        // Конвертиране на изображението, за да включва алфа канал
+        //var imageWithAlpha = await AddAlphaChanel(resizedImageResult.ResizedStream);
+
+        // Задаване на източника на изображението
+        //SelectedClothImage.Source = ImageSource.FromStream(() => resizedImageResult.ResizedStream);
+        SelectedClothImage.Source = ImageSource.FromFile(resultPath);
+
+
+        // Настройка на ширината и височината на изображението
+        SelectedClothImage.WidthRequest = Application.Current.MainPage.Width; // Задаване на ширината на екрана
+        SelectedClothImage.HeightRequest = Application.Current.MainPage.Height; // Задаване на височината на екрана
+
+        // Центриране на изображението
+        SelectedClothImage.HorizontalOptions = LayoutOptions.Center;
+        SelectedClothImage.VerticalOptions = LayoutOptions.Center;
+
+        // Показване на елементите
+        SelectedClothImage.IsVisible = true;
+
+        //HideMenus();
+
+        //CameraPanel.IsVisible = false;
+        //CameraPanel.IsEnabled = false;
+    }
+
+   
+
     private async void OnSaveClicked(object sender, EventArgs e)
     {
-        if (_imageData == null)
-            return;
+        if (_imageData == null) return;
 
         try
         {
@@ -250,7 +384,7 @@ public partial class CombineImages : ContentPage
                 Android.Content.ContentValues contentValues = new();
                 contentValues.Put(Android.Provider.MediaStore.IMediaColumns.DisplayName, fileName);
                 contentValues.Put(Android.Provider.MediaStore.IMediaColumns.MimeType, "image/png");
-                contentValues.Put(Android.Provider.MediaStore.IMediaColumns.RelativePath, "Pictures/" + "FashionApp");
+                contentValues.Put(Android.Provider.MediaStore.IMediaColumns.RelativePath, AppConstants.IMAGES_DIRECTORY);
                 Android.Net.Uri imageUri = resolver.Insert(Android.Provider.MediaStore.Images.Media.ExternalContentUri, contentValues);
                 var os = resolver.OpenOutputStream(imageUri);
                 Android.Graphics.BitmapFactory.Options options = new();
@@ -261,7 +395,7 @@ public partial class CombineImages : ContentPage
                 os.Flush();
                 os.Close();
 
-                await DisplayAlert("Success", $"Image saved on Pictures / FashionApp!", "OK");
+                await DisplayAlert("Success", $"Image saved on {AppConstants.IMAGES_DIRECTORY}", "OK");
             }
             else
             {
@@ -293,10 +427,10 @@ public partial class CombineImages : ContentPage
     {
         SetActiveButton(sender as ImageButton);
 #if WINDOWS
-        await LoadCorrectImageMaskWindows("open_jacket_mask.png");
+        await LoadCorrectImageMaskWindows(AppConstants.OPEN_JACKET_MASK);
 #elif ANDROID
-        //await LoadCorrectImageMaskAndroid("open_jacket_mask.png");
-        LoadLargeImage("open_jacket_mask.png");
+        //await LoadCorrectImageMaskAndroid(AppConstants.OPEN_JACKET_MASK);
+        LoadLargeImage(AppConstants.OPEN_JACKET_MASK);
 #endif
     }
 
@@ -304,34 +438,26 @@ public partial class CombineImages : ContentPage
     {
         SetActiveButton(sender as ImageButton);
 #if WINDOWS
-        await LoadCorrectImageMaskWindows("closed_jacket_mask.png");
+        await LoadCorrectImageMaskWindows(AppConstants.CLOSED_JACKET_MASK);
 #elif ANDROID
-        //await LoadCorrectImageMaskAndroid("closed_jacket_mask.png");
+        //await LoadCorrectImageMaskAndroid(AppConstants.CLOSED_JACKET_MASK);
         //LoadLargeImage(_bodyImagePath);
-        LoadLargeImage("closed_jacket_mask.png");
+        LoadLargeImage(AppConstants.CLOSED_JACKET_MASK);
 #endif
     }
 
 
 #if ANDROID
     private async void LoadLargeImage(string imageUri)
-    {
-        // Проверка дали списъкът с изображения не е празен
-        //if (ImagesList.Count == 0) return;
-        
-        // Извличане на пътя на първото изображение в списъка
-        //var imagePath = Path.GetFileName(GetRealPathFromUri(Android.App.Application.Context.ContentResolver, ImagesList.FirstOrDefault()));
-        //var imagePath = GetRealPathFromUri(Android.App.Application.Context.ContentResolver, imageUri);
-        var imagePath = ConvertCachePathToImagePath(imageUri);
-        
-        // Зареждане на изображението асинхронно
-        await singleImageLoader.LoadSingleImageAsync(imagePath);
+    {           
+        var imagePath = ConvertCachePathToImagePath(imageUri); // Извличане на пътя на първото изображение в списъка    
+        _bodyImagePath = imagePath;
+        await singleImageLoader.LoadSingleImageAsync(imagePath);  // Зареждане на изображението асинхронно
     }
 
     private string ConvertCachePathToImagePath(string cachePath)
     {
         // Проверка дали пътят започва с кеш директорията
-        //string cacheDirectory = "/storage/emulated/0/Android/data/com.companyname.fashionapp/cache/";
         string imagesDirectory = "/storage/emulated/0/Pictures/FashionApp/MasksImages/";
     
         if (true)

@@ -10,6 +10,8 @@ using static Microsoft.Maui.ApplicationModel.Permissions;
 using FashionApp.core.services;
 using Microsoft.Maui.Controls.PlatformConfiguration;
 using FashionApp.Data.Constants;
+//using static Java.Util.Jar.Attributes;
+
 
 
 #if __ANDROID__
@@ -30,6 +32,7 @@ public partial class MaskEditor : ContentPage
     private IDrawable _drawable;
     //private HashSet<(int x, int y)> _markedPixels = new();
     private string imageFileName = $"masked_image_{DateTime.Now:yyyyMMdd_HHmmss}.png";
+    private CameraService _cameraService;
 
     public MaskEditor()
     {
@@ -38,7 +41,10 @@ public partial class MaskEditor : ContentPage
         _drawable = new DrawingViewDrawable(_lines);
         DrawingView.Drawable = _drawable;
 
-        MyCameraView.StopCameraPreview();
+        _cameraService = new CameraService(MyCameraView, CameraPanel);
+        _cameraService.ImageCaptured += OnImageCaptured;
+        _cameraService.StopCamera();
+        //MyCameraView.StopCameraPreview();
     }
 
     private async void OnBackButtonClicked(object sender, EventArgs e)
@@ -76,24 +82,40 @@ public partial class MaskEditor : ContentPage
         }
     }
 
+    private async void OnImageCaptured(Stream imageStream)
+    {
+        await ProcessSelectedImage(imageStream);
+        _cameraService.StopCamera();
+        HideMenus();
+    }
+
     private async Task ProcessSelectedImage(Stream? stream)
     {
+        // Преоразмеряване на изображението
         var resizedImageResult = await ImageStreamResize.ResizeImageStream(stream, 500, 700); // Преоразмеряване на изображението
 
-        // Convert the image to include an alpha channel
+        // Конвертиране на изображението, за да включва алфа канал
         var imageWithAlpha = await AddAlphaChanel(resizedImageResult.ResizedStream);
 
+        // Задаване на източника на изображението
         SelectedImage.Source = ImageSource.FromStream(() => imageWithAlpha);
-        SelectedImage.WidthRequest = resizedImageResult.Width;
-        SelectedImage.HeightRequest = resizedImageResult.Height;
+        
+        // Настройка на ширината и височината на изображението
+        SelectedImage.WidthRequest = Application.Current.MainPage.Width; // Задаване на ширината на екрана
+        SelectedImage.HeightRequest = Application.Current.MainPage.Height; // Задаване на височината на екрана
 
+        // Центриране на изображението
+        SelectedImage.HorizontalOptions = LayoutOptions.Center;
+        SelectedImage.VerticalOptions = LayoutOptions.Center;
+
+        // Показване на елементите
         SelectedImage.IsVisible = true;
         DrawingView.IsVisible = true;
         DrawingTools.IsVisible = true;
         DrawingBottons.IsVisible = true;
 
-        CameraPanel.IsVisible = false;
-        CameraPanel.IsEnabled = false;
+        //CameraPanel.IsVisible = false;
+        //CameraPanel.IsEnabled = false;
     }
 
     private async Task<Stream> AddAlphaChanel(Stream imageStream)
@@ -192,7 +214,6 @@ public partial class MaskEditor : ContentPage
         try
         {
             var resultStream = await AddMaskToImage.AddMaskToImageMetadata(SelectedImage, DrawingView);
-
 #if WINDOWS
             string picturesPath = Path.Combine("C:", "Users", "Public", "Pictures");
 
@@ -213,48 +234,7 @@ public partial class MaskEditor : ContentPage
             imageFileName = string.Empty; // Reset value of paramether
 
 #elif ANDROID
-            var context = Platform.CurrentActivity;
-            string directoryPath = Path.Combine(Android.OS.Environment.DirectoryPictures, "FashionApp", "MasksImages");
-
-            if (OperatingSystem.IsAndroidVersionAtLeast(29))
-            {
-                ContentResolver resolver = context.ContentResolver;
-                ContentValues contentValues = new();
-
-                // Изтриване на предишната Макро снимка ако системата е андроид 11+
-                if(OperatingSystem.IsAndroidVersionAtLeast(30)) await DeleteExistingImageAsync(resolver, imageFileName, directoryPath);
-
-                // Създаване на нов запис
-                contentValues.Put(MediaStore.IMediaColumns.DisplayName, imageFileName);
-                contentValues.Put(MediaStore.IMediaColumns.MimeType, "image/png");
-                contentValues.Put(MediaStore.IMediaColumns.RelativePath, directoryPath);
-
-                Android.Net.Uri? imageUri = resolver.Insert(MediaStore.Images.Media.ExternalContentUri, contentValues);
-                if (imageUri == null)
-                {
-                    await DisplayAlert("Error", "Failed to create image file.", "OK");
-                    return;
-                }
-
-                using (var os = resolver.OpenOutputStream(imageUri))
-                {
-                    if (os != null)
-                    {
-                        var bitmap = Android.Graphics.BitmapFactory.DecodeStream(resultStream);
-                        bitmap.Compress(Android.Graphics.Bitmap.CompressFormat.Png, 100, os);
-                        os.Flush();
-                    }
-                }
-                
-                await DisplayAlert("Success", $"Image saved on Pictures / FashionApp / MasksImages as {imageFileName}", "OK");
-
-                imageFileName = string.Empty; // Reset value of paramether
-            }
-            else
-            {
-                // Handle older Android versions if needed
-                await DisplayAlert("Error", "OS is invalid!", "OK");
-            }
+            SaveImageToAndroid.Save(imageFileName, resultStream, AppConstants.IMAGES_MASKS_DIRECTORY);                       
 #endif
         }
         catch (Exception ex)
@@ -269,52 +249,6 @@ public partial class MaskEditor : ContentPage
         }
     }
 
-
-#if ANDROID
-    private async Task DeleteExistingImageAsync(ContentResolver resolver, string imageFileName, string directoryPath)
-    {
-        string[] projection = { IBaseColumns.Id, MediaStore.IMediaColumns.DisplayName };
-        Android.Net.Uri collection = MediaStore.Images.Media.ExternalContentUri;
-        
-        // Добавяне на условие за търсене по fileName
-        string selection = $"{MediaStore.IMediaColumns.DisplayName} = ?";
-        string[] selectionArgs = { imageFileName };
-        
-        var cursor = resolver.Query(collection, projection, selection, selectionArgs, null);
-        if (cursor != null && cursor.MoveToFirst())
-        {
-            int idColumn = cursor.GetColumnIndex(IBaseColumns.Id);
-            long imageId = cursor.GetLong(idColumn); // Уникален ID на изображението
-            Android.Net.Uri deleteUri = ContentUris.WithAppendedId(MediaStore.Images.Media.ExternalContentUri, imageId);
-            int deletedRows = resolver.Delete(deleteUri, null, null);
-            if (deletedRows > 0)
-                await DisplayAlert("Success", $"{imageFileName} delete successful.", "OK");
-            else
-                await DisplayAlert("Error", "Failed to delete image. It might not be owned by the app.", "OK");
-        
-        }
-        cursor?.Close();
-
-        //if (OperatingSystem.IsAndroidVersionAtLeast(29))
-        //{
-           
-        //}
-        //else
-        //{
-        //    // Android 9 или по-старо - използвай директно File API
-        //    string filePath = Path.Combine(Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryPictures)?.AbsolutePath ?? "", directoryPath, imageFileName);
-        //    Java.IO.File file = new Java.IO.File(filePath);
-    
-        //    if (file.Exists())
-        //    {
-        //        bool deleted = file.Delete();
-        //        Console.WriteLine(deleted ? $"Файлът {imageFileName} беше изтрит." : $"Неуспешно изтриване на {imageFileName}.");
-        //    }
-        //}
-    }
-#endif
-
-
     private async void ClosedJacketImageButton_Clicked(object sender, EventArgs e)
     {
         await MacroMechanics(sender, AppConstants.CLOSED_JACKET_MASK);
@@ -328,65 +262,35 @@ public partial class MaskEditor : ContentPage
 
     private void PanelButton_Clicked(object sender, EventArgs e)
     {
-        CameraPanel.IsVisible = true;
-        CameraPanel.IsEnabled = true;
-        StartCamera();
+        HideMenus();
+
+        _cameraService.StartCamera();
+    }
+
+    private void HideMenus()
+    {
+        Menu1.IsVisible = !Menu1.IsVisible;
+        ImageContainer.IsVisible = !ImageContainer.IsVisible;
+        Menu2.IsVisible = !Menu2.IsVisible;
+        Menu3.IsVisible = !Menu3.IsVisible;
     }
 
     private void HidePanelCommand(object sender, EventArgs e)
     {
-        CameraPanel.IsVisible = false;
-        CameraPanel.IsEnabled = false;
-
-        MyCameraView.StopCameraPreview();
+       
+        _cameraService.StopCamera();
+        HideMenus();
     }
 
-    private async void MyCameraView_MediaCaptured(object sender, CommunityToolkit.Maui.Views.MediaCapturedEventArgs e)
-    { 
-        if (e?.Media == null) return;  // Логвайте или обработете грешката, ако няма наличен медия поток.
-
-        try
-        {       
-            byte[] imageBuffer;  // Копиране на съдържанието на входния поток в буфер, за да избегнем затварянето му.
-            using (var tempStream = new MemoryStream())
-            {
-                await e.Media.CopyToAsync(tempStream);
-                imageBuffer = tempStream.ToArray();
-            }
-         
-            async Task ProcessImageAsync() // Функция за обработка на изображението с новосъздаден MemoryStream.
-            {
-                using (var ms = new MemoryStream(imageBuffer))
-                {
-                    ms.Position = 0;
-                    await ProcessSelectedImage(ms);
-                }
-            }
-
-            // Ако Dispatcher изисква превключване, използваме Dispatch.
-            if (Dispatcher.IsDispatchRequired) Dispatcher.Dispatch(async () => await ProcessImageAsync());
-            else await ProcessImageAsync();
-        }
-        catch (Exception ex)
-        {
-            await DisplayAlert("Error", $"Error processing captured media: {ex.Message}", "OK");
-        }
-    }
-
-    private async void StartCamera()
-    {
-        if (MyCameraView != null)
-        {
-            MyCameraView.StopCameraPreview(); // Ensure any existing camera instance is shut down
-            await MyCameraView.StartCameraPreview(CancellationToken.None); // Start the camera
-
-            MyCameraView.IsVisible = true;
-        }
-    }
+    //private async void MyCameraView_MediaCaptured(object sender, CommunityToolkit.Maui.Views.MediaCapturedEventArgs e)
+    //{
+       
+    //}
 
     private async void OnCaptureClicked(object sender, EventArgs e)
     {
-        await MyCameraView.CaptureImage(CancellationToken.None);
+        //await MyCameraView.CaptureImage(CancellationToken.None);
+        _cameraService.CaptureClicked();
     }
 
     // ------------------------------------------- SUPORT METHODS ----------------------------------------------------------------

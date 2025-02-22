@@ -71,6 +71,11 @@ public partial class GalleryImagesPage : ContentPage
             setErrorMessage: (msg) => ErrorMessage = msg,
             setImage: (uri) => SelectedBodyImage.Source = Microsoft.Maui.Controls.ImageSource.FromUri(new System.Uri(uri))
         );
+    }
+
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
 
         LoadAllImagesForGallery();
 #if ANDROID
@@ -92,6 +97,7 @@ public partial class GalleryImagesPage : ContentPage
         
         // Зареждане на изображението асинхронно
         await singleImageLoader.LoadSingleImageAsync(imagePath);
+        selectedImageUri = ImagesList.FirstOrDefault();
     }
 #endif
 
