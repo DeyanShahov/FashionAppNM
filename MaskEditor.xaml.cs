@@ -10,6 +10,8 @@ using static Microsoft.Maui.ApplicationModel.Permissions;
 using FashionApp.core.services;
 using Microsoft.Maui.Controls.PlatformConfiguration;
 using FashionApp.Data.Constants;
+using FashionApp.Pages;
+using FashionApp.core.draw;
 //using static Java.Util.Jar.Attributes;
 
 
@@ -79,6 +81,21 @@ public partial class MaskEditor : ContentPage
         catch (Exception ex)
         {
             await DisplayAlert("Error", $"An error occurred: {ex.Message}", "OK");
+        }
+    }
+
+    private async void OpenImageEditor_Clicked(object sender, EventArgs e)
+    {
+        var file = await FilePicker.PickAsync(new PickOptions
+        {
+            FileTypes = FilePickerFileType.Images,
+            PickerTitle = "Pick an image"
+        });
+
+        if (file != null)
+        {
+            // Отваряне на модалния прозорец с пътя на изображението
+            await Navigation.PushModalAsync(new ImageEditPage(file.FullPath));
         }
     }
 
@@ -380,44 +397,6 @@ public partial class MaskEditor : ContentPage
         {
             await stream.CopyToAsync(memoryStream); // Асинхронно копиране
             return memoryStream.ToArray();
-        }
-    }
-}
-
-
-// ----------------------------------------------- CLASS ---------------------------------------------------------------------
-public class DrawingViewDrawable : IDrawable
-{
-    private readonly List<DrawingLine> _lines;
-    //private readonly HashSet<(int x, int y)> _markedPixels;
-
-    public DrawingViewDrawable(List<DrawingLine> lines)
-    {
-        _lines = lines;
-        //_markedPixels = markedPixels;
-    }
-
-    public void Draw(ICanvas canvas, RectF dirtyRect)
-    {
-        foreach (var line in _lines)
-        {
-            if (line.Points.Count > 1)
-            {
-                canvas.StrokeColor = line.Color;
-                canvas.StrokeSize = line.Thickness;
-                canvas.StrokeLineCap = LineCap.Round;
-                canvas.StrokeLineJoin = LineJoin.Round;
-
-                var path = new PathF();
-                path.MoveTo(line.Points[0]);
-
-                for (int i = 1; i < line.Points.Count; i++)
-                {
-                    path.LineTo(line.Points[i]);
-                }
-
-                canvas.DrawPath(path);
-            }
         }
     }
 }

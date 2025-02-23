@@ -113,6 +113,9 @@
 	  <MauiXaml Update="Pages\ImageDetailPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Pages\ImageEditPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="WebView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

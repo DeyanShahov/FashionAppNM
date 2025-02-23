@@ -62,6 +62,12 @@
                 HorizontalOptions="Center"/>
 
             <Button
+                x:Name="OpenImageEditor"
+                Text="Image Editor"
+                Clicked="OpenImageEditor_Clicked"
+                HorizontalOptions="Center"/>
+
+            <Button
                 x:Name="PanelButton"
                 Text="Open Cam"
                 Clicked="PanelButton_Clicked"
