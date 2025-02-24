@@ -9,6 +9,8 @@ using CommunityToolkit.Maui.Core.Handlers;
 using CommunityToolkit.Maui.Core.Views;
 using FashionApp.Pages;
 using Microsoft.Maui.Platform;
+using FashionApp.Data.Constants;
+
 
 #if ANDROID
 using Android.OS;
@@ -209,8 +211,11 @@ namespace FashionApp
         private async void CombineImagesButton_Clicked(object sender, EventArgs e)
             => await Navigation.PushAsync(new CombineImages());
 
-        //private async void OnNavigateClickedToWeb(object sender, EventArgs e)
-        //    => await Navigation.PushAsync(new WebViewPage());
+        private async void OnNavigateClickedToWeb(object sender, EventArgs e)
+            => await Navigation.PushAsync(new WebViewPage());
+
+        private async void WebGalleryButton_Clicked(object sender, EventArgs e)
+            => await Navigation.PushAsync(new BaseGallery("Cloth Gallery", "/storage/emulated/0/Pictures/FashionApp/CaptureScreen%"));
 
         //private async void OnNavigateClickedToMaskJS(object sender, EventArgs e)
         //    => await Navigation.PushAsync(new MaskJS());
@@ -227,5 +232,7 @@ namespace FashionApp
 
         private async void MaskGalleryButton_Clicked(object sender, EventArgs e)
             => await Navigation.PushAsync(new GalleryMasksPage());
+
+      
     }
 }

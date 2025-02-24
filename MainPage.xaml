@@ -29,13 +29,17 @@
                 Text="Go to MaskJS"
                 IsEnabled="False"
                 Clicked="OnNavigateClickedToMaskJS"
-                HorizontalOptions="Center"/>
+                HorizontalOptions="Center"/>-->
             <Button
                 x:Name="NavigateButtonToWeb"
-                Text="Go to WebView"
-                IsEnabled="False"
+                Text="Go to WebView"              
                 Clicked="OnNavigateClickedToWeb"
-                HorizontalOptions="Center"/>-->
+                HorizontalOptions="Center"/>
+            <Button
+                x:Name="WebGalleryButton"
+                Text="Go to web gallery"
+                Clicked="WebGalleryButton_Clicked"
+                HorizontalOptions="Center"/>
             <Button 
                 x:Name="CombineImagesButton"
                 Text="Go to Combine Images"

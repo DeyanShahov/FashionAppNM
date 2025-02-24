@@ -9,6 +9,6 @@ namespace FashionApp.Data.Constants
 
         public const string IMAGES_DIRECTORY = "Pictures/FashionApp/Images";
         public const string IMAGES_MASKS_DIRECTORY = "FashionApp/MasksImages";
-
+        public const string IMAGES_CAPTURE_SCREEN = "FashionApp/CaptureScreen";
     }
 }

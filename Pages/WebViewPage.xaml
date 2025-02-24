@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FashionApp.Pages.WebViewPage"
+             Title="Web Browser"
+             BackgroundColor="White">
+
+
+    <AbsoluteLayout>
+
+        <StackLayout 
+          x:Name="MyMenuBar"
+          Orientation="Horizontal" 
+          VerticalOptions="Start" 
+          BackgroundColor="Black"
+          Padding="3"
+          Spacing="0"
+          AbsoluteLayout.LayoutBounds="0, 0, 1, AutoSize" 
+          AbsoluteLayout.LayoutFlags="WidthProportional">
+            <Entry x:Name="UrlEntry" 
+                Placeholder="Enter URL" 
+                PlaceholderColor="Black"
+                BackgroundColor="White"
+                HorizontalOptions="FillAndExpand" />
+            <StackLayout Orientation="Horizontal" 
+                        HorizontalOptions="End"
+                        Spacing="5">
+                <Label 
+                     Text="&#x2192;"
+                     FontSize="30"
+                     TextColor="Red"
+                     FontAttributes="Bold"
+                     BackgroundColor="Transparent"
+                     Padding="5,0">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnGoClicked"/>
+                    </Label.GestureRecognizers>
+                </Label>
+                <Label 
+                     x:Name="BackButton"                   
+                     IsEnabled="False" 
+                     Text="&#x21B6;"
+                     FontSize="30"
+                     FontAttributes="Bold"
+                     TextColor="Red"                   
+                     BackgroundColor="Transparent"
+                     Padding="5,0">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnBackClicked"/>
+                    </Label.GestureRecognizers>
+                </Label>
+                <Label 
+                     x:Name="ForwardButton"
+                     IsEnabled="False" 
+                     Text="&#x21B7;" 
+                     FontSize="30"
+                     FontAttributes="Bold"
+                     TextColor="Red"
+                     BackgroundColor="Transparent"
+                     Padding="5,0">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnForwardClicked"/>
+                    </Label.GestureRecognizers>
+                </Label>
+                <Label  
+                     Text="&#x27F3;"
+                     FontSize="30"
+                     TextColor="Red"
+                     FontAttributes="Bold"
+                     BackgroundColor="Transparent"
+                     Padding="5,0,10,0">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnRefreshClicked"/>
+                    </Label.GestureRecognizers>
+                </Label>
+            </StackLayout>
+        </StackLayout>
+        
+        
+        <WebView x:Name="View" 
+                 Source="https://www.bing.com" 
+                 VerticalOptions="Fill" 
+                 HorizontalOptions="Fill" 
+                 Margin="0,50,0,0" 
+                 AbsoluteLayout.LayoutBounds="0, 50, 1, 1" 
+                 AbsoluteLayout.LayoutFlags="All" />
+
+        <Button x:Name="CaptureButton" 
+                Text="REC" 
+                BackgroundColor="DarkRed" 
+                TextColor="White" 
+                HeightRequest="60" 
+                WidthRequest="60" 
+                CornerRadius="30"
+                Clicked="OnCaptureClicked" 
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                AbsoluteLayout.LayoutBounds="0.95, 0.98, AutoSize, AutoSize">
+        </Button>
+    </AbsoluteLayout>
+</ContentPage>
