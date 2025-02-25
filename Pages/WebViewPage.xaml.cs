@@ -7,12 +7,22 @@ public partial class WebViewPage : ContentPage
 {
 	private bool isDragging = false;
     private double _startX, _startY;
+    private bool _isFromPartners = false;
 
-    public WebViewPage()
+    public WebViewPage(bool isFromPartners = false, string url = "")
 	{
+        _isFromPartners = isFromPartners;
 		InitializeComponent();
 		View.Navigated += View_Navigated;
+        if (_isFromPartners ) SetWebViewForPartners(url);
 	}
+
+    private void SetWebViewForPartners(string url)
+    {
+        //string bingSearchUrl = $"https://www.bing.com/search?q={searchQuery}";
+        //View.Source = bingSearchUrl; // Търсене в Bing
+        View.Source = url; // Търсене в Bing
+    }
 
 	private void OnBackClicked(object sender, EventArgs e)
     {

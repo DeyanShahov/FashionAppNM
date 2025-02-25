@@ -40,6 +40,11 @@
                 Text="Go to web gallery"
                 Clicked="WebGalleryButton_Clicked"
                 HorizontalOptions="Center"/>
+            <Button
+                x:Name="PartnersPageButton"
+                Text="Partners page"
+                Clicked="PartnersPageButton_Clicked"
+                HorizontalOptions="Center"/>
             <Button 
                 x:Name="CombineImagesButton"
                 Text="Go to Combine Images"

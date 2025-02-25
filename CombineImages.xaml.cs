@@ -20,6 +20,8 @@ using Android.Content;
 using Android.Database;
 using Android.Net;
 using Android.Provider;
+using AndroidX.DocumentFile.Provider;
+using Microsoft.Maui.ApplicationModel;
 #endif
 
 namespace FashionApp;
@@ -73,6 +75,11 @@ public partial class CombineImages : ContentPage
                 FileTypes = FilePickerFileType.Images,
                 PickerTitle = "Pick a cloth image"
             });
+
+//            FileResult result = null;
+//#if ANDROID
+//            result = await PickFileFromFashionAppFolderAsync();
+//#endif
 
             if (result != null)
             {
@@ -637,6 +644,18 @@ public partial class CombineImages : ContentPage
         }
     }
 
+    private void SelectClothFromApp_Clicked(object sender, EventArgs e)
+    {
+
+    }
+
+    private void SelectBodyFromApp_Clicked(object sender, EventArgs e)
+    {
+
+    }
+
+
+
 
 #if WINDOWS
     private void CheckAvailableMasksWindows()
@@ -715,5 +734,37 @@ public partial class CombineImages : ContentPage
             Console.WriteLine($"Error checking masks: {ex.Message}");
         }
     }
+
+
+    public async Task<FileResult> PickFileFromFashionAppFolderAsync()
+    {
+        if (OperatingSystem.IsAndroid())
+        {
+            var context = Platform.CurrentActivity;
+            var baseFolder = Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryPictures);
+            var targetFolder = new Java.IO.File(baseFolder, "FashionApp/CaptureScreen");
+    
+            if (!targetFolder.Exists())
+            {
+                targetFolder.Mkdirs();
+            }
+    
+            var uri = Android.Net.Uri.FromFile(targetFolder);
+    
+            Intent intent = new Intent(Intent.ActionOpenDocument);
+            intent.AddCategory(Intent.CategoryOpenable);
+            intent.SetType("image/*");
+            intent.PutExtra(DocumentsContract.ExtraInitialUri, uri);
+    
+            context.StartActivityForResult(intent, 1001);
+        }
+    
+        return await FilePicker.PickAsync(new PickOptions
+        {
+            FileTypes = FilePickerFileType.Images,
+            PickerTitle = "Pick a cloth image"
+        });
+    }
+    
 #endif
 }

@@ -44,19 +44,25 @@
                     WidthRequest="200"
                     Margin="0,10"/>
 
-                <HorizontalStackLayout Spacing="20" HorizontalOptions="Center">
-                    <Button x:Name="SelectClothImageButton"
-                        Text="Select Cloth Image"
-                        Clicked="OnSelectClothImageClicked"
-                        WidthRequest="160"
-                        HeightRequest="40"/>
+                <Button x:Name="SelectClothImageButton"
+                    Text="Select Cloth Image"
+                    Clicked="OnSelectClothImageClicked"
+                    WidthRequest="160"
+                    HeightRequest="40"/>
+                
+                <Button
+                    x:Name="SelectClothFromApp"
+                    Text="Select Cloth from App"
+                    Clicked="SelectClothFromApp_Clicked"
+                    WidthRequest="180"
+                    HeightRequest="40"/>
+                
+                <Button x:Name="PanelButton"
+                    Text="Open Cam"
+                    Clicked="PanelButton_Clicked"
+                    WidthRequest="160"
+                    HeightRequest="40"/>
 
-                    <Button x:Name="PanelButton"
-                        Text="Open Cam"
-                        Clicked="PanelButton_Clicked"
-                        WidthRequest="160"
-                        HeightRequest="40"/>
-                </HorizontalStackLayout>
 
                 <Image x:Name="SelectedClothImage"
                     HeightRequest="300"
@@ -71,6 +77,12 @@
                     HorizontalOptions="Center"
                     WidthRequest="200"
                     Margin="0,10"/>
+
+                <Button x:Name="SelectBodyFromApp"
+                    Text="Select Body from App"
+                    Clicked="SelectBodyFromApp_Clicked"
+                    HorizontalOptions="Center"
+                    WidthRequest="200"/>
 
                 <HorizontalStackLayout Spacing="20" HorizontalOptions="Center" Margin="0,10">
                     <ImageButton x:Name="ClosedJacketImageButton"

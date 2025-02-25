@@ -217,6 +217,9 @@ namespace FashionApp
         private async void WebGalleryButton_Clicked(object sender, EventArgs e)
             => await Navigation.PushAsync(new BaseGallery("Cloth Gallery", "/storage/emulated/0/Pictures/FashionApp/CaptureScreen%"));
 
+        private async void PartnersPageButton_Clicked(object sender, EventArgs e)
+            => await Navigation.PushAsync(new PartnersPage());
+
         //private async void OnNavigateClickedToMaskJS(object sender, EventArgs e)
         //    => await Navigation.PushAsync(new MaskJS());
 
@@ -232,7 +235,5 @@ namespace FashionApp
 
         private async void MaskGalleryButton_Clicked(object sender, EventArgs e)
             => await Navigation.PushAsync(new GalleryMasksPage());
-
-      
     }
 }
