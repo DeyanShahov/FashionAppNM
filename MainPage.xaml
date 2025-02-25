@@ -72,7 +72,7 @@
             <Button
                 x:Name="LoginBtn"
                 SemanticProperties.Hint="Counts the number of times you click"
-                Clicked="OnCounterClicked"
+                Clicked="OnLoginButton_Clicked"
                 HorizontalOptions="Fill" />
 
             <Button x:Name="LoadButton" 

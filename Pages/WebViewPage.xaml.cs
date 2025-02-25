@@ -79,7 +79,7 @@ public partial class WebViewPage : ContentPage
             Stream imageStream = await screenshot.OpenReadAsync();
 
 #if ANDROID
-                SaveImageToAndroid.Save($"{imageFileName}", imageStream, AppConstants.IMAGES_CAPTURE_SCREEN);
+                SaveImageToAndroid.Save($"{imageFileName}", imageStream, AppConstants.ImagesConstants.IMAGES_CAPTURE_SCREEN);
 #endif
         }
         else

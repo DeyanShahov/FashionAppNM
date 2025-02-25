@@ -32,21 +32,18 @@ public partial class MaskEditor : ContentPage
     private List<DrawingLine> _lines = new();
     private DrawingLine _currentLine;
     private IDrawable _drawable;
-    //private HashSet<(int x, int y)> _markedPixels = new();
     private string imageFileName = $"masked_image_{DateTime.Now:yyyyMMdd_HHmmss}.png";
     private CameraService _cameraService;
 
     public MaskEditor()
     {
         InitializeComponent();
-        //_drawable = new DrawingViewDrawable(_lines, _markedPixels);
         _drawable = new DrawingViewDrawable(_lines);
         DrawingView.Drawable = _drawable;
 
         _cameraService = new CameraService(MyCameraView, CameraPanel);
         _cameraService.ImageCaptured += OnImageCaptured;
         _cameraService.StopCamera();
-        //MyCameraView.StopCameraPreview();
     }
 
     private async void OnBackButtonClicked(object sender, EventArgs e)
@@ -74,13 +71,13 @@ public partial class MaskEditor : ContentPage
                 }
                 else
                 {
-                    await DisplayAlert("Error", "Please select a valid image file (jpg or png)", "OK");
+                    await DisplayAlert(AppConstants.Errors.ERROR, "Please select a valid image file (jpg or png)", "OK");
                 }
             }
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Error", $"An error occurred: {ex.Message}", "OK");
+            await DisplayAlert(AppConstants.Errors.ERROR, $"An error occurred: {ex.Message}", "OK");
         }
     }
 
@@ -130,9 +127,6 @@ public partial class MaskEditor : ContentPage
         DrawingView.IsVisible = true;
         DrawingTools.IsVisible = true;
         DrawingBottons.IsVisible = true;
-
-        //CameraPanel.IsVisible = false;
-        //CameraPanel.IsEnabled = false;
     }
 
     private async Task<Stream> AddAlphaChanel(Stream imageStream)
@@ -251,7 +245,7 @@ public partial class MaskEditor : ContentPage
             imageFileName = string.Empty; // Reset value of paramether
 
 #elif ANDROID
-            SaveImageToAndroid.Save(imageFileName, resultStream, AppConstants.IMAGES_MASKS_DIRECTORY);                       
+            SaveImageToAndroid.Save(imageFileName, resultStream, AppConstants.ImagesConstants.IMAGES_MASKS_DIRECTORY);                       
 #endif
         }
         catch (Exception ex)
@@ -268,13 +262,13 @@ public partial class MaskEditor : ContentPage
 
     private async void ClosedJacketImageButton_Clicked(object sender, EventArgs e)
     {
-        await MacroMechanics(sender, AppConstants.CLOSED_JACKET_MASK);
+        await MacroMechanics(sender, AppConstants.ImagesConstants.CLOSED_JACKET_MASK);
     }
 
 
     private async void OpenJacketImageButton_Clicked(object sender, EventArgs e)
     {
-        await MacroMechanics(sender, AppConstants.OPEN_JACKET_MASK);
+        await MacroMechanics(sender, AppConstants.ImagesConstants.OPEN_JACKET_MASK);
     }
 
     private void PanelButton_Clicked(object sender, EventArgs e)

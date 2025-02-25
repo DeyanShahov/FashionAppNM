@@ -391,7 +391,7 @@ public partial class CombineImages : ContentPage
                 Android.Content.ContentValues contentValues = new();
                 contentValues.Put(Android.Provider.MediaStore.IMediaColumns.DisplayName, fileName);
                 contentValues.Put(Android.Provider.MediaStore.IMediaColumns.MimeType, "image/png");
-                contentValues.Put(Android.Provider.MediaStore.IMediaColumns.RelativePath, AppConstants.IMAGES_DIRECTORY);
+                contentValues.Put(Android.Provider.MediaStore.IMediaColumns.RelativePath, AppConstants.ImagesConstants.IMAGES_DIRECTORY);
                 Android.Net.Uri imageUri = resolver.Insert(Android.Provider.MediaStore.Images.Media.ExternalContentUri, contentValues);
                 var os = resolver.OpenOutputStream(imageUri);
                 Android.Graphics.BitmapFactory.Options options = new();
@@ -402,7 +402,7 @@ public partial class CombineImages : ContentPage
                 os.Flush();
                 os.Close();
 
-                await DisplayAlert("Success", $"Image saved on {AppConstants.IMAGES_DIRECTORY}", "OK");
+                await DisplayAlert("Success", $"Image saved on {AppConstants.ImagesConstants.IMAGES_DIRECTORY}", "OK");
             }
             else
             {
@@ -434,10 +434,10 @@ public partial class CombineImages : ContentPage
     {
         SetActiveButton(sender as ImageButton);
 #if WINDOWS
-        await LoadCorrectImageMaskWindows(AppConstants.OPEN_JACKET_MASK);
+        await LoadCorrectImageMaskWindows(AppConstants.ImagesConstants.OPEN_JACKET_MASK);
 #elif ANDROID
         //await LoadCorrectImageMaskAndroid(AppConstants.OPEN_JACKET_MASK);
-        LoadLargeImage(AppConstants.OPEN_JACKET_MASK);
+        LoadLargeImage(AppConstants.ImagesConstants.OPEN_JACKET_MASK);
 #endif
     }
 
@@ -445,11 +445,11 @@ public partial class CombineImages : ContentPage
     {
         SetActiveButton(sender as ImageButton);
 #if WINDOWS
-        await LoadCorrectImageMaskWindows(AppConstants.CLOSED_JACKET_MASK);
+        await LoadCorrectImageMaskWindows(AppConstants.ImagesConstants.CLOSED_JACKET_MASK);
 #elif ANDROID
         //await LoadCorrectImageMaskAndroid(AppConstants.CLOSED_JACKET_MASK);
         //LoadLargeImage(_bodyImagePath);
-        LoadLargeImage(AppConstants.CLOSED_JACKET_MASK);
+        LoadLargeImage(AppConstants.ImagesConstants.CLOSED_JACKET_MASK);
 #endif
     }
 

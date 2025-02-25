@@ -10,6 +10,7 @@ using CommunityToolkit.Maui.Core.Views;
 using FashionApp.Pages;
 using Microsoft.Maui.Platform;
 using FashionApp.Data.Constants;
+using FashionApp.core.services;
 
 
 #if ANDROID
@@ -20,7 +21,6 @@ namespace FashionApp
 {
     public partial class MainPage : ContentPage
     {
-        int count = 0;
         private readonly HttpClient _client = new HttpClient { Timeout = TimeSpan.FromSeconds(300) };
         private const string ApiUrl = "https://eminently-verified-walleye.ngrok-free.app";
         //private const string ApiUrl = "http://192.168.0.101:80";
@@ -31,90 +31,68 @@ namespace FashionApp
         {
             InitializeComponent();
 
-            WelcomeMessage.Text = $"Welcome Guest!";
-            LoginBtn.Text = "Login as User";
+            WelcomeMessage.Text = AppConstants.Messages.WELCOME_GUEST;
+            LoginBtn.Text = AppConstants.Messages.LOGIN_AS_USER;
 
             SetContentLabel();
         }
 
         private void SetContentLabel()
         {
-            ContentLabel.Text = $"Created by RedFox - AI Айляк";
+            ContentLabel.Text = AppConstants.Messages.CREATED_BY;
 
 #if ANDROID
-            // Проверка на текущата Андроид версия и съответната API версия
+            // Проверка и отпечатване на екрана на текущата Андроид версия и съответната API версия
             ContentLabel.Text += $"\n Android: {Build.VERSION.Release}  API: {(int)(int)Build.VERSION.SdkInt}";
 #endif
         }
 
-        private void OnCounterClicked(object sender, EventArgs e)
+        private void OnLoginButton_Clicked(object sender, EventArgs e)
         {
             isGuest = !isGuest;
 
-            if (isGuest)
-            {
-                WelcomeMessage.Text = "Welcome Guest!";
-                WelcomeInfo.Text = "The logged-in users have access to additional features.";
-                LoginBtn.Text = "Login as User";
+            WelcomeMessage.Text = isGuest ? AppConstants.Messages.WELCOME_GUEST : AppConstants.Messages.WELCOME_USER;
+            WelcomeInfo.Text = isGuest ? AppConstants.Messages.GUEST_MESSAGE : AppConstants.Messages.USER_MESSAGE;
+            LoginBtn.Text = isGuest ?  AppConstants.Messages.LOGIN_AS_USER : AppConstants.Messages.LOGOUT;
 
-                InputEntry.IsEnabled = false;
-                InputEntry.IsVisible = false;
-            }
-            else
-            {
-                WelcomeMessage.Text = "Welcome User!";
-                WelcomeInfo.Text = "Adding a prompt field for creation an image.";
-                LoginBtn.Text = "Logout";
+            SetVisibilityElementsForGuest(isGuest);
+            SetVisibilityForResult(false);
 
-                InputEntry.IsEnabled = true;
-                InputEntry.IsVisible = true;
-            }
-
-            ResponseImage.IsVisible = false;
-            ResponseText.IsVisible = false;
-            SaveButton.IsVisible = false;
-            SaveButton.IsEnabled = false;
-            InputEntry.Text = "";
-        }
+            InputEntry.Text = String.Empty;
+        }   
 
         private async void OnLoadClicked(object sender, EventArgs e)
         {
-            await InputEntry.HideKeyboardAsync();
+            // Проверка на операционната система и скриване на клавиятурата 
+            if (OperatingSystem.IsAndroid()) await InputEntry.HideKeyboardAsync();
 
             try
             {
                 ToggleLoading(true);
-                ResponseImage.IsVisible = false;
-                ResponseText.IsVisible = false;
-                SaveButton.IsVisible = false;
-                SaveButton.IsEnabled = false;
+                SetVisibilityForResult(false);
 
                 var inputText = InputEntry.Text?.Trim();
                 if (string.IsNullOrEmpty(inputText) && InputEntry.IsEnabled)
                 {
-                    ResponseText.Text = "Please enter some text.";
+                    ResponseText.Text = AppConstants.Errors.PLEASE_ENTER_SOME_TEXT;
                     ResponseText.IsVisible = true;
                     ToggleLoading(false);
                     return;
-
                 }
 
                 var requestUrl = $"{ApiUrl}/image";
                 var requestBody = new
                 {
-                    function_name = "generate_image",
-                    args = isGuest ? "bottle" : inputText
+                    function_name = AppConstants.Parameters.CONFY_FUNCTION_NAME,
+                    args = isGuest ? AppConstants.Parameters.CONFY_FUNCTION_ARG : inputText
                 };
 
                 var jsonContent = new StringContent(JsonSerializer.Serialize(requestBody), Encoding.UTF8, "application/json");
                 var response = await _client.PostAsync(requestUrl, jsonContent);
-                //var requestUrl = $"{ApiUrl}";
-
-                //var response2 = await _client.GetAsync(requestUrl, jsonContent);
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    throw new HttpRequestException($"HTTP error: {response.StatusCode}");
+                    throw new HttpRequestException($"HTTP {AppConstants.Errors.ERROR}: {response.StatusCode}");
                 }
 
                 var contentType = response.Content.Headers.ContentType?.MediaType;
@@ -135,7 +113,7 @@ namespace FashionApp
             }
             catch (Exception ex)
             {
-                ResponseText.Text = $"Error: {ex.Message}";
+                ResponseText.Text = $"{AppConstants.Errors.ERROR}: {ex.Message}";
                 ResponseText.IsVisible = true;
             }
             finally
@@ -146,62 +124,25 @@ namespace FashionApp
 
         private async void OnSaveClicked(object sender, EventArgs e)
         {
-            if (_imageData == null)
-                return;
+            if (_imageData == null) return;
 
             try
             {
                 var fileName = $"image_{DateTime.Now:yyyyMMdd_HHmmss}.png";
-                //var filePath = Path.Combine(FileSystem.AppDataDirectory, fileName);               
-
-                //await File.WriteAllBytesAsync(filePath, _imageData);
-
-                //await DisplayAlert("Success", $"Image saved to {filePath}", "OK");
-
                 using var stream = new MemoryStream(_imageData);
-                stream.Position = 0;               
+                stream.Position = 0;
 
 #if WINDOWS
                 await File.WriteAllBytesAsync($"C:\\Users\\Public\\Pictures\\{fileName}", _imageData);
                 await DisplayAlert("Success", $"Image saved to C:\\Users\\Public\\Pictures", "OK");
 
 #elif ANDROID
-                var context = Platform.CurrentActivity;
-
-                if (OperatingSystem.IsAndroidVersionAtLeast(29))
-                {
-                    Android.Content.ContentResolver resolver = context.ContentResolver;
-                    Android.Content.ContentValues contentValues = new();
-                    contentValues.Put(Android.Provider.MediaStore.IMediaColumns.DisplayName, fileName);
-                    contentValues.Put(Android.Provider.MediaStore.IMediaColumns.MimeType, "image/png");
-                    contentValues.Put(Android.Provider.MediaStore.IMediaColumns.RelativePath, "DCIM/" + "FashionApp");
-                    Android.Net.Uri imageUri = resolver.Insert(Android.Provider.MediaStore.Images.Media.ExternalContentUri, contentValues);
-                    var os = resolver.OpenOutputStream(imageUri);
-                    Android.Graphics.BitmapFactory.Options options = new();
-                    options.InJustDecodeBounds = true;
-                    var bitmap = Android.Graphics.BitmapFactory.DecodeStream(stream);
-                    //var bitmap = _imageData;
-                    bitmap.Compress(Android.Graphics.Bitmap.CompressFormat.Png, 100, os);
-                    os.Flush();
-                    os.Close();
-
-                    await DisplayAlert("Success", $"Image saved on DCIM / FashionApp!", "OK");
-                }
-                else
-                {
-                    Java.IO.File storagePath = Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryPictures);
-                    string path = System.IO.Path.Combine(storagePath.ToString(), fileName);
-                    System.IO.File.WriteAllBytes(path, stream.ToArray());
-                    //System.IO.File.WriteAllBytes(path, _imageData);
-                    var mediaScanIntent = new Android.Content.Intent(Android.Content.Intent.ActionMediaScannerScanFile);
-                    mediaScanIntent.SetData(Android.Net.Uri.FromFile(new Java.IO.File(path)));
-                    context.SendBroadcast(mediaScanIntent);
-                }
+                SaveImageToAndroid.Save(fileName, stream,  AppConstants.ImagesConstants.IMAGES_CREATED_IMAGES);                      
 #endif
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Error", $"Failed to save image: {ex.Message}", "OK");
+                await DisplayAlert(AppConstants.Errors.ERROR, $"{AppConstants.Errors.FAILED_TO_SAVE_IMAGE}: {ex.Message}", "OK");
             }
         }
 
@@ -215,13 +156,30 @@ namespace FashionApp
             => await Navigation.PushAsync(new WebViewPage());
 
         private async void WebGalleryButton_Clicked(object sender, EventArgs e)
-            => await Navigation.PushAsync(new BaseGallery("Cloth Gallery", "/storage/emulated/0/Pictures/FashionApp/CaptureScreen%"));
+            => await Navigation.PushAsync(new BaseGallery(
+                AppConstants.Parameters.APP_CLOTH_GALLERY, 
+                AppConstants.Parameters.APP_FULLPATH_CAPTURE_SCREEN));
 
         private async void PartnersPageButton_Clicked(object sender, EventArgs e)
             => await Navigation.PushAsync(new PartnersPage());
 
         //private async void OnNavigateClickedToMaskJS(object sender, EventArgs e)
-        //    => await Navigation.PushAsync(new MaskJS());
+        //    => await Navigation.PushAsync(new MaskJS());  
+
+        private async void GalleryButton_Clicked(object sender, EventArgs e)
+            => await Navigation.PushAsync(new GalleryImagesPage());
+
+        private async void MaskGalleryButton_Clicked(object sender, EventArgs e)
+            => await Navigation.PushAsync(new GalleryMasksPage());
+
+
+
+        // ------------------------------------------------------------------------------------------------------
+        private void SetVisibilityElementsForGuest(bool isGuestActive)
+        {
+            InputEntry.IsEnabled = !isGuestActive;
+            InputEntry.IsVisible = !isGuestActive;
+        }
 
         private void ToggleLoading(bool isLoading)
         {
@@ -230,10 +188,12 @@ namespace FashionApp
             LoadingIndicator.IsVisible = isLoading;
         }
 
-        private async void GalleryButton_Clicked(object sender, EventArgs e)
-            => await Navigation.PushAsync(new GalleryImagesPage());
-
-        private async void MaskGalleryButton_Clicked(object sender, EventArgs e)
-            => await Navigation.PushAsync(new GalleryMasksPage());
+        private void SetVisibilityForResult(bool toSet)
+        {
+            ResponseImage.IsVisible = toSet;
+            ResponseText.IsVisible = toSet;
+            SaveButton.IsVisible = toSet;
+            SaveButton.IsEnabled = toSet;
+        }
     }
 }

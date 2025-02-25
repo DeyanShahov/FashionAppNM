@@ -21,8 +21,6 @@
             var filePath = Path.Combine(targetPath,fileName);
 
             return Directory.Exists(targetPath) && File.Exists(filePath);
-#elif WINDOWS
-            return false;
 #endif
             return false;
         }

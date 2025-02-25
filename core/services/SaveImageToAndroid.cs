@@ -53,6 +53,14 @@ namespace FashionApp.core.services
             {
                 // Handle older Android versions if needed
                 await Application.Current.MainPage.DisplayAlert("Error", "OS is invalid!", "OK");
+
+                //Java.IO.File storagePath = Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryPictures);
+                //string path = System.IO.Path.Combine(storagePath.ToString(), imageFileName);
+                //System.IO.File.WriteAllBytes(path, stream.ToArray());
+                ////System.IO.File.WriteAllBytes(path, _imageData);
+                //var mediaScanIntent = new Android.Content.Intent(Android.Content.Intent.ActionMediaScannerScanFile);
+                //mediaScanIntent.SetData(Android.Net.Uri.FromFile(new Java.IO.File(path)));
+                //context.SendBroadcast(mediaScanIntent);
             }
         }
 #endif
