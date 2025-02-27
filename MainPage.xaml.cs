@@ -1,21 +1,8 @@
 ﻿using CommunityToolkit.Maui.Core.Platform;
+using FashionApp.Data.Constants;
+using FashionApp.Pages;
 using System.Text;
 using System.Text.Json;
-using Microsoft.Maui.Storage;
-using System.IO;
-using System;
-using Microsoft.Maui.Controls.PlatformConfiguration;
-using CommunityToolkit.Maui.Core.Handlers;
-using CommunityToolkit.Maui.Core.Views;
-using FashionApp.Pages;
-using Microsoft.Maui.Platform;
-using FashionApp.Data.Constants;
-using FashionApp.core.services;
-
-
-#if ANDROID
-using Android.OS;
-#endif
 
 namespace FashionApp
 {
@@ -25,7 +12,7 @@ namespace FashionApp
         private const string ApiUrl = "https://eminently-verified-walleye.ngrok-free.app";
         //private const string ApiUrl = "http://192.168.0.101:80";
         bool isGuest = true;
-        private byte[] _imageData;
+        private byte[] _imageData = [];
 
         public MainPage()
         {
@@ -43,7 +30,7 @@ namespace FashionApp
 
 #if ANDROID
             // Проверка и отпечатване на екрана на текущата Андроид версия и съответната API версия
-            ContentLabel.Text += $"\n Android: {Build.VERSION.Release}  API: {(int)(int)Build.VERSION.SdkInt}";
+            ContentLabel.Text += $"\n Android: {Android.OS.Build.VERSION.Release}  API: {(int)(int)Android.OS.Build.VERSION.SdkInt}";
 #endif
         }
 
@@ -83,8 +70,8 @@ namespace FashionApp
                 var requestUrl = $"{ApiUrl}/image";
                 var requestBody = new
                 {
-                    function_name = AppConstants.Parameters.CONFY_FUNCTION_NAME,
-                    args = isGuest ? AppConstants.Parameters.CONFY_FUNCTION_ARG : inputText
+                    function_name = AppConstants.Parameters.CONFY_FUNCTION_GENERATE_NAME,
+                    args = isGuest ? AppConstants.Parameters.CONFY_FUNCTION_GENERATE_ARG : inputText
                 };
 
                 var jsonContent = new StringContent(JsonSerializer.Serialize(requestBody), Encoding.UTF8, "application/json");
@@ -137,7 +124,7 @@ namespace FashionApp
                 await DisplayAlert("Success", $"Image saved to C:\\Users\\Public\\Pictures", "OK");
 
 #elif ANDROID
-                SaveImageToAndroid.Save(fileName, stream,  AppConstants.ImagesConstants.IMAGES_CREATED_IMAGES);                      
+                FashionApp.core.services.SaveImageToAndroid.Save(fileName, stream,  AppConstants.ImagesConstants.IMAGES_CREATED_IMAGES);                      
 #endif
             }
             catch (Exception ex)

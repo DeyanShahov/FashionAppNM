@@ -1,39 +1,19 @@
-using Microsoft.Maui.Graphics;
-using Microsoft.Maui.Graphics.Platform;
-using IImage = Microsoft.Maui.Graphics.IImage;
-using Microsoft.Maui.Controls;
-using CommunityToolkit.Maui.Views;
 using FashionApp.core;
-using SkiaSharp;
-using System.IO;
-using static Microsoft.Maui.ApplicationModel.Permissions;
+using FashionApp.core.draw;
 using FashionApp.core.services;
-using Microsoft.Maui.Controls.PlatformConfiguration;
 using FashionApp.Data.Constants;
 using FashionApp.Pages;
-using FashionApp.core.draw;
-//using static Java.Util.Jar.Attributes;
-
-
-
-#if __ANDROID__
-using AndroidX.Emoji2.Text.FlatBuffer;
-using Android.Content;
-using Android.Database;
-using Android.Net;
-using Android.Provider;
-using Android.OS;
-#endif
+using SkiaSharp;
 
 namespace FashionApp;
 
 public partial class MaskEditor : ContentPage
 {
     private List<DrawingLine> _lines = new();
-    private DrawingLine _currentLine;
-    private IDrawable _drawable;
+    private DrawingLine _currentLine = new();
+    private readonly IDrawable _drawable;
     private string imageFileName = $"masked_image_{DateTime.Now:yyyyMMdd_HHmmss}.png";
-    private CameraService _cameraService;
+    private readonly CameraService _cameraService;
 
     public MaskEditor()
     {
@@ -58,7 +38,7 @@ public partial class MaskEditor : ContentPage
             var result = await FilePicker.PickAsync(new PickOptions
             {
                 FileTypes = FilePickerFileType.Images,
-                PickerTitle = "Pick an image"
+                PickerTitle = AppConstants.Messages.PICK_AN_IMAGE
             });
 
             if (result != null)
@@ -70,14 +50,12 @@ public partial class MaskEditor : ContentPage
                     await ProcessSelectedImage(stream);
                 }
                 else
-                {
-                    await DisplayAlert(AppConstants.Errors.ERROR, "Please select a valid image file (jpg or png)", "OK");
-                }
+                    await DisplayAlert(AppConstants.Errors.ERROR, AppConstants.Errors.SELECT_A_VALID_IMAGE, AppConstants.Messages.OK);
             }
         }
         catch (Exception ex)
         {
-            await DisplayAlert(AppConstants.Errors.ERROR, $"An error occurred: {ex.Message}", "OK");
+            await DisplayAlert(AppConstants.Errors.ERROR, $"{AppConstants.Errors.ERROR}: {ex.Message}", AppConstants.Messages.OK);
         }
     }
 
@@ -86,14 +64,11 @@ public partial class MaskEditor : ContentPage
         var file = await FilePicker.PickAsync(new PickOptions
         {
             FileTypes = FilePickerFileType.Images,
-            PickerTitle = "Pick an image"
+            PickerTitle = AppConstants.Messages.PICK_AN_IMAGE
         });
 
-        if (file != null)
-        {
-            // Отваряне на модалния прозорец с пътя на изображението
-            await Navigation.PushModalAsync(new ImageEditPage(file.FullPath));
-        }
+        // Отваряне на модалния прозорец с пътя на изображението
+        if (file != null) await Navigation.PushModalAsync(new ImageEditPage(file.FullPath));
     }
 
     private async void OnImageCaptured(Stream imageStream)
@@ -115,8 +90,8 @@ public partial class MaskEditor : ContentPage
         SelectedImage.Source = ImageSource.FromStream(() => imageWithAlpha);
         
         // Настройка на ширината и височината на изображението
-        SelectedImage.WidthRequest = Application.Current.MainPage.Width; // Задаване на ширината на екрана
-        SelectedImage.HeightRequest = Application.Current.MainPage.Height; // Задаване на височината на екрана
+        SelectedImage.WidthRequest = Application.Current.MainPage.Width; 
+        SelectedImage.HeightRequest = Application.Current.MainPage.Height; 
 
         // Центриране на изображението
         SelectedImage.HorizontalOptions = LayoutOptions.Center;
@@ -201,7 +176,6 @@ public partial class MaskEditor : ContentPage
     void OnClearClicked(object sender, EventArgs e)
     {
         _lines.Clear();
-        //_markedPixels.Clear(); // Изчистваме и маркираните пиксели
         DrawingView.Invalidate();
     }
 
@@ -219,8 +193,7 @@ public partial class MaskEditor : ContentPage
         if (SelectedImage.Source == null) return;
 
         // Деактивиране на бутона
-        SaveMaskImageButton.IsEnabled = false;
-        DrawingBottons.IsVisible = false;
+        ChangeVisibilityOnSaveButton(false);
 
         try
         {
@@ -250,13 +223,15 @@ public partial class MaskEditor : ContentPage
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Error", $"Failed to save image: {ex.Message}", "OK");
+            await DisplayAlert(
+                AppConstants.Errors.ERROR,
+                $"{AppConstants.Errors.FAILED_TO_SAVE_IMAGE}: {ex.Message}",
+                AppConstants.Messages.OK);
         }
         finally
         {
             // Включване на бутона отново
-            SaveMaskImageButton.IsEnabled = true;
-            DrawingBottons.IsVisible = true;
+            ChangeVisibilityOnSaveButton(true);
         }
     }
 
@@ -265,7 +240,6 @@ public partial class MaskEditor : ContentPage
         await MacroMechanics(sender, AppConstants.ImagesConstants.CLOSED_JACKET_MASK);
     }
 
-
     private async void OpenJacketImageButton_Clicked(object sender, EventArgs e)
     {
         await MacroMechanics(sender, AppConstants.ImagesConstants.OPEN_JACKET_MASK);
@@ -273,34 +247,18 @@ public partial class MaskEditor : ContentPage
 
     private void PanelButton_Clicked(object sender, EventArgs e)
     {
-        HideMenus();
-
         _cameraService.StartCamera();
-    }
-
-    private void HideMenus()
-    {
-        Menu1.IsVisible = !Menu1.IsVisible;
-        ImageContainer.IsVisible = !ImageContainer.IsVisible;
-        Menu2.IsVisible = !Menu2.IsVisible;
-        Menu3.IsVisible = !Menu3.IsVisible;
+        HideMenus();
     }
 
     private void HidePanelCommand(object sender, EventArgs e)
-    {
-       
+    {     
         _cameraService.StopCamera();
         HideMenus();
     }
 
-    //private async void MyCameraView_MediaCaptured(object sender, CommunityToolkit.Maui.Views.MediaCapturedEventArgs e)
-    //{
-       
-    //}
-
-    private async void OnCaptureClicked(object sender, EventArgs e)
+    private void OnCaptureClicked(object sender, EventArgs e)
     {
-        //await MyCameraView.CaptureImage(CancellationToken.None);
         _cameraService.CaptureClicked();
     }
 
@@ -315,7 +273,10 @@ public partial class MaskEditor : ContentPage
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Error checking masks", ex.Message, "Ok");
+            await DisplayAlert(
+                AppConstants.Errors.ERROR,
+                $"{AppConstants.Errors.ERROR_CKECK_MASKS}: {ex.Message}",
+                AppConstants.Messages.OK);
             return false;
         }
     }
@@ -343,13 +304,19 @@ public partial class MaskEditor : ContentPage
         if (isMaskExist)
         {
             // Питане за потвърждение дали да подмени маската или не с нова
-            bool confirmation = await DisplayAlert("Replace Confirmation", $"Are you sure you want to replace the {macroImageFullName.Replace('_', ' ').Remove(macroImageFullName.Length - 4)}?", "Yes", "Cancel");
+            bool confirmation = await DisplayAlert(
+                AppConstants.Messages.REPLACE_CONFIRMATION, 
+                $"{AppConstants.Messages.MESSAGE_FOR_REPLACE} {macroImageFullName.Replace('_', ' ').Remove(macroImageFullName.Length - 4)}?",
+                AppConstants.Messages.YES,
+                AppConstants.Messages.CANCEL);
             return confirmation;
         }
         else
         {
             // Цъобщение че ще се запази като маска към незаето Макро
-            await DisplayAlert("Set Confirmation", "You will save a new mask image. ", "OK");
+            await DisplayAlert(AppConstants.Messages.SET_CONFIRMATION,
+                               AppConstants.Messages.MESSAGE_FOR_SAVE_MASK,
+                               AppConstants.Messages.OK);
             return true;
         }         
     }
@@ -360,7 +327,6 @@ public partial class MaskEditor : ContentPage
         {
             ClosedJacketImageButton,
             OpenJacketImageButton
-            // Тук можете да добавите нови бутони в бъдеще
         };
 
         // Премахваме ефектите от всички бутони
@@ -381,17 +347,27 @@ public partial class MaskEditor : ContentPage
             activeButton.Scale = 1.3;
         }
     }
-
     public async Task<byte[]> ConvertStreamToByteArrayAsync(Stream stream)
     {
-        if (stream == null)
-            return null;
+        if (stream == null) return Array.Empty<byte>();
 
         using (MemoryStream memoryStream = new MemoryStream())
         {
-            await stream.CopyToAsync(memoryStream); // Асинхронно копиране
+            await stream.CopyToAsync(memoryStream);
             return memoryStream.ToArray();
         }
+    }
+    private void HideMenus()
+    {
+        Menu1.IsVisible = !Menu1.IsVisible;
+        ImageContainer.IsVisible = !ImageContainer.IsVisible;
+        Menu2.IsVisible = !Menu2.IsVisible;
+        Menu3.IsVisible = !Menu3.IsVisible;
+    }
+    private void ChangeVisibilityOnSaveButton(bool isSet)
+    {
+        SaveMaskImageButton.IsEnabled = isSet;
+        DrawingBottons.IsVisible = isSet;
     }
 }
 

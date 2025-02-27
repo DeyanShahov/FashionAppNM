@@ -22,6 +22,7 @@ namespace FashionApp
 
             builder.UseMauiCommunityToolkitCore();
             builder.Services.AddSingleton<IFileChecker, FileChecker>();
+            builder.Services.AddSingleton<CheckForAndroidPermissions>();
 
 #if DEBUG
             builder.Logging.AddDebug();
