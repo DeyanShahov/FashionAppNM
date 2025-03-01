@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FashionApp.Data.Constants;
 
 namespace FashionApp.core.services
 {
@@ -25,15 +21,10 @@ namespace FashionApp.core.services
             // Използваме същата директория, както в ImageLoader.cs за Windows
             var imageDirectory = @"C:\Users\redfo\Downloads\AI Girls\AI Daenerys Targaryen";
             var filePath = Path.Combine(imageDirectory, fileNameFullPath);
-            //if (File.Exists(filePath))
-            if (File.Exists(fileNameFullPath))
-            {
-                setImage($"file://{filePath}");
-            }
-            else
-            {
-                setErrorMessage($"Error: File {fileNameFullPath} not found in directory: {imageDirectory}");
-            }
+
+            if (File.Exists(fileNameFullPath)) setImage($"file://{filePath}");
+            else setErrorMessage($"{AppConstants.Errors.ERROR}: {AppConstants.Errors.FILE_NOT_FOUND}");
+
 #elif __ANDROID__
                 if (OperatingSystem.IsAndroidVersionAtLeast(29))
                 {
@@ -42,8 +33,6 @@ namespace FashionApp.core.services
                     Android.Provider.IBaseColumns.Id,
                     Android.Provider.MediaStore.IMediaColumns.Data
                 };
-                    // Пълният път на файла
-                    //string filePath = $"/storage/emulated/0/Pictures/FashionApp/MasksImages/{fileName}";
                     string filePath = fileNameFullPath;
                     string selection = $"{Android.Provider.MediaStore.IMediaColumns.Data} = ?";
                     string[] selectionArgs = new[] { filePath };
@@ -58,7 +47,7 @@ namespace FashionApp.core.services
 
                     if (cursor == null)
                     {
-                        setErrorMessage("Error: Cursor is null. Query failed.");
+                        setErrorMessage($"{AppConstants.Errors.ERROR}: {AppConstants.Errors.CURSOR_ERROR}");
                         return;
                     }
                     if (cursor.MoveToFirst())
@@ -72,13 +61,13 @@ namespace FashionApp.core.services
                     }
                     else
                     {
-                        setErrorMessage($"Error: File {fileNameFullPath} not found in MediaStore.");
+                        setErrorMessage($"{AppConstants.Errors.ERROR}: {AppConstants.Errors.FILE_NOT_FOUND}.");
                     }
                 }
                 else
                 {
                     // За Android стари версии (legacy) използваме директен достъп до файловата система
-                    string directory = "/storage/emulated/0/Pictures/FashionApp/MasksImages";
+                    string directory = $"{AppConstants.Parameters.APP_BASE_PATH}/{AppConstants.Parameters.APP_NAME}/{AppConstants.Parameters.APP_FOLDER_MASK}%";
                     var filePath = Path.Combine(directory, fileNameFullPath);
                     if (File.Exists(filePath))
                     {
@@ -86,7 +75,7 @@ namespace FashionApp.core.services
                     }
                     else
                     {
-                        setErrorMessage($"Error: File {fileNameFullPath} not found in directory: {directory}");
+                        setErrorMessage($"{AppConstants.Errors.ERROR}: {AppConstants.Errors.FILE_NOT_FOUND}.");
                     }
                 }
 #endif
@@ -94,7 +83,10 @@ namespace FashionApp.core.services
             }
             catch (Exception ex)
             {
-                await App.Current.MainPage.DisplayAlert("Error",$"An error occurred: {ex.Message}\nStack: {ex.StackTrace}", "OK");
+                await App.Current.MainPage.DisplayAlert(
+                    AppConstants.Errors.ERROR, 
+                    $"{AppConstants.Errors.ERROR_OCCURRED}: {ex.Message}\nStack: {ex.StackTrace}",
+                    AppConstants.Messages.OK);
             }
         }
     }

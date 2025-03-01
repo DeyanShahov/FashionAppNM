@@ -1,10 +1,7 @@
 using FashionApp.core.services;
-using Microsoft.Maui.Controls.PlatformConfiguration;
 
 #if __ANDROID__
 using Android.Content;
-using Android.Database;
-using Android.Net;
 using Android.Provider;
 #endif
 
@@ -89,7 +86,6 @@ public partial class BaseGallery : ContentPage
 #endif
     }
 
-    //private async void LoadAllImagesForGallery() => await imagesLoader.LoadImagesAsync("/storage/emulated/0/Pictures/FashionApp/Images%");
     private async void LoadAllImagesForGallery() => await imagesLoader.LoadImagesAsync(imagesPath);
 
 #if ANDROID
@@ -99,7 +95,6 @@ public partial class BaseGallery : ContentPage
         if (ImagesList.Count == 0) return;
 
         // Извличане на пътя на първото изображение в списъка
-        //var imagePath = Path.GetFileName(GetRealPathFromUri(Android.App.Application.Context.ContentResolver, ImagesList.FirstOrDefault()));
         var imagePath = GetRealPathFromUri(Android.App.Application.Context.ContentResolver, ImagesList.FirstOrDefault());
 
         // Зареждане на изображението асинхронно
@@ -111,10 +106,7 @@ public partial class BaseGallery : ContentPage
 
     private async void SelectedBodyImage_Tapped(object sender, TappedEventArgs e)
     {
-        if (selectedImageUri != null)
-        {
-            await Navigation.PushModalAsync(new ImageDetailPage(selectedImageUri));
-        }
+        if (selectedImageUri != null) await Navigation.PushModalAsync(new ImageDetailPage(selectedImageUri));
     }
 
 
@@ -157,10 +149,7 @@ public partial class BaseGallery : ContentPage
             }
 
             // Проверка дали файлът съществува
-            if (!string.IsNullOrEmpty(filePath) && File.Exists(filePath))
-            {
-                return filePath; // Връща пълния път до файла
-            }
+            if (!string.IsNullOrEmpty(filePath) && File.Exists(filePath)) return filePath;
         }
 
         return null; // Връща null, ако не е намерен път

@@ -52,7 +52,6 @@ namespace FashionApp.core
             //var resizedImageResult = await ImageStreamResize.ResizeImageStream(resultStream, 500, 700);
             resultStream.Position = 0;
             return resultStream;
-            //return resizedImageResult.ResizedStream;
         }
     }
 }

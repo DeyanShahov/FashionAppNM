@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FashionApp.Data.Constants;
 
 namespace FashionApp.core.services
 {
@@ -66,12 +62,12 @@ namespace FashionApp.core.services
             var testPermission = await Permissions.CheckStatusAsync<Permissions.StorageRead>();
             if (Permissions.ShouldShowRationale<Permissions.StorageRead>())
             {
-                setErrorMessage("Error: Storage permission is required to access storage.");
+                setErrorMessage($"{AppConstants.Errors.ERROR}: {AppConstants.Errors.STORAGE_PERMISSION_REQUIRED}");
             }
             testPermission = await Permissions.RequestAsync<Permissions.StorageRead>();
             if (testPermission != PermissionStatus.Granted)
             {
-                setErrorMessage("Error: Storage permission is required to load images.");
+                setErrorMessage($"{AppConstants.Errors.ERROR}: {AppConstants.Errors.STORAGE_PERMISSION_REQUIRED}");
                 return;
             }
 
@@ -112,13 +108,13 @@ namespace FashionApp.core.services
         
             if (cursor == null)
             {
-                setErrorMessage("Error: Cursor is null. Query failed.");
+                setErrorMessage($"{AppConstants.Errors.ERROR}: {AppConstants.Errors.CURSOR_ERROR}");
                 return;
             }
         
             if (!cursor.MoveToFirst())
             {
-                setErrorMessage("Info: No images found in the specified directory.");
+                setErrorMessage($"{AppConstants.Errors.ERROR}: {AppConstants.Errors.FILE_NOT_FOUND}.");
                 return;
             }
         
@@ -152,7 +148,7 @@ namespace FashionApp.core.services
             }
             else
             {
-                setErrorMessage("Error: Directory not found.");
+                setErrorMessage($"{AppConstants.Errors.ERROR}: {AppConstants.Errors.DIRECTORY_NOT_FOUND}.");
             }
         }
 #endif

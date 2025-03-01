@@ -1,4 +1,6 @@
-﻿namespace FashionApp.core.services
+﻿using FashionApp.Data.Constants;
+
+namespace FashionApp.core.services
 {
     internal class CheckForAndroidPermissions
     {
@@ -10,12 +12,12 @@
             //if(testPermission == PermissionStatus.Granted) return;
             if (Permissions.ShouldShowRationale<Permissions.Photos>())
             {
-                await App.Current.MainPage.DisplayAlert("Permission required", "Location permission is required to load images", "OK");
+                await App.Current.MainPage.DisplayAlert(AppConstants.Errors.ERROR, AppConstants.Errors.STORAGE_PERMISSION_REQUIRED, AppConstants.Messages.OK);
             }
             testPermission = await Permissions.RequestAsync<Permissions.Photos>();
             if (testPermission != PermissionStatus.Granted)
             {
-                await App.Current.MainPage.DisplayAlert("Permission required", "Location permission is required to load images", "OK");
+                await App.Current.MainPage.DisplayAlert(AppConstants.Errors.ERROR, AppConstants.Errors.STORAGE_PERMISSION_REQUIRED, AppConstants.Messages.OK);
                 return;
             }
 
@@ -27,8 +29,7 @@
                 status = await Permissions.RequestAsync<Permissions.StorageRead>();
                 if (status != PermissionStatus.Granted)
                 {
-                    await App.Current.MainPage.DisplayAlert("Permission required",
-                        "Storage permission is required to load images", "OK");
+                    await Application.Current.MainPage.DisplayAlert(AppConstants.Errors.ERROR, AppConstants.Errors.STORAGE_PERMISSION_REQUIRED, AppConstants.Messages.OK);
                     return;
                 }
             }
@@ -39,14 +40,26 @@
             var testPermission = await Permissions.CheckStatusAsync<Permissions.StorageRead>();
             if (Permissions.ShouldShowRationale<Permissions.StorageRead>())
             {
-                await App.Current.MainPage.DisplayAlert("Error", "Storage permission is required to access storage.", "OK");
+                await App.Current.MainPage.DisplayAlert(AppConstants.Errors.ERROR, AppConstants.Errors.STORAGE_PERMISSION_REQUIRED, AppConstants.Messages.OK);
             }
             testPermission = await Permissions.RequestAsync<Permissions.StorageRead>();
             if (testPermission != PermissionStatus.Granted)
             {
-                await App.Current.MainPage.DisplayAlert("Error", "Storage permission is required to load images.", "OK");
+                await Application.Current.MainPage.DisplayAlert(AppConstants.Errors.ERROR, AppConstants.Errors.STORAGE_PERMISSION_REQUIRED, AppConstants.Messages.OK);
                 return;
             }
+        }
+
+        public async Task<bool> CheckAndRequestStoragePermission()
+        {
+            var status = await Permissions.CheckStatusAsync<Permissions.StorageRead>();
+            if (status != PermissionStatus.Granted)
+            {
+                // Искане на разрешение
+                status = await Permissions.RequestAsync<Permissions.StorageRead>();
+            }
+
+            return status == PermissionStatus.Granted;
         }
     }
 }

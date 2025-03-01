@@ -1,5 +1,4 @@
-using Microsoft.Maui.Controls;
-//using Microsoft.Maui.Launcher;
+using FashionApp.Data.Constants;
 
 namespace FashionApp.Pages
 {
@@ -10,48 +9,25 @@ namespace FashionApp.Pages
             InitializeComponent();
         }
 
-        private async void OnGucciClicked(object sender, EventArgs e)
+        private async void OnGucciClicked(object sender, EventArgs e) => await CustomWebPage("https://www.gucci.com");
+        private async void ZaraButton_Clicked(object sender, EventArgs e) => await CustomWebPage("https://www.zara.com/bg/");
+        private async void ArmaniButton_Clicked(object sender, EventArgs e) => await CustomWebPage("https://www.armani.com/en-gb/");
+
+        //------------------------------------------------ METHODS ----------------------------------------------
+        private async Task CustomWebPage(string url)
         {
             try
             {
-                //await Launcher.Default.OpenAsync(new Uri("https://www.gucci.com"));
-                await Navigation.PushAsync(new WebViewPage(true, "https://www.gucci.com"));
+                await Navigation.PushAsync(new WebViewPage(true, url));
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Error", ex.Message, "OK");
+                CustomErrorMessage(ex.Message);
             }
         }
-
-        private async void ZaraButton_Clicked(object sender, EventArgs e)
+        private async void CustomErrorMessage(string message)
         {
-            try
-            {
-                await Navigation.PushAsync(new WebViewPage(true, "https://www.zara.com/bg/"));
-            }
-            catch (Exception ex)
-            {
-
-                await DisplayAlert("Error", ex.Message, "OK");
-            }
-           
+            await DisplayAlert(AppConstants.Errors.ERROR, message, AppConstants.Messages.OK);
         }
-
-        private async void ArmaniButton_Clicked(object sender, EventArgs e)
-        {
-           
-
-            try
-            {
-                await Navigation.PushAsync(new WebViewPage(true, "https://www.armani.com/en-gb/"));
-            }
-            catch (Exception ex)
-            {
-
-                await DisplayAlert("Error", ex.Message, "OK");
-            }
-        }
-
-        // Add similar methods for other brands
     }
 }

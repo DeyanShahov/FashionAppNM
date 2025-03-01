@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Headers;
+﻿using FashionApp.Data.Constants;
+using System.Net.Http.Headers;
 
 public class ComfyUIUploader
 {
@@ -16,11 +17,10 @@ public class ComfyUIUploader
         // Проверка дали файлът съществува
         if (!File.Exists(filePath))
         {
-            return $"Error: File not found: {filePath}";
+            return $"{AppConstants.Errors.ERROR}: {AppConstants.Errors.FILE_NOT_FOUND}: {filePath}";
         }
 
         // Създаваме URL за качване
-        //var url = $"{_serverUrl}/upload/image";
         var url = $"{_serverUrl}/upload_image";
 
         try
@@ -44,16 +44,16 @@ public class ComfyUIUploader
             if (response.IsSuccessStatusCode)
             {
                 var responseContent = await response.Content.ReadAsStringAsync();
-                return $"Success: {responseContent}";
+                return $"{AppConstants.Messages.SUCCESS}: {responseContent}";
             }
             else
             {
-                return $"Upload error. Status code: {response.StatusCode}";
+                return $"{AppConstants.Errors.UPLOAD_ERROR}: {response.StatusCode}";
             }
         }
         catch (Exception ex)
         {
-            return $"Upload exception: {ex.Message}";
+            return $"{AppConstants.Errors.UPLOAD_EXCEPTION}: {ex.Message}";
         }
     }
 }

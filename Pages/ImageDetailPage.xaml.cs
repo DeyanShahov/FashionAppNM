@@ -1,11 +1,5 @@
-using Microsoft.Maui.Controls.PlatformConfiguration;
-using System.Text.RegularExpressions;
-#if __ANDROID__
-using Android.Content;
-using Android.Database;
-using Android.Net;
-using Android.Provider;
-#endif
+using FashionApp.core.services;
+using FashionApp.Data.Constants;
 
 namespace FashionApp.Pages;
 
@@ -16,198 +10,52 @@ public partial class ImageDetailPage : ContentPage
 	{
         InitializeComponent();
         _imageUri = imageUri;
-        // Задаваме източник на изображението
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         DetailImage.Source = ImageSource.FromUri(new System.Uri(_imageUri));
 #if ANDROID
-        ImageName.Text = Path.GetFileName(GetRealPathFromUri(Android.App.Application.Context.ContentResolver, _imageUri));
+        ImageName.Text = Path.GetFileName(GetRealPathFromUriService.Get(Android.App.Application.Context.ContentResolver, _imageUri));
 #endif
     }
 
-    private async void CloseButton_Clicked(object sender, EventArgs e)
-    {
-        await Navigation.PopModalAsync();
-    }
+    private async void CloseButton_Clicked(object sender, EventArgs e) => await Navigation.PopModalAsync();
 
     private async void DeleteButton_Clicked(object sender, EventArgs e)
     {
         try
         {
-            bool conifirmation = await Application.Current.MainPage.DisplayAlert("Delete Confirmation", "Are you sure you want to delete?", "Yes", "Cancel");
+            bool conifirmation = await Application.Current.MainPage.DisplayAlert(
+                AppConstants.Messages.DELETE_CONFIRMATION,
+                AppConstants.Messages.MESSAGE_FOR_DELETE,
+                AppConstants.Messages.YES, AppConstants.Messages.CANCEL);
 
             if (!conifirmation) return;
 
+            var permissionResult = App.Current?.Handler.MauiContext?.Services.GetService<CheckForAndroidPermissions>();
+
+
 #if __ANDROID__
-            // Проверка за разрешение
-            if (!await CheckAndRequestStoragePermission())
+            if(!await permissionResult.CheckAndRequestStoragePermission())
             {
-                await DisplayAlert("Error", "Storage permission is required to delete the image.", "OK");
+                await DisplayAlert(AppConstants.Errors.ERROR, AppConstants.Errors.STORAGE_PERMISSION_REQUIRED, AppConstants.Messages.OK);
                 return;
             }
 
-            string realPath = GetRealPathFromUri(Android.App.Application.Context.ContentResolver, _imageUri);
+            string realPath = GetRealPathFromUriService.Get(Android.App.Application.Context.ContentResolver, _imageUri);
 
-            bool isDeleted =  DeleteAndroidModernImage(realPath);
+            if (realPath == null || !File.Exists(realPath))  await DisplayAlert(AppConstants.Errors.ERROR, AppConstants.Errors.FILE_NOT_FOUND, AppConstants.Messages.OK);
+
+            bool isDeleted = DeleteImageFromAndroid.DeleteAndroidModernImage(realPath);
 
             if(isDeleted)
             {
-                await DisplayAlert("Success", $"Delete selected photo successful.", "OK");
+                await DisplayAlert(AppConstants.Messages.SUCCESS, AppConstants.Messages.DELETE_PHOTO_SUCCESS, AppConstants.Messages.OK);
                 await Navigation.PopModalAsync();
-
             }
-
-            //if (realPath != null && File.Exists(realPath))
-            //{
-            //    File.Delete(realPath);
-            //    await DisplayAlert("Deleted", "Image deleted successfully.", "OK");
-            //    await Navigation.PopModalAsync();
-            //}
-            //else
-            //{
-            //    await DisplayAlert("Error", "File does not exist.", "OK");
-            //}
 #endif
-
-            // Проверяваме дали _imageUri е локален файл (с префикс "file://")
-            //if (_imageUri.StartsWith("file://"))
-            //{
-            //    string filePath = _imageUri.Substring("file://".Length);
-            //    if (File.Exists(filePath))
-            //    {
-            //        File.Delete(filePath);
-            //        await DisplayAlert("Deleted", "Image deleted successfully.", "OK");
-            //        await Navigation.PopModalAsync();
-            //    }
-            //    else
-            //    {
-            //        await DisplayAlert("Error", "File does not exist.", "OK");
-            //    }
-            //}
-            //else
-            //{
-            //    await DisplayAlert("Error", "Cannot delete remote images.", "OK");
-            //}
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Error", $"Failed to delete image: {ex.Message}", "OK");
+            await DisplayAlert(AppConstants.Errors.ERROR, $"{AppConstants.Errors.FAILED_DELETE_IMAGE}: {ex.Message}", AppConstants.Messages.OK);
         }
     }
-
-    public static string ConvertContentUriToFileUri(string contentUri)
-    {
-        // Регулярен израз за замяна на "content://" с "file://"
-        string pattern = @"^content://";
-        string replacement = "file://";
-
-        // Извършване на замяната
-        string fileUri = Regex.Replace(contentUri, pattern, replacement);
-
-        return fileUri;
-    }
-
-#if __ANDROID__
-        public string GetRealPathFromUri(ContentResolver contentResolver, string imageUri)
-        {
-            // Проверка дали URI-то започва с "content://"
-            if (imageUri.StartsWith("content://"))
-            {
-                var uri = Android.Net.Uri.Parse(imageUri);
-                string filePath = null;
-
-                // Извличане на пътя на файла от MediaStore
-                using (var cursor = contentResolver.Query(uri, null, null, null, null))
-                {
-                    if (cursor != null && cursor.MoveToFirst())
-                    {
-                        int columnIndex = cursor.GetColumnIndex(MediaStore.MediaColumns.Data);
-                        filePath = cursor.GetString(columnIndex);
-                    }
-                }
-
-                // Проверка дали файлът съществува
-                if (!string.IsNullOrEmpty(filePath) && File.Exists(filePath))
-                {
-                    return filePath; // Връща пълния път до файла
-                }
-            }
-
-            return null; // Връща null, ако не е намерен път
-        }
-#endif
-
-    private async Task<bool> CheckAndRequestStoragePermission()
-    {
-        var status = await Permissions.CheckStatusAsync<Permissions.StorageRead>();
-        if (status != PermissionStatus.Granted)
-        {
-            // Искане на разрешение
-            status = await Permissions.RequestAsync<Permissions.StorageRead>();
-        }
-
-        return status == PermissionStatus.Granted;
-    }
-
-#if __ANDROID__
-        private bool DeleteAndroidModernImage(string pathToFile)
-        {
-            if (OperatingSystem.IsAndroidVersionAtLeast(29))
-            {
-                // Използване на MediaStore заявка за Android модерни версии
-                string[] projection = {
-                    Android.Provider.IBaseColumns.Id,
-                    Android.Provider.MediaStore.IMediaColumns.Data
-                };
-                string selection = $"{Android.Provider.MediaStore.IMediaColumns.Data} = ?";
-                string[] selectionArgs = new[] { pathToFile };
-                string? sortOrder = null;
-
-                using var cursor = Android.App.Application.Context.ContentResolver.Query(
-                    Android.Provider.MediaStore.Images.Media.ExternalContentUri,
-                    projection,
-                    selection,
-                    selectionArgs,
-                    sortOrder);
-
-                if (cursor == null)
-                {
-                    //setErrorMessage("Error: Cursor is null. Query failed.");
-                    return false;
-                }
-                if (cursor.MoveToFirst())
-                {
-                    int idColumn = cursor.GetColumnIndex(Android.Provider.IBaseColumns.Id);
-                    string id = cursor.GetString(idColumn);
-                    Android.Net.Uri contentUri = Android.Net.Uri.WithAppendedPath(
-                        Android.Provider.MediaStore.Images.Media.ExternalContentUri,
-                        id);
-
-                    // Изтриване на изображението от MediaStore
-                    var result = Android.App.Application.Context.ContentResolver.Delete(contentUri, null, null);
-                    return result != 0;
-                }
-                else
-                {
-                    return false;
-                    //setErrorMessage($"Error: File not found in MediaStore.");
-                }
-            }
-            else
-            {
-                // За Android стари версии (legacy) използваме директен достъп до файловата система
-                string directory = "/storage/emulated/0/Pictures/FashionApp/MasksImages";
-                var filePath = pathToFile; //Path.Combine(directory, fileName);
-                if (File.Exists(filePath))
-                {
-                    File.Delete(filePath);
-                    return true;
-                }
-                else
-                {
-                    return true;
-                    //setErrorMessage($"Error: File not found in directory: {directory}");
-                }
-                
-            }
-        }
-#endif
 }

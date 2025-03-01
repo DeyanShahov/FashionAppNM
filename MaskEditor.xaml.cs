@@ -26,11 +26,7 @@ public partial class MaskEditor : ContentPage
         _cameraService.StopCamera();
     }
 
-    private async void OnBackButtonClicked(object sender, EventArgs e)
-    {
-        await Navigation.PopAsync();
-    }
-
+    private async void OnBackButtonClicked(object sender, EventArgs e) => await Navigation.PopAsync();
     private async void OnSelectImageClicked(object sender, EventArgs e)
     {
         try
@@ -58,7 +54,6 @@ public partial class MaskEditor : ContentPage
             await DisplayAlert(AppConstants.Errors.ERROR, $"{AppConstants.Errors.ERROR}: {ex.Message}", AppConstants.Messages.OK);
         }
     }
-
     private async void OpenImageEditor_Clicked(object sender, EventArgs e)
     {
         var file = await FilePicker.PickAsync(new PickOptions
@@ -70,124 +65,12 @@ public partial class MaskEditor : ContentPage
         // Отваряне на модалния прозорец с пътя на изображението
         if (file != null) await Navigation.PushModalAsync(new ImageEditPage(file.FullPath));
     }
-
     private async void OnImageCaptured(Stream imageStream)
     {
         await ProcessSelectedImage(imageStream);
         _cameraService.StopCamera();
         HideMenus();
-    }
-
-    private async Task ProcessSelectedImage(Stream? stream)
-    {
-        // Преоразмеряване на изображението
-        var resizedImageResult = await ImageStreamResize.ResizeImageStream(stream, 500, 700); // Преоразмеряване на изображението
-
-        // Конвертиране на изображението, за да включва алфа канал
-        var imageWithAlpha = await AddAlphaChanel(resizedImageResult.ResizedStream);
-
-        // Задаване на източника на изображението
-        SelectedImage.Source = ImageSource.FromStream(() => imageWithAlpha);
-        
-        // Настройка на ширината и височината на изображението
-        SelectedImage.WidthRequest = Application.Current.MainPage.Width; 
-        SelectedImage.HeightRequest = Application.Current.MainPage.Height; 
-
-        // Центриране на изображението
-        SelectedImage.HorizontalOptions = LayoutOptions.Center;
-        SelectedImage.VerticalOptions = LayoutOptions.Center;
-
-        // Показване на елементите
-        SelectedImage.IsVisible = true;
-        DrawingView.IsVisible = true;
-        DrawingTools.IsVisible = true;
-        DrawingBottons.IsVisible = true;
-    }
-
-    private async Task<Stream> AddAlphaChanel(Stream imageStream)
-    {
-        using var originalBitmap = SKBitmap.Decode(imageStream);
-        var bitmapWithAlpha = new SKBitmap(originalBitmap.Width, originalBitmap.Height, true);
-
-        using (var canvas = new SKCanvas(bitmapWithAlpha))
-        {
-            canvas.Clear(SKColors.Transparent);
-            canvas.DrawBitmap(originalBitmap, 0, 0);
-        }
-
-        var imageWithAlphaStream = new MemoryStream();
-        bitmapWithAlpha.Encode(imageWithAlphaStream, SKEncodedImageFormat.Png, 80);
-
-        imageWithAlphaStream.Position = 0;
-        return imageWithAlphaStream;
-    }
-
-    private void OnImageSizeChanged(object sender, EventArgs e)
-    {
-        if (SelectedImage.Width > 0 && SelectedImage.Height > 0)
-        {
-            DrawingView.WidthRequest = SelectedImage.Width;
-            DrawingView.HeightRequest = SelectedImage.Height;
-
-            DrawingView.TranslationX = SelectedImage.X;
-            DrawingView.TranslationY = SelectedImage.Y;
-        }     
-    }
-
-    void OnStartInteraction(object sender, TouchEventArgs e)
-    {
-        var touch = e.Touches[0];
-
-        if (touch.X >= 0 && touch.X <= DrawingView.Width &&
-            touch.Y >= 0 && touch.Y <= DrawingView.Height)
-        {
-            _currentLine = new DrawingLine
-            {
-                Color = Colors.Gray,
-                Thickness = (float)BrushSlider.Value
-            };
-            _currentLine.Points.Add(touch);
-            _lines.Add(_currentLine);
-            DrawingView.Invalidate();
-        }
-    }
-
-    void OnDragInteraction(object sender, TouchEventArgs e)
-    {
-        if (_currentLine != null)
-        {
-            var touch = e.Touches[0];
-
-            // Проверяваме дали докосването е в рамките на DrawingView
-            if (touch.X >= 0 && touch.X <= DrawingView.Width &&
-                touch.Y >= 0 && touch.Y <= DrawingView.Height)
-            {
-                _currentLine.Points.Add(touch);
-                DrawingView.Invalidate();
-            }           
-        }
-    }
-
-    void OnEndInteraction(object sender, TouchEventArgs e)
-    {
-        _currentLine = null;
-    }
-
-    void OnClearClicked(object sender, EventArgs e)
-    {
-        _lines.Clear();
-        DrawingView.Invalidate();
-    }
-
-    void OnUndoClicked(object sender, EventArgs e)
-    {
-        if (_lines.Count > 0)
-        {
-            _lines.RemoveAt(_lines.Count - 1);
-            DrawingView.Invalidate();
-        }
-    }
-
+    }   
     private async void OnSaveImageClicked(object sender, EventArgs e)
     {
         if (SelectedImage.Source == null) return;
@@ -234,33 +117,21 @@ public partial class MaskEditor : ContentPage
             ChangeVisibilityOnSaveButton(true);
         }
     }
-
     private async void ClosedJacketImageButton_Clicked(object sender, EventArgs e)
-    {
-        await MacroMechanics(sender, AppConstants.ImagesConstants.CLOSED_JACKET_MASK);
-    }
-
+        => await MacroMechanics(sender, AppConstants.ImagesConstants.CLOSED_JACKET_MASK);
     private async void OpenJacketImageButton_Clicked(object sender, EventArgs e)
-    {
-        await MacroMechanics(sender, AppConstants.ImagesConstants.OPEN_JACKET_MASK);
-    }
-
+        => await MacroMechanics(sender, AppConstants.ImagesConstants.OPEN_JACKET_MASK);
     private void PanelButton_Clicked(object sender, EventArgs e)
     {
         _cameraService.StartCamera();
         HideMenus();
     }
-
     private void HidePanelCommand(object sender, EventArgs e)
     {     
         _cameraService.StopCamera();
         HideMenus();
     }
-
-    private void OnCaptureClicked(object sender, EventArgs e)
-    {
-        _cameraService.CaptureClicked();
-    }
+    private void OnCaptureClicked(object sender, EventArgs e) => _cameraService.CaptureClicked();
 
     // ------------------------------------------- SUPORT METHODS ----------------------------------------------------------------
     private async Task<bool> CheckAvailableMasksAndroidAsync(string fileName)
@@ -368,6 +239,108 @@ public partial class MaskEditor : ContentPage
     {
         SaveMaskImageButton.IsEnabled = isSet;
         DrawingBottons.IsVisible = isSet;
+    }
+    private async Task ProcessSelectedImage(Stream? stream)
+    {
+        // Преоразмеряване на изображението
+        var resizedImageResult = await ImageStreamResize.ResizeImageStream(stream, 500, 700); // Преоразмеряване на изображението
+
+        // Конвертиране на изображението, за да включва алфа канал
+        var imageWithAlpha = await AddAlphaChanel(resizedImageResult.ResizedStream);
+
+        // Задаване на източника на изображението
+        SelectedImage.Source = ImageSource.FromStream(() => imageWithAlpha);
+
+        // Настройка на ширината и височината на изображението
+        SelectedImage.WidthRequest = Application.Current.MainPage.Width;
+        SelectedImage.HeightRequest = Application.Current.MainPage.Height;
+
+        // Центриране на изображението
+        SelectedImage.HorizontalOptions = LayoutOptions.Center;
+        SelectedImage.VerticalOptions = LayoutOptions.Center;
+
+        // Показване на елементите
+        SelectedImage.IsVisible = true;
+        DrawingView.IsVisible = true;
+        DrawingTools.IsVisible = true;
+        DrawingBottons.IsVisible = true;
+    }
+    private async Task<Stream> AddAlphaChanel(Stream imageStream)
+    {
+        using var originalBitmap = SKBitmap.Decode(imageStream);
+        var bitmapWithAlpha = new SKBitmap(originalBitmap.Width, originalBitmap.Height, true);
+
+        using (var canvas = new SKCanvas(bitmapWithAlpha))
+        {
+            canvas.Clear(SKColors.Transparent);
+            canvas.DrawBitmap(originalBitmap, 0, 0);
+        }
+
+        var imageWithAlphaStream = new MemoryStream();
+        bitmapWithAlpha.Encode(imageWithAlphaStream, SKEncodedImageFormat.Png, 80);
+
+        imageWithAlphaStream.Position = 0;
+        return imageWithAlphaStream;
+    }
+    private void OnImageSizeChanged(object sender, EventArgs e)
+    {
+        if (SelectedImage.Width > 0 && SelectedImage.Height > 0)
+        {
+            DrawingView.WidthRequest = SelectedImage.Width;
+            DrawingView.HeightRequest = SelectedImage.Height;
+
+            DrawingView.TranslationX = SelectedImage.X;
+            DrawingView.TranslationY = SelectedImage.Y;
+        }
+    }
+
+
+    //--------------------------------------------- DRAW METHODS ------------------------------------------------------------
+    void OnStartInteraction(object sender, TouchEventArgs e)
+    {
+        var touch = e.Touches[0];
+
+        if (touch.X >= 0 && touch.X <= DrawingView.Width &&
+            touch.Y >= 0 && touch.Y <= DrawingView.Height)
+        {
+            _currentLine = new DrawingLine
+            {
+                Color = Colors.Gray,
+                Thickness = (float)BrushSlider.Value
+            };
+            _currentLine.Points.Add(touch);
+            _lines.Add(_currentLine);
+            DrawingView.Invalidate();
+        }
+    }
+    void OnDragInteraction(object sender, TouchEventArgs e)
+    {
+        if (_currentLine != null)
+        {
+            var touch = e.Touches[0];
+
+            // Проверяваме дали докосването е в рамките на DrawingView
+            if (touch.X >= 0 && touch.X <= DrawingView.Width &&
+                touch.Y >= 0 && touch.Y <= DrawingView.Height)
+            {
+                _currentLine.Points.Add(touch);
+                DrawingView.Invalidate();
+            }
+        }
+    }
+    void OnEndInteraction(object sender, TouchEventArgs e) => _currentLine = null;
+    void OnClearClicked(object sender, EventArgs e)
+    {
+        _lines.Clear();
+        DrawingView.Invalidate();
+    }
+    void OnUndoClicked(object sender, EventArgs e)
+    {
+        if (_lines.Count > 0)
+        {
+            _lines.RemoveAt(_lines.Count - 1);
+            DrawingView.Invalidate();
+        }
     }
 }
 

@@ -1,4 +1,6 @@
-﻿namespace FashionApp.core.services
+﻿using FashionApp.Data.Constants;
+
+namespace FashionApp.core.services
 {
     internal class FileChecker : IFileChecker
     {
@@ -17,7 +19,7 @@
             if(string.IsNullOrWhiteSpace(picturesDirectory)) return false;
 
             // Път до файла
-            var targetPath = Path.Combine(picturesDirectory, "FashionApp", "MasksImages");
+            var targetPath = Path.Combine(picturesDirectory, AppConstants.Parameters.APP_NAME, AppConstants.Parameters.APP_FOLDER_MASK);
             var filePath = Path.Combine(targetPath,fileName);
 
             return Directory.Exists(targetPath) && File.Exists(filePath);

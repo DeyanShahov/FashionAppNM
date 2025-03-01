@@ -1,6 +1,7 @@
 ﻿#if __ANDROID__
 using Android.Content;
 using Android.Provider;
+using FashionApp.Data.Constants;
 #endif
 
 namespace FashionApp.core.services
@@ -31,7 +32,10 @@ namespace FashionApp.core.services
                 Android.Net.Uri? imageUri = resolver.Insert(MediaStore.Images.Media.ExternalContentUri, contentValues);
                 if (imageUri == null)
                 {
-                    await  Application.Current.MainPage.DisplayAlert("Error", "Failed to create image file.", "OK");
+                    await  Application.Current.MainPage.DisplayAlert(
+                        AppConstants.Errors.ERROR, 
+                        AppConstants.Errors.FAILED_TO_SAVE_IMAGE, 
+                        AppConstants.Messages.OK);
                     return;
                 }
 
@@ -45,14 +49,17 @@ namespace FashionApp.core.services
                     }
                 }
 
-                await Application.Current.MainPage.DisplayAlert("Success", $"Image saved on {directoryPath} as {imageFileName}", "OK");
+                await Application.Current.MainPage.DisplayAlert(
+                    AppConstants.Messages.SUCCESS,
+                    $"{AppConstants.Messages.IMAGE_SAVED_ON} {directoryPath} {AppConstants.Messages.AS} {imageFileName}",
+                    AppConstants.Messages.OK);
 
                 imageFileName = string.Empty; // Reset value of paramether
             }
             else
             {
                 // Handle older Android versions if needed
-                await Application.Current.MainPage.DisplayAlert("Error", "OS is invalid!", "OK");
+                await Application.Current.MainPage.DisplayAlert(AppConstants.Errors.ERROR, "OS is invalid!", AppConstants.Messages.OK);
 
                 //Java.IO.File storagePath = Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryPictures);
                 //string path = System.IO.Path.Combine(storagePath.ToString(), imageFileName);

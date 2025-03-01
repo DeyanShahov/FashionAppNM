@@ -372,17 +372,22 @@ public partial class CombineImages : ContentPage
             Console.WriteLine($"{AppConstants.Errors.ERROR_CKECK_MASKS}: {ex.Message}");
         }
     }
+
+
     private async void LoadLargeImage(string imageUri)
     {
-        string imagesDirectory = AppConstants.Parameters.APP_FULLPATH_MASKS_IMAGES;
-        string imagePath = Path.Combine(imagesDirectory, imageUri);
+        string imagePath = Path.Combine(
+                AppConstants.Parameters.APP_BASE_PATH,
+                AppConstants.Parameters.APP_NAME,
+                AppConstants.Parameters.APP_FOLDER_MASK,
+                imageUri);
         _bodyImagePath = imagePath;
         await singleImageLoader.LoadSingleImageAsync(imagePath);  // Зареждане на изображението асинхронно
     }
 #endif
     //------------------------------------------ VISUAL EFECTS--------------------------------------------------------
     private void ToggleLoading(bool isLoading)
-    {
+    {      
         CombineImagesButton.IsEnabled = !isLoading;
         LoadingIndicator.IsRunning = isLoading;
         LoadingIndicator.IsVisible = isLoading;

@@ -1,6 +1,5 @@
 using CommunityToolkit.Maui.Views;
-//using Java.Util.Streams;
-using SkiaSharp;
+using FashionApp.Data.Constants;
 
 namespace FashionApp.core.services
 {
@@ -83,7 +82,10 @@ namespace FashionApp.core.services
             }
             catch (Exception ex)
             {
-                await Application.Current.MainPage.DisplayAlert("Error", $"Error processing captured media: {ex.Message}", "OK");
+                await Application.Current.MainPage.DisplayAlert(
+                    AppConstants.Errors.ERROR,
+                    $"{AppConstants.Errors.ERROR_PROCESSING_MEDIA}: {ex.Message}",
+                    AppConstants.Messages.OK);
             }
         }
     }

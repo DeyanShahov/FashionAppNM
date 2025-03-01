@@ -47,7 +47,7 @@ namespace FashionApp.core
     }
     internal class ResizedImageResult
     {
-        public Stream ResizedStream { get; set; }
+        public Stream? ResizedStream { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
     }

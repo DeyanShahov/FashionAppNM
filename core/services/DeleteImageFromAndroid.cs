@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-#if __ANDROID__
+﻿#if __ANDROID__
 using Android.Content;
 using Android.Provider;
+using FashionApp.Data.Constants;
 #endif
 
 namespace FashionApp.core.services
@@ -31,9 +26,15 @@ namespace FashionApp.core.services
                 Android.Net.Uri deleteUri = ContentUris.WithAppendedId(MediaStore.Images.Media.ExternalContentUri, imageId);
                 int deletedRows = resolver.Delete(deleteUri, null, null);
                 if (deletedRows > 0)
-                    await Application.Current.MainPage.DisplayAlert("Success", $"{imageFileName} delete successful.", "OK");
+                    await Application.Current.MainPage.DisplayAlert(
+                        AppConstants.Messages.SUCCESS,
+                        $"{imageFileName} {AppConstants.Messages.DELETE_SUCCESS}.",
+                        AppConstants.Messages.OK);
                 else
-                    await Application.Current.MainPage.DisplayAlert("Error", "Failed to delete image. It might not be owned by the app.", "OK");
+                    await Application.Current.MainPage.DisplayAlert(
+                        AppConstants.Errors.ERROR, 
+                        AppConstants.Errors.FAILED_DELETE_IMAGE,
+                        AppConstants.Messages.OK);
             
             }
             cursor?.Close();
@@ -54,6 +55,66 @@ namespace FashionApp.core.services
             //        Console.WriteLine(deleted ? $"Файлът {imageFileName} беше изтрит." : $"Неуспешно изтриване на {imageFileName}.");
             //    }
             //}
+        }
+
+        public static bool DeleteAndroidModernImage(string pathToFile)
+        {
+            if (OperatingSystem.IsAndroidVersionAtLeast(29))
+            {
+                // ���������� �� MediaStore ������ �� Android ������� ������
+                string[] projection = {
+                    Android.Provider.IBaseColumns.Id,
+                    Android.Provider.MediaStore.IMediaColumns.Data
+                };
+                string selection = $"{Android.Provider.MediaStore.IMediaColumns.Data} = ?";
+                string[] selectionArgs = new[] { pathToFile };
+                string? sortOrder = null;
+
+                using var cursor = Android.App.Application.Context.ContentResolver?.Query(
+                    Android.Provider.MediaStore.Images.Media.ExternalContentUri,
+                    projection,
+                    selection,
+                    selectionArgs,
+                    sortOrder);
+
+                if (cursor == null)
+                {
+                    //setErrorMessage("Error: Cursor is null. Query failed.");
+                    return false;
+                }
+                if (cursor.MoveToFirst())
+                {
+                    int idColumn = cursor.GetColumnIndex(Android.Provider.IBaseColumns.Id);
+                    string id = cursor.GetString(idColumn);
+                    Android.Net.Uri? contentUri = Android.Net.Uri.WithAppendedPath(
+                        Android.Provider.MediaStore.Images.Media.ExternalContentUri,
+                        id);
+
+                    // ��������� �� ������������� �� MediaStore
+                    var result = Android.App.Application.Context.ContentResolver?.Delete(contentUri, null, null);
+                    return result != 0;
+                }
+                else
+                {
+                    return false;
+                    //setErrorMessage($"Error: File not found in MediaStore.");
+                }
+            }
+            else
+            {
+                // �� Android ����� ������ (legacy) ���������� �������� ������ �� ��������� �������
+                string directory = $"{AppConstants.Parameters.APP_BASE_PATH}/{AppConstants.Parameters.APP_NAME}/{AppConstants.Parameters.APP_FOLDER_MASK}%";
+                var filePath = pathToFile; 
+                if (File.Exists(filePath))
+                {
+                    File.Delete(filePath);
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }             
+            }
         }
 #endif
     }

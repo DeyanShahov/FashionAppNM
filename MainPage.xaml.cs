@@ -129,7 +129,7 @@ namespace FashionApp
             }
             catch (Exception ex)
             {
-                await DisplayAlert(AppConstants.Errors.ERROR, $"{AppConstants.Errors.FAILED_TO_SAVE_IMAGE}: {ex.Message}", "OK");
+                await DisplayAlert(AppConstants.Errors.ERROR, $"{AppConstants.Errors.FAILED_TO_SAVE_IMAGE}: {ex.Message}", AppConstants.Messages.OK);
             }
         }
 
@@ -144,8 +144,8 @@ namespace FashionApp
 
         private async void WebGalleryButton_Clicked(object sender, EventArgs e)
             => await Navigation.PushAsync(new BaseGallery(
-                AppConstants.Parameters.APP_CLOTH_GALLERY, 
-                AppConstants.Parameters.APP_FULLPATH_CAPTURE_SCREEN));
+                AppConstants.Parameters.APP_CLOTH_GALLERY,
+                $"{AppConstants.Parameters.APP_BASE_PATH}/{AppConstants.Parameters.APP_NAME}/{AppConstants.Parameters.APP_FOLDER_SCREEN}%"));
 
         private async void PartnersPageButton_Clicked(object sender, EventArgs e)
             => await Navigation.PushAsync(new PartnersPage());
@@ -154,11 +154,14 @@ namespace FashionApp
         //    => await Navigation.PushAsync(new MaskJS());  
 
         private async void GalleryButton_Clicked(object sender, EventArgs e)
-            => await Navigation.PushAsync(new GalleryImagesPage());
+           => await Navigation.PushAsync(new BaseGallery(
+               AppConstants.Parameters.APP_FOLDER_IMAGES,
+               $"{AppConstants.Parameters.APP_BASE_PATH}/{AppConstants.Parameters.APP_NAME}/{AppConstants.Parameters.APP_FOLDER_IMAGES}%"));
 
         private async void MaskGalleryButton_Clicked(object sender, EventArgs e)
-            => await Navigation.PushAsync(new GalleryMasksPage());
-
+           => await Navigation.PushAsync(new BaseGallery(
+               AppConstants.Parameters.APP_FOLDER_MASK,
+               $"{AppConstants.Parameters.APP_BASE_PATH}/{AppConstants.Parameters.APP_NAME}/{AppConstants.Parameters.APP_FOLDER_MASK}%"));
 
 
         // ------------------------------------------------------------------------------------------------------
@@ -167,14 +170,12 @@ namespace FashionApp
             InputEntry.IsEnabled = !isGuestActive;
             InputEntry.IsVisible = !isGuestActive;
         }
-
         private void ToggleLoading(bool isLoading)
         {
             LoadButton.IsEnabled = !isLoading;
             LoadingIndicator.IsRunning = isLoading;
             LoadingIndicator.IsVisible = isLoading;
         }
-
         private void SetVisibilityForResult(bool toSet)
         {
             ResponseImage.IsVisible = toSet;

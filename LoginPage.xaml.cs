@@ -1,3 +1,5 @@
+using FashionApp.Data.Constants;
+
 namespace FashionApp;
 
 public partial class LoginPage : ContentPage
@@ -15,7 +17,7 @@ public partial class LoginPage : ContentPage
 
         if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
         {
-            LoginStatusLabel.Text = "Please enter both username and password.";
+            LoginStatusLabel.Text = AppConstants.Errors.MISSING_USERNAME_OR_PASSWORD;
             return;
         }
 
@@ -29,7 +31,7 @@ public partial class LoginPage : ContentPage
         }
         else
         {
-            LoginStatusLabel.Text = "Invalid username or password.";
+            LoginStatusLabel.Text = AppConstants.Errors.INVALID_USERNAME_OT_PASSWORD;
         }
     }
 

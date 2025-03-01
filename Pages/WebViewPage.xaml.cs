@@ -5,8 +5,6 @@ namespace FashionApp.Pages;
 
 public partial class WebViewPage : ContentPage
 {
-	private bool isDragging = false;
-    private double _startX, _startY;
     private bool _isFromPartners = false;
 
     public WebViewPage(bool isFromPartners = false, string url = "")
@@ -84,7 +82,7 @@ public partial class WebViewPage : ContentPage
         }
         else
         {
-            await DisplayAlert("Грешка", "Заснемането на екрана не се поддържа на това устройство!", "OK");
+            await DisplayAlert(AppConstants.Errors.ERROR, AppConstants.Errors.SCREEN_CAPTURE_NOT_SUPORTED, AppConstants.Messages.OK);
         }
     }
 

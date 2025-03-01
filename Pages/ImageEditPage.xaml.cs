@@ -5,8 +5,6 @@ using Android.Net;
 using Android.Provider;
 #endif
 
-using CommunityToolkit.Maui.Views;
-using FashionApp.core;
 using FashionApp.core.draw;
 
 namespace FashionApp.Pages;
@@ -27,7 +25,7 @@ public partial class ImageEditPage : ContentPage
         DrawingView.Drawable = _drawable;
     }
 
-	private async void LoadImage(string imagePath)
+	private void LoadImage(string imagePath)
 	{
         ImageForEdit.Source = ImageSource.FromFile(imagePath);
     }
@@ -81,7 +79,6 @@ public partial class ImageEditPage : ContentPage
     void OnClearClicked(object sender, EventArgs e)
     {
         _lines.Clear();
-        //_markedPixels.Clear(); // Изчистваме и маркираните пиксели
         DrawingView.Invalidate();
     }
 
