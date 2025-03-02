@@ -80,10 +80,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Update="CombineImages.xaml.cs">
+	  <Compile Update="Pages\CombineImages.xaml.cs">
 	    <DependentUpon>CombineImages.xaml</DependentUpon>
 	  </Compile>
-	  <Compile Update="MaskEditor.xaml.cs">
+	  <Compile Update="Pages\MaskEditor.xaml.cs">
 	    <DependentUpon>MaskEditor.xaml</DependentUpon>
 	  </Compile>
 	  <Compile Update="Pages\ImageDetailPage.xaml.cs">
@@ -92,13 +92,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiXaml Update="LoginPage.xaml">
+	  <MauiXaml Update="Pages\LoginPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="MaskJS.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="CombineImages.xaml">
+	  <MauiXaml Update="Pages\CombineImages.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Pages\BaseGallery.xaml">

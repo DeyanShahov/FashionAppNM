@@ -5,10 +5,25 @@
              Title="ImageEditPage"
              BackgroundColor="Black">
     <Grid>
-        <!-- Показва избраната снимка в цял екран -->
-        <Image 
-            x:Name="ImageForEdit" 
-            Aspect="AspectFill" />
+        <Grid.RowDefinitions>
+            <!-- Областта с изображението -->
+            <RowDefinition Height="*"/>
+            <!-- Областта със слайдъра -->
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <Grid x:Name="ImageContainer" Grid.Row="0" IsClippedToBounds="True">
+            <!-- Показва избраната снимка в цял екран -->
+            <Image 
+                x:Name="ImageForEdit" 
+                Aspect="AspectFit">
+                <Image.GestureRecognizers>
+                    <PanGestureRecognizer PanUpdated="OnPanUpdated" />
+                </Image.GestureRecognizers>
+            </Image>
+
+        </Grid>
+        
         <GraphicsView
             x:Name="DrawingView"
             IsVisible="False"
@@ -17,22 +32,27 @@
             EndInteraction="OnEndInteraction"
             HorizontalOptions="Start"
             VerticalOptions="Start"/>
-        <!-- Overlay с бутоните Delete и Close -->
-        <!-- Top overlay with image name -->
+
         <StackLayout
+             x:Name="ZoomSliderPanel"
+             IsVisible="False"
+             IsEnabled="False"
              Orientation="Horizontal"
              HorizontalOptions="FillAndExpand"
-             VerticalOptions="Start"
+             VerticalOptions="End"
              BackgroundColor="#80000000"
              Padding="10"
+             Margin="0,70"
              Spacing="20">
-            <Label
-                x:Name="ImageName"
-                TextColor="White"
-                BackgroundColor="Transparent"
-                VerticalTextAlignment="Center"
-                HorizontalTextAlignment="Center"
-                HorizontalOptions="CenterAndExpand" />
+            <Slider x:Name="ZoomSlider"
+                    Minimum="1"
+                    Maximum="4"
+                    Value="3"
+                    ValueChanged="ZoomSlider_ValueChanged"
+                    ThumbColor="DarkGray"
+                    MinimumTrackColor="LightGray"
+                    MaximumTrackColor="Gray"
+                    HorizontalOptions="FillAndExpand"/>
         </StackLayout>
 
         <!-- Bottom overlay with buttons -->
@@ -42,7 +62,7 @@
              VerticalOptions="End"
              BackgroundColor="#80000000"
              Padding="10"
-             Spacing="20">
+             Spacing="10">
             <Button
             Text="Save"
             TextColor="White"
@@ -61,6 +81,13 @@
             BackgroundColor="Transparent"
             HorizontalOptions="Center"
             Clicked="OnUndoClicked"/>
+            <Button
+            x:Name="ZoomButton"
+            Text="Zoom"
+            TextColor="White"
+            BackgroundColor="Transparent"
+            HorizontalOptions="Center"
+            Clicked="OnZoomClicked"/>
             <Button
             Text="Close"
             TextColor="White"

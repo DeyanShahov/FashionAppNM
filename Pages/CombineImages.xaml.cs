@@ -4,7 +4,7 @@ using FashionApp.core.services;
 using FashionApp.Data.Constants;
 using FashionApp.core;
 
-namespace FashionApp;
+namespace FashionApp.Pages;
 
 public partial class CombineImages : ContentPage
 {

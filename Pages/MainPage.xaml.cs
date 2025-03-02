@@ -4,7 +4,7 @@ using FashionApp.Pages;
 using System.Text;
 using System.Text.Json;
 
-namespace FashionApp
+namespace FashionApp.Pages
 {
     public partial class MainPage : ContentPage
     {

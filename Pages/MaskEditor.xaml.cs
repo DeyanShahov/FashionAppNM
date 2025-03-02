@@ -2,10 +2,9 @@ using FashionApp.core;
 using FashionApp.core.draw;
 using FashionApp.core.services;
 using FashionApp.Data.Constants;
-using FashionApp.Pages;
 using SkiaSharp;
 
-namespace FashionApp;
+namespace FashionApp.Pages;
 
 public partial class MaskEditor : ContentPage
 {

@@ -1,4 +1,6 @@
-﻿namespace FashionApp
+﻿using FashionApp.Pages;
+
+namespace FashionApp
 {
     public partial class App : Application
     {

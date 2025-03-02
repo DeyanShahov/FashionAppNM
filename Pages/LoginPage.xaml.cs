@@ -1,6 +1,6 @@
 using FashionApp.Data.Constants;
 
-namespace FashionApp;
+namespace FashionApp.Pages;
 
 public partial class LoginPage : ContentPage
 {
