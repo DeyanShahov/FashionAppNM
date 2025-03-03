@@ -3,6 +3,8 @@ using System.Text;
 using FashionApp.core.services;
 using FashionApp.Data.Constants;
 using FashionApp.core;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace FashionApp.Pages;
 
@@ -19,6 +21,11 @@ public partial class CombineImages : ContentPage
     private readonly SingleImageLoader singleImageLoader;
     private CameraService _cameraService;
 
+    private bool isCustomMask = true;
+
+    private List<string> selectedItems = new List<string>();
+    private List<string> selectedOptionsForZoneToMarcFromAI = new List<string>(); // Колекция с избрани стойности
+
     public CombineImages()
     {
         InitializeComponent();
@@ -31,6 +38,7 @@ public partial class CombineImages : ContentPage
             setImage: (uri) => SelectedBodyImage.Source = Microsoft.Maui.Controls.ImageSource.FromUri(new System.Uri(uri))
         );
 
+
 #if WINDOWS
         CheckAvailableMasksWindows();
 #elif ANDROID
@@ -38,11 +46,69 @@ public partial class CombineImages : ContentPage
 #endif
     }
 
+    // Показване/скриване на панела
+    //private void TogglePanel_Clicked(object sender, EventArgs e)
+    //{
+    //    ButtonPanel.IsVisible = !ButtonPanel.IsVisible;
+    //}
+
+    // Избор на бутон
+    private void OptionButton_Clicked(object sender, EventArgs e)
+    {
+        Button clickedButton = (Button)sender;
+        string value = clickedButton.CommandParameter as string;
+
+        if (string.IsNullOrEmpty(value)) return; // Предпазване от грешки
+
+        if (selectedOptionsForZoneToMarcFromAI.Contains(value))
+        {
+            // Премахване от списъка
+            selectedOptionsForZoneToMarcFromAI.Remove(value);
+            clickedButton.BackgroundColor = Colors.Black;
+            clickedButton.TextColor = Colors.Red;
+        }
+        else
+        {
+            // Добавяне в списъка
+            selectedOptionsForZoneToMarcFromAI.Add(value);
+            clickedButton.BackgroundColor = Colors.White;
+            clickedButton.TextColor = Colors.Black;
+        }
+    }
+
     //---------------------------------------- BUTONS ACTIONS --------------------------------------------------------------
     private async void OnNavigateClicked(object sender, EventArgs e) => await Navigation.PopAsync();
     private void OnSelectClothImageClicked(object sender, EventArgs e) => SetAnImageAsSourceAsync(SelectedClothImage, nameof(_clothImagePath));
     private void OnSelectBodyImageClicked(object sender, EventArgs e) => SetAnImageAsSourceAsync(SelectedBodyImage, nameof(_bodyImagePath));
     private void OnCaptureClicked(object sender, EventArgs e) => _cameraService.CaptureClicked();
+
+    private void MaskTypeSwitch_Toggled(object sender, ToggledEventArgs e)
+    {
+        ButtonPanel.IsVisible = e.Value;// !ButtonPanel.IsVisible;
+        //SelectionMenu.IsVisible = e.Value; // Показване или скриване на менюто
+        //if (!e.Value)
+        //{
+        //    selectedItems.Clear(); // Изчистване на избраните елементи
+        //}
+
+        SelectBodyImageButton.Text = "Select Body Image - " + (e.Value ? "AI Mask"  : "Custom Mask");
+    }
+
+    //private void OnItemCheckedChanged(object sender, CheckedChangedEventArgs e)
+    //{
+    //    var checkbox = sender as CheckBox;
+    //    if (checkbox != null)
+    //    {
+    //        if (e.Value)
+    //        {
+    //            selectedItems.Add(checkbox.BindingContext.ToString());
+    //        }
+    //        else
+    //        {
+    //            selectedItems.Remove(checkbox.BindingContext.ToString());
+    //        }
+    //    }
+    //}
 
     private async void OnCombineImages_Clicked(object sender, EventArgs e)
     {
@@ -68,7 +134,8 @@ public partial class CombineImages : ContentPage
             {
                 function_name = AppConstants.Parameters.CONFY_FUNCTION_GENERATE_NAME,
                 cloth_image = AppConstants.Parameters.INPUT_IMAGE_CLOTH,
-                body_image = AppConstants.Parameters.INPUT_IMAGE_BODY
+                body_image = AppConstants.Parameters.INPUT_IMAGE_BODY,
+                is_custom_mask = isCustomMask // Задаване типа на маската: ръчна ( true ) / АI ( false )
             };
 
             var jsonContent = new StringContent(
@@ -427,4 +494,6 @@ public partial class CombineImages : ContentPage
         }
     }
     private void HideMenus() => Menu1.IsVisible = !Menu1.IsVisible;
+
+   
 }

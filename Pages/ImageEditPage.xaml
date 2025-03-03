@@ -62,7 +62,7 @@
              VerticalOptions="End"
              BackgroundColor="#80000000"
              Padding="10"
-             Spacing="10">
+             Spacing="3">
             <Button
             Text="Save"
             TextColor="White"
