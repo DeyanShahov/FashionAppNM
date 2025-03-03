@@ -42,17 +42,25 @@ public partial class CombineImages : ContentPage
 #if WINDOWS
         CheckAvailableMasksWindows();
 #elif ANDROID
-        CheckAvailableMasksAndroid();
+        CheckAvailableMasksAndroid(true);
 #endif
     }
 
-    // Показване/скриване на панела
-    //private void TogglePanel_Clicked(object sender, EventArgs e)
-    //{
-    //    ButtonPanel.IsVisible = !ButtonPanel.IsVisible;
-    //}
+    //---------------------------------------- BUTONS ACTIONS --------------------------------------------------------------
+    private async void OnNavigateClicked(object sender, EventArgs e) => await Navigation.PopAsync();
+    private void OnSelectClothImageClicked(object sender, EventArgs e) => SetAnImageAsSourceAsync(SelectedClothImage, nameof(_clothImagePath));
+    private void OnSelectBodyImageClicked(object sender, EventArgs e) => SetAnImageAsSourceAsync(SelectedBodyImage, nameof(_bodyImagePath));
+    private void OnCaptureClicked(object sender, EventArgs e) => _cameraService.CaptureClicked();
+    private void MaskTypeSwitch_Toggled(object sender, ToggledEventArgs e)
+    {
+        ButtonPanel.IsVisible = e.Value;
+        isCustomMask = !e.Value;
+        SelectBodyImageButton.Text = "Select Body Image - " + (e.Value ? "AI Mask"  : "Custom Mask");
 
-    // Избор на бутон
+#if ANDROID
+        CheckAvailableMasksAndroid(!e.Value);
+#endif
+    }
     private void OptionButton_Clicked(object sender, EventArgs e)
     {
         Button clickedButton = (Button)sender;
@@ -75,40 +83,6 @@ public partial class CombineImages : ContentPage
             clickedButton.TextColor = Colors.Black;
         }
     }
-
-    //---------------------------------------- BUTONS ACTIONS --------------------------------------------------------------
-    private async void OnNavigateClicked(object sender, EventArgs e) => await Navigation.PopAsync();
-    private void OnSelectClothImageClicked(object sender, EventArgs e) => SetAnImageAsSourceAsync(SelectedClothImage, nameof(_clothImagePath));
-    private void OnSelectBodyImageClicked(object sender, EventArgs e) => SetAnImageAsSourceAsync(SelectedBodyImage, nameof(_bodyImagePath));
-    private void OnCaptureClicked(object sender, EventArgs e) => _cameraService.CaptureClicked();
-
-    private void MaskTypeSwitch_Toggled(object sender, ToggledEventArgs e)
-    {
-        ButtonPanel.IsVisible = e.Value;// !ButtonPanel.IsVisible;
-        //SelectionMenu.IsVisible = e.Value; // Показване или скриване на менюто
-        //if (!e.Value)
-        //{
-        //    selectedItems.Clear(); // Изчистване на избраните елементи
-        //}
-
-        SelectBodyImageButton.Text = "Select Body Image - " + (e.Value ? "AI Mask"  : "Custom Mask");
-    }
-
-    //private void OnItemCheckedChanged(object sender, CheckedChangedEventArgs e)
-    //{
-    //    var checkbox = sender as CheckBox;
-    //    if (checkbox != null)
-    //    {
-    //        if (e.Value)
-    //        {
-    //            selectedItems.Add(checkbox.BindingContext.ToString());
-    //        }
-    //        else
-    //        {
-    //            selectedItems.Remove(checkbox.BindingContext.ToString());
-    //        }
-    //    }
-    //}
 
     private async void OnCombineImages_Clicked(object sender, EventArgs e)
     {
@@ -135,7 +109,8 @@ public partial class CombineImages : ContentPage
                 function_name = AppConstants.Parameters.CONFY_FUNCTION_GENERATE_NAME,
                 cloth_image = AppConstants.Parameters.INPUT_IMAGE_CLOTH,
                 body_image = AppConstants.Parameters.INPUT_IMAGE_BODY,
-                is_custom_mask = isCustomMask // Задаване типа на маската: ръчна ( true ) / АI ( false )
+                is_custom_mask = isCustomMask, // Задаване типа на маската: ръчна ( true ) / АI ( false )
+                args = selectedOptionsForZoneToMarcFromAI // Списъка с евентуалните зони за маркиране от АЙ-то
             };
 
             var jsonContent = new StringContent(
@@ -411,7 +386,7 @@ public partial class CombineImages : ContentPage
         }
     }
 #elif ANDROID
-    private async void CheckAvailableMasksAndroid()
+    private async void CheckAvailableMasksAndroid(bool toSet)
     {
         // Проверка за разрешения
         App.Current?.Handler.MauiContext?.Services.GetService<CheckForAndroidPermissions>()?.CheckStorage();
@@ -423,15 +398,15 @@ public partial class CombineImages : ContentPage
             var fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.CLOSED_JACKET_MASK);
             if (fileExists)
             {
-                ClosedJacketImageButton.IsEnabled = true;
-                ClosedJacketImageButton.IsVisible = true;
+                ClosedJacketImageButton.IsEnabled = toSet;
+                ClosedJacketImageButton.IsVisible = toSet;
             }
 
             fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.OPEN_JACKET_MASK);
             if (fileExists)
             {
-                OpenJacketImageButton.IsEnabled = true;
-                OpenJacketImageButton.IsVisible = true;
+                OpenJacketImageButton.IsEnabled = toSet;
+                OpenJacketImageButton.IsVisible = toSet;
             }
         }
         catch (Exception ex)

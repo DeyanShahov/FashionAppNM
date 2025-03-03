@@ -92,8 +92,8 @@
 
 
                 <VerticalStackLayout x:Name="ButtonPanel" IsVisible="False" Padding="5">
-                    <Label Text="Choice normal body photo, for AI mask and select zones for change." HorizontalOptions="Center" Margin="10" FontSize="Large"/>
-                    <Frame Padding="10" BorderColor="Gray">
+                    <Label Text="Choice normal body photo for AI mask and select zones for change." HorizontalOptions="Center" TextColor="Black" Margin="10" FontSize="Large"/>
+                    <Frame Padding="2" BorderColor="Gray">
                         <Grid ColumnDefinitions="*,*,*,*" RowDefinitions="*,*,*,*" ColumnSpacing="2" RowSpacing="4">
                             <Button Text="Hat" CommandParameter="Hat" TextColor="Red" BackgroundColor="Black" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="0" Grid.Column="0"/>
                             <Button Text="Hair" CommandParameter="Hair" TextColor="Red" BackgroundColor="Black" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="0" Grid.Column="1"/>
