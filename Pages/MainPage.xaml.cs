@@ -147,6 +147,11 @@ namespace FashionApp.Pages
                 AppConstants.Parameters.APP_CLOTH_GALLERY,
                 $"{AppConstants.Parameters.APP_BASE_PATH}/{AppConstants.Parameters.APP_NAME}/{AppConstants.Parameters.APP_FOLDER_SCREEN}%"));
 
+        private async void TestGalleryButton_Clicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new TestGallery("Test Gallery", "TestGallery"));
+        }
+
         private async void PartnersPageButton_Clicked(object sender, EventArgs e)
             => await Navigation.PushAsync(new PartnersPage());
 
@@ -182,6 +187,6 @@ namespace FashionApp.Pages
             ResponseText.IsVisible = toSet;
             SaveButton.IsVisible = toSet;
             SaveButton.IsEnabled = toSet;
-        }
+        }    
     }
 }

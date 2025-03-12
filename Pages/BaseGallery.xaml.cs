@@ -56,14 +56,27 @@ public partial class BaseGallery : ContentPage
     private readonly ImagesLoader imagesLoader;
     private readonly SingleImageLoader singleImageLoader;
 
-    public BaseGallery(string galleryName, string galleryPath)
+    //public double ImageWidth = 120;
+    //public double ImageHeight = 120;
+    //public bool isBaseVariant = true;
+    //public int RequiredTab = 1;
+
+    public BaseGallery(string galleryName, string galleryPath, bool singleImageInclude = true)
 	{
 		InitializeComponent();
 
         Title = galleryName; // Сетване името на глаерията 
         imagesPath = galleryPath; // Сетване пътя до галерията
+        //isBaseVariant = singleImageInclude;
 
         BindingContext = this;
+
+        //LargeImageFrame.IsVisible = singleImageInclude; // Сетване дали да се вижда единична голяма снимка в зависимост мода
+        //GridItemList.Span = singleImageInclude ? 3 : 2;
+        //ImageWidth = singleImageInclude ? 120 : 250;
+        //ImageHeight = singleImageInclude ? 120 : 300;
+        //RequiredTab = singleImageInclude ? 1 : 2;
+
         imagesLoader = new ImagesLoader(
             setErrorMessage: (msg) => ErrorMessage = msg,
             setBusy: (busy) => IsBusy = busy,
@@ -123,8 +136,8 @@ public partial class BaseGallery : ContentPage
                 await singleImageLoader.LoadSingleImageAsync(getImageName);
             }
 #else
-            selectedImageUri = imageUri;
-            await singleImageLoader.LoadSingleImageAsync(imageUri);
+                selectedImageUri = imageUri;
+                await singleImageLoader.LoadSingleImageAsync(imageUri);
 #endif
         }
     }

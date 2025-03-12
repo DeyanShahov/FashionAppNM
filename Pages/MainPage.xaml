@@ -24,6 +24,11 @@
                 Text="Go to Mask Gallery"
                 Clicked="MaskGalleryButton_Clicked"
                 HorizontalOptions="Center"/>
+            <Button
+                x:Name="TestGalleryButton"
+                Text="Test Gallery"
+                Clicked="TestGalleryButton_Clicked"
+                HorizontalOptions="Center"/>
             <!--<Button
                 x:Name="NavigateButtonToMaskJS"
                 Text="Go to MaskJS"

@@ -10,153 +10,172 @@
 
         <VerticalStackLayout>
 
-            <Grid x:Name="CameraPanel" IsVisible="False"  IsEnabled="False" >
-                <Frame x:Name="test" Grid.Row="0" BackgroundColor="Gray" CornerRadius="0" BorderColor="Black">
-                    <toolkit:CameraView
-                    x:Name="MyCameraView"       
-                    HorizontalOptions="CenterAndExpand"
-                    HeightRequest="600"
-                    SelectedCamera="{Binding SelectedCamera}"
-                    ZoomFactor="{Binding CurrentZoom}"
-                    CameraFlashMode="{Binding FlashMode}" />
-                </Frame>
-
-                <Grid Grid.Row="2" ColumnDefinitions="*,Auto,*" Padding="10" VerticalOptions="End">
-                    <Frame Grid.Column="1" HeightRequest="80" WidthRequest="80" CornerRadius="40" HorizontalOptions="Center">
-                        <Button x:Name="Capture" Text="REC" BackgroundColor="DarkRed" TextColor="White" HeightRequest="40" WidthRequest="100" Clicked="OnCaptureClicked"/>
-
+            <Grid RowDefinitions="Auto, *, Auto">
+                
+                <Grid x:Name="CameraPanel" IsVisible="False"  IsEnabled="False" >
+                    <Frame x:Name="test" Grid.Row="0" BackgroundColor="Gray" CornerRadius="0" BorderColor="Black">
+                        <toolkit:CameraView
+                        x:Name="MyCameraView"       
+                        HorizontalOptions="CenterAndExpand"
+                        HeightRequest="600"
+                        SelectedCamera="{Binding SelectedCamera}"
+                        ZoomFactor="{Binding CurrentZoom}"
+                        CameraFlashMode="{Binding FlashMode}" />
                     </Frame>
 
-                    <Frame  WidthRequest="120" HeightRequest="100" BackgroundColor="Black" HorizontalOptions="Start" ScaleY="0.7" ScaleX="0.7">
+                    <Grid Grid.Row="2" ColumnDefinitions="*,Auto,*" Padding="10" VerticalOptions="End">
+                        <Frame Grid.Column="1" HeightRequest="80" WidthRequest="80" CornerRadius="40" HorizontalOptions="Center">
+                            <Button x:Name="Capture" Text="REC" BackgroundColor="DarkRed" TextColor="White" HeightRequest="40" WidthRequest="100" Clicked="OnCaptureClicked"/>
 
-                        <Button Text="CLOSE" TextColor="White" VerticalOptions="Center" HorizontalOptions="Center"  Clicked="HidePanelCommand"/>
-                    </Frame>
+                        </Frame>
+
+                        <Frame  WidthRequest="120" HeightRequest="100" BackgroundColor="Black" HorizontalOptions="Start" ScaleY="0.7" ScaleX="0.7">
+
+                            <Button Text="CLOSE" TextColor="White" VerticalOptions="Center" HorizontalOptions="Center"  Clicked="HidePanelCommand"/>
+                        </Frame>
+                    </Grid>
                 </Grid>
-            </Grid>
-
-            <Grid>
+                
                 <VerticalStackLayout x:Name="Menu1" Spacing="15" Padding="10">
                 
-                <Button x:Name="NavigateButton"
-                    Text="Back to Main Page"
-                    Clicked="OnNavigateClicked"
-                    HorizontalOptions="Center"
-                    WidthRequest="200"
-                    Margin="0,10"/>
+                    <Button x:Name="NavigateButton"
+                        Text="Back to Main Page"
+                        Clicked="OnNavigateClicked"
+                        HorizontalOptions="Center"
+                        WidthRequest="200"
+                        Margin="0,10"/>
 
-                <BoxView Color="Black" HeightRequest="2" HorizontalOptions="FillAndExpand"/>
+                    <BoxView Color="Black" HeightRequest="5" HorizontalOptions="FillAndExpand"/>
 
-                <Button x:Name="SelectClothImageButton"
-                    Text="Select Cloth Image"
-                    Clicked="OnSelectClothImageClicked"
-                    WidthRequest="160"
-                    HeightRequest="40"/>
-                
-                <Button
-                    x:Name="SelectClothFromApp"
-                    Text="Select Cloth from App"
-                    Clicked="SelectClothFromApp_Clicked"
-                    WidthRequest="180"
-                    HeightRequest="40"/>
-                
-                <Button x:Name="PanelButton"
-                    Text="Open Cam"
-                    Clicked="PanelButton_Clicked"
-                    WidthRequest="160"
-                    HeightRequest="40"/>
+                    <Grid Grid.Row="1">
+                        <VerticalStackLayout Spacing="20" HorizontalOptions="Start" VerticalOptions="Center" Margin="10,0,0,0">
+                            <ImageButton x:Name="TestGalleryButton" Source="Icons/images_regular_24.png" HeightRequest="40" WidthRequest="40" Clicked="TestGalleryButton_Clicked"/>
+                            <ImageButton x:Name="TestGalleryButton2" Source="Icons/camera_regular_24.png" HeightRequest="40" WidthRequest="40" Clicked="PanelButton_Clicked"/>
+                        </VerticalStackLayout>
 
+                        <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
+                            <Label Text="Select Cloth"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"
+                                   TextTransform="Uppercase"
+                                   FontSize="Medium"
+                                   TextColor="Blue"
+                                   CharacterSpacing="3"/>
 
-                <Image x:Name="SelectedClothImage"
-                    HeightRequest="300"
-                    WidthRequest="300"
-                    Aspect="AspectFit"
-                    IsVisible="False"
-                    Margin="0,20"/>
+                            <Button x:Name="SelectClothImageButton"
+                                    Text="Select Cloth Image"
+                                    Clicked="OnSelectClothImageClicked"
+                                    WidthRequest="160"
+                                    HeightRequest="40"
+                                    Margin="5"
+                                    IsVisible="False"/>
 
-                    <BoxView Color="Black" HeightRequest="2" HorizontalOptions="FillAndExpand"/>
+                            <Button x:Name="SelectClothFromApp"
+                                    Text="Select Cloth from App"
+                                    Clicked="SelectClothFromApp_Clicked"
+                                    WidthRequest="180"
+                                    HeightRequest="40"
+                                    Margin="5"
+                                    IsVisible="False"/>
 
-                <HorizontalStackLayout HorizontalOptions="Center">
-                    <Button x:Name="SelectBodyImageButton"
-                            Text="Select Body Image - Custom Mask"
-                            Clicked="OnSelectBodyImageClicked"
-                            HorizontalOptions="Center"
-                            WidthRequest="260"
-                            Margin="0,10"/>
-                    <Switch x:Name="MaskTypeSwitch"
-                            WidthRequest="50"
-                            HeightRequest="20"
-                            IsToggled="False"
-                            Toggled="MaskTypeSwitch_Toggled"
-                            Background="LightGray"/>
-                </HorizontalStackLayout>
+                            <Button x:Name="PanelButton"
+                                    Text="Open Cam"
+                                    Clicked="PanelButton_Clicked"
+                                    WidthRequest="160"
+                                    HeightRequest="40"
+                                    Margin="5"
+                                    IsVisible="False"/>
 
+                            <Image x:Name="SelectedClothImage"
+                                    HeightRequest="300"
+                                    WidthRequest="250"
+                                    Aspect="AspectFit"
+                                    IsVisible="False"
+                                    Margin="0,20"/>
+                        </VerticalStackLayout>
 
-                <VerticalStackLayout x:Name="ButtonPanel" IsVisible="False" Padding="5">
-                    <Label Text="Choice normal body photo for AI mask and select zones for change." HorizontalOptions="Center" TextColor="Black" Margin="10" FontSize="Large"/>
-                    <Frame Padding="2" BorderColor="Gray">
-                        <Grid ColumnDefinitions="*,*,*,*" RowDefinitions="*,*,*,*" ColumnSpacing="2" RowSpacing="4">
-                            <Button Text="Hat" CommandParameter="Hat" TextColor="Red" BackgroundColor="Black" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="0" Grid.Column="0"/>
-                            <Button Text="Hair" CommandParameter="Hair" TextColor="Red" BackgroundColor="Black" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="0" Grid.Column="1"/>
-                            <Button Text="Face" CommandParameter="Face" TextColor="Red" BackgroundColor="Black" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="0" Grid.Column="2"/>
-                            <Button Text="Sunglasses" CommandParameter="Sunglasses" TextColor="Red" BackgroundColor="Black" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="0" Grid.Column="3"/>
-                            <Button Text="Upper-clothes" CommandParameter="Upper-clothes" TextColor="Red" BackgroundColor="Black" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="1" Grid.Column="0"/>
-                            <Button Text="Skirt" CommandParameter="Skirt" TextColor="Red" BackgroundColor="Black" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="1" Grid.Column="1"/>
-                            <Button Text="Dress" CommandParameter="Dress" TextColor="Red" BackgroundColor="Black" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="1" Grid.Column="2"/>
-                            <Button Text="Belt" CommandParameter="Belt" TextColor="Red" BackgroundColor="Black" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="1" Grid.Column="3"/>
-                            <Button Text="Pants" CommandParameter="Pants" TextColor="Red" BackgroundColor="Black" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="2" Grid.Column="0"/>
-                            <Button Text="L-arm" CommandParameter="Left-arm" TextColor="Red" BackgroundColor="Black" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="2" Grid.Column="1"/>
-                            <Button Text="R-arm" CommandParameter="Right-arm" TextColor="Red" BackgroundColor="Black" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="2" Grid.Column="2"/>
-                            <Button Text="L-leg" CommandParameter="Left-leg" TextColor="Red" BackgroundColor="Black" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="2" Grid.Column="3"/>
-                            <Button Text="R-leg" CommandParameter="Right-leg" TextColor="Red" BackgroundColor="Black" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="3" Grid.Column="0"/>
-                            <Button Text="Scarf" CommandParameter="Scarf" TextColor="Red" BackgroundColor="Black" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="3" Grid.Column="1"/>
-                            <Button Text="L-shoe" CommandParameter="Left-shoe" TextColor="Red" BackgroundColor="Black" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="3" Grid.Column="2"/>
-                            <Button Text="R-shoe" CommandParameter="Right-shoe" TextColor="Red" BackgroundColor="Black" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="3" Grid.Column="3"/>
+                        <VerticalStackLayout 
+                                    Spacing="20"
+                                    HorizontalOptions="End"
+                                    VerticalOptions="Center"
+                                    Margin="10,0,0,0">
+                            <ImageButton
+                                    x:Name="TestGalleryButton3"
+                                    Source="Icons/folder_open_regular_24.png"
+                                    HeightRequest="40"
+                                    WidthRequest="40"
+                                    Clicked="OnSelectClothImageClicked"/>
+                            <ImageButton
+                                    x:Name="TestGalleryButton4"
+                                    Source="Icons/folder_open_solid_24.png"
+                                    HeightRequest="40"
+                                    WidthRequest="40"
+                                    Clicked="SelectClothFromApp_Clicked"/>
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <BoxView Color="Black" HeightRequest="5" HorizontalOptions="FillAndExpand"/>
+
+                    <Grid Grid.Row="2">
+                        <Grid RowDefinitions="Auto, *, Auto">
+                            <Grid Grid.Row="1">
+                                <Label Text="Select photo" HorizontalOptions="Center" VerticalOptions="Start" TextTransform="Uppercase" FontSize="Medium"
+                                       TextColor="Blue" CharacterSpacing="3"/>
+                                <HorizontalStackLayout Spacing="20" VerticalOptions="Start" HorizontalOptions="Center" Margin="0,30">
+                                    <ImageButton x:Name="TestGalleryButton5" Source="Icons/images_regular_24.png" HeightRequest="40" WidthRequest="40" Clicked="TestGalleryButton5_Clicked"/>
+                                    <ImageButton x:Name="TestGalleryButton6" Source="Icons/camera_regular_24.png" HeightRequest="40" WidthRequest="40" Clicked="PanelButton6_Clicked"/>
+                                    <ImageButton x:Name="TestGalleryButton7" Source="Icons/folder_open_regular_24.png" HeightRequest="40" WidthRequest="40" Clicked="OnSelectBodyImageClicked"/>
+                                    <ImageButton x:Name="TestGalleryButton8" Source="Icons/folder_open_solid_24.png" HeightRequest="40" WidthRequest="40" Clicked="SelectBodyFromApp_Clicked"/>
+                                </HorizontalStackLayout>
+                            </Grid>
+
+                            <Grid Grid.Row="2">
+                                <VerticalStackLayout Spacing="-10" HorizontalOptions="Start" VerticalOptions="Center">
+                                    <RadioButton x:Name="StandartMask" Content="Mask" IsChecked="True" GroupName="MaskOption" CheckedChanged="RadioButton_CheckedChanged"/>
+                                    <RadioButton x:Name="AIv1" Content="AIv1" IsChecked="False" GroupName="MaskOption" CheckedChanged="RadioButton_CheckedChanged"/>
+                                    <RadioButton x:Name="AIv2" Content="AIv2" IsChecked="False" GroupName="MaskOption" CheckedChanged="RadioButton_CheckedChanged"/>
+                                    <RadioButton x:Name="AIv3" Content="AIv3" IsChecked="False" GroupName="MaskOption" CheckedChanged="RadioButton_CheckedChanged"/>
+                                </VerticalStackLayout>
+
+                                <VerticalStackLayout  Spacing="20" HorizontalOptions="End" VerticalOptions="Center" Margin="10,0,0,0">
+                                    <ImageButton x:Name="ClosedJacketImageButton" Source="closed_jacket.png" Clicked="ClosedJacketImageButton_Clicked" HeightRequest="50"
+                                                 WidthRequest="50" CornerRadius="8" BorderColor="#444" BackgroundColor="White" BorderWidth="2" IsEnabled="False" IsVisible="False"/>
+                                    <ImageButton x:Name="OpenJacketImageButton" Source="open_jacket.png" Clicked="OpenJacketImageButton_Clicked" HeightRequest="50"
+                                                 WidthRequest="50" CornerRadius="8" BorderColor="#444" BackgroundColor="White" BorderWidth="2" IsEnabled="False" IsVisible="False"/>
+                                </VerticalStackLayout>
+                            </Grid>
+
+                            <Grid Grid.Row="3">
+                                <Image x:Name="SelectedBodyImage" HeightRequest="300" WidthRequest="250" Aspect="AspectFit" IsVisible="False"/>
+                            </Grid>
                         </Grid>
-                    </Frame>
-                </VerticalStackLayout>
-               
-                <Button x:Name="SelectBodyFromApp"
-                    Text="Select Body from App"
-                    Clicked="SelectBodyFromApp_Clicked"
-                    HorizontalOptions="Center"
-                    WidthRequest="200"/>
+                    </Grid>
 
-                <HorizontalStackLayout Spacing="20" HorizontalOptions="Center" Margin="0,10">
-                    
-                <ImageButton x:Name="ClosedJacketImageButton"
-                        Source="closed_jacket.png"
-                        Clicked="ClosedJacketImageButton_Clicked"
-                        HeightRequest="80"
-                        WidthRequest="80"
-                        CornerRadius="8"
-                        BorderColor="#444"
-                        BackgroundColor="White"
-                        BorderWidth="2"
-                        IsEnabled="False"
-                        IsVisible="False"/>
+                    <VerticalStackLayout x:Name="ButtonPanel" IsVisible="False" Padding="5" VerticalOptions="End">
+                        <Label Text="Choice normal body photo for AI mask and select zones for change." HorizontalOptions="Center" TextColor="Black" Margin="10" FontSize="Large"/>
+                        <Frame Padding="2" BorderColor="Gray">
+                            <Grid ColumnDefinitions="*,*,*,*" RowDefinitions="*,*,*,*" ColumnSpacing="2" RowSpacing="4">
+                                <Button Text="Hat" CommandParameter="Hat" TextColor="Red" BackgroundColor="Black" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="0" Grid.Column="0"/>
+                                <Button Text="Hair" CommandParameter="Hair" TextColor="Red" BackgroundColor="Black" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="0" Grid.Column="1"/>
+                                <Button Text="Face" CommandParameter="Face" TextColor="Red" BackgroundColor="Black" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="0" Grid.Column="2"/>
+                                <Button Text="Sunglasses" CommandParameter="Sunglasses" TextColor="Red" BackgroundColor="Black" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="0" Grid.Column="3"/>
+                                <Button Text="Upper-clothes" CommandParameter="Upper-clothes" TextColor="Red" BackgroundColor="Black" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="1" Grid.Column="0"/>
+                                <Button Text="Skirt" CommandParameter="Skirt" TextColor="Red" BackgroundColor="Black" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="1" Grid.Column="1"/>
+                                <Button Text="Dress" CommandParameter="Dress" TextColor="Red" BackgroundColor="Black" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="1" Grid.Column="2"/>
+                                <Button Text="Belt" CommandParameter="Belt" TextColor="Red" BackgroundColor="Black" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="1" Grid.Column="3"/>
+                                <Button Text="Pants" CommandParameter="Pants" TextColor="Red" BackgroundColor="Black" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="2" Grid.Column="0"/>
+                                <Button Text="L-arm" CommandParameter="Left-arm" TextColor="Red" BackgroundColor="Black" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="2" Grid.Column="1"/>
+                                <Button Text="R-arm" CommandParameter="Right-arm" TextColor="Red" BackgroundColor="Black" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="2" Grid.Column="2"/>
+                                <Button Text="L-leg" CommandParameter="Left-leg" TextColor="Red" BackgroundColor="Black" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="2" Grid.Column="3"/>
+                                <Button Text="R-leg" CommandParameter="Right-leg" TextColor="Red" BackgroundColor="Black" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="3" Grid.Column="0"/>
+                                <Button Text="Scarf" CommandParameter="Scarf" TextColor="Red" BackgroundColor="Black" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="3" Grid.Column="1"/>
+                                <Button Text="L-shoe" CommandParameter="Left-shoe" TextColor="Red" BackgroundColor="Black" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="3" Grid.Column="2"/>
+                                <Button Text="R-shoe" CommandParameter="Right-shoe" TextColor="Red" BackgroundColor="Black" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="3" Grid.Column="3"/>
+                            </Grid>
+                        </Frame>
+                    </VerticalStackLayout>
 
-                <ImageButton x:Name="OpenJacketImageButton"
-                        Source="open_jacket.png"
-                        Clicked="OpenJacketImageButton_Clicked"
-                        HeightRequest="80"
-                        WidthRequest="80"
-                        CornerRadius="8"
-                        BorderColor="#444"
-                        BackgroundColor="White"
-                        BorderWidth="2"
-                        IsEnabled="False"
-                        IsVisible="False"/>
-                </HorizontalStackLayout>
-
-                <Image x:Name="SelectedBodyImage"
-                    HeightRequest="300"
-                    WidthRequest="300"
-                    Aspect="AspectFit"
-                    IsVisible="False"
-                    Margin="0,20"/>
-
-
-                <BoxView Color="Black" HeightRequest="2" HorizontalOptions="FillAndExpand"/>
+                <BoxView Color="Black" HeightRequest="5" HorizontalOptions="FillAndExpand"/>
                     
                 <Button x:Name="CombineImagesButton"
                     Text="Create New Image"

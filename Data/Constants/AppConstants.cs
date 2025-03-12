@@ -78,6 +78,7 @@
             public const string CONFY_FUNCTION_GENERATE_ARG = "bottle";
             public const string CONFY_FUNCTION_COMBINE_ENDPOINT = "combine_images";
             public const string APP_CLOTH_GALLERY = "Cloth Gallery";
+            public const string APP_TEST_GALLERY = "Test Gallery";
             //public const string APP_FULLPATH_CAPTURE_SCREEN = "/storage/emulated/0/Pictures/FashionApp/CaptureScreen%";
             //public const string APP_FULLPATH_MASKS_IMAGES = "/storage/emulated/0/Pictures/FashionApp/MasksImages/";
             //public const string APP_FULLPATH_MASKS_IMAGES = "/storage/emulated/0/Pictures/FashionApp/MasksImages%";

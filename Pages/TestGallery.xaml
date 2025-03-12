@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FashionApp.Pages.TestGallery"
+             Title="Test Gallery"
+              BackgroundColor="Black">
+    <!-- Използваме AbsoluteLayout за да можем да поставим ActivityIndicator над съдържанието -->
+    <AbsoluteLayout>
+        <!-- Главно съдържание: Grid с редове за съобщение за грешка, единичната снимка и галерията -->
+        <Grid AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="0,0,1,1">
+
+            <Grid.RowDefinitions>
+                <!-- Ред за съобщение за грешка -->
+                <RowDefinition Height="Auto"/>
+                <!-- Ред за единичната снимка -->
+                <RowDefinition Height="Auto"/>
+                <!-- Ред за галерията, която ще скролира сама -->
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <CollectionView 
+         x:Name="GalleryCollectionView"
+         Grid.Row="2"
+         ItemsSource="{Binding ImagesList}"
+         SelectionMode="Single"
+         Margin="10,0,10,10">
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout
+                        x:Name="GridItemList"
+                        Orientation="Vertical"
+                        Span="3"
+                        HorizontalItemSpacing="5"
+                        VerticalItemSpacing="5"/>
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame 
+                     Padding="0"
+                     IsClippedToBounds="True"
+                     CornerRadius="0">
+                            <Image 
+                                Source="{Binding .}"
+                                Aspect="AspectFit"
+                                HeightRequest="120"
+                                WidthRequest="120">
+                                <!--<Image.GestureRecognizers>
+                                    <TapGestureRecognizer 
+                                        Tapped="TapGestureRecognizer_Tapped"/>
+                                </Image.GestureRecognizers>-->
+                            </Image>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+        </Grid>
+
+        <!-- ActivityIndicator, като overlay, центриран върху съдържанието -->
+        <ActivityIndicator IsRunning="{Binding IsBusy}"
+             IsVisible="{Binding IsBusy}"
+             AbsoluteLayout.LayoutFlags="PositionProportional"
+             AbsoluteLayout.LayoutBounds="0.5,0.5,-1,-1"/>
+
+    </AbsoluteLayout>
+</ContentPage>

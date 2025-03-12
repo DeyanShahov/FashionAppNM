@@ -92,6 +92,19 @@
 
         <Grid  x:Name="Menu2" Grid.Row="1">
             <VerticalStackLayout 
+                Spacing="20"
+                HorizontalOptions="Start"
+                VerticalOptions="Center"
+                Margin="10,0,0,0">
+                <ImageButton
+                    x:Name="TestGalleryButton"
+                    Source="Icons/images_regular_24.png"
+                    HeightRequest="50"
+                    WidthRequest="50"
+                    Clicked="TestGalleryButton_Clicked"/>
+            </VerticalStackLayout>
+            
+            <VerticalStackLayout 
                 Spacing="20" 
                 HorizontalOptions="End"
                 VerticalOptions="Center"

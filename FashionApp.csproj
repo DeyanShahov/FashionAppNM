@@ -68,6 +68,77 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\Images\Icons\images_regular_24.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Include="Platforms\Android\Resources\a2.jpg">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Platforms\Android\Resources\a3.jpg">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <EmbeddedResource Include="Resources\Images\EmbeddedResource\a2.jpg">
+	    <CopyToOutputDirectory></CopyToOutputDirectory>
+	  </EmbeddedResource>
+	  <EmbeddedResource Include="Resources\Images\EmbeddedResource\a3.jpg">
+	    <CopyToOutputDirectory></CopyToOutputDirectory>
+	  </EmbeddedResource>
+	  <EmbeddedResource Include="Resources\Images\EmbeddedResource\a4.jpg">
+	    <CopyToOutputDirectory></CopyToOutputDirectory>
+	  </EmbeddedResource>
+	  <EmbeddedResource Include="Resources\Images\EmbeddedResource\a5.jpg">
+	    <CopyToOutputDirectory></CopyToOutputDirectory>
+	  </EmbeddedResource>
+	  <EmbeddedResource Include="Resources\Images\EmbeddedResource\a6.jpg">
+	    <CopyToOutputDirectory></CopyToOutputDirectory>
+	  </EmbeddedResource>
+	  <EmbeddedResource Include="Resources\Images\EmbeddedResource\a7.jpg">
+	    <CopyToOutputDirectory></CopyToOutputDirectory>
+	  </EmbeddedResource>
+	  <EmbeddedResource Include="Resources\Images\EmbeddedResource\a8.jpg">
+	    <CopyToOutputDirectory></CopyToOutputDirectory>
+	  </EmbeddedResource>
+	  <EmbeddedResource Include="Resources\Images\EmbeddedResource\a9.jpg">
+	    <CopyToOutputDirectory></CopyToOutputDirectory>
+	  </EmbeddedResource>
+	  <MauiImage Include="Resources\Images\Icons\camera_regular_24.png" />
+	  <MauiImage Include="Resources\Images\Icons\folder_open_regular_24.png" />
+	  <MauiImage Include="Resources\Images\Icons\folder_open_solid_24.png" />
+	  <MauiImage Include="Resources\Images\Icons\images_regular_24.png" />
+	  <MauiImage Include="Resources\Raw\Gallery\a13.jpg">
+	    <CopyToOutputDirectory></CopyToOutputDirectory>
+	  </MauiImage>
+	  <MauiImage Include="Resources\Raw\Gallery\a12.jpg">
+	    <CopyToOutputDirectory></CopyToOutputDirectory>
+	  </MauiImage>
+	  <MauiImage Include="Resources\Raw\Gallery\a11.jpg">
+	    <CopyToOutputDirectory></CopyToOutputDirectory>
+	  </MauiImage>
+	  <MauiImage Include="Resources\Raw\Gallery\a9.jpg">
+	    <CopyToOutputDirectory></CopyToOutputDirectory>
+	  </MauiImage>
+	  <MauiImage Include="Resources\Raw\Gallery\a8.jpg">
+	    <CopyToOutputDirectory></CopyToOutputDirectory>
+	  </MauiImage>
+	  <MauiImage Include="Resources\Raw\Gallery\a7.jpg">
+	    <CopyToOutputDirectory></CopyToOutputDirectory>
+	  </MauiImage>
+	  <MauiImage Include="Resources\Raw\Gallery\a6.jpg">
+	    <CopyToOutputDirectory></CopyToOutputDirectory>
+	  </MauiImage>
+	  <MauiImage Include="Resources\Raw\Gallery\a5.jpg">
+	    <CopyToOutputDirectory></CopyToOutputDirectory>
+	  </MauiImage>
+	  <MauiImage Include="Resources\Raw\Gallery\a4.jpg">
+	    <CopyToOutputDirectory></CopyToOutputDirectory>
+	  </MauiImage>
+	  <MauiImage Include="Resources\Raw\Gallery\a3.jpg">
+	    <CopyToOutputDirectory></CopyToOutputDirectory>
+	  </MauiImage>
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Maui" Version="9.0.1" />
 		<PackageReference Include="CommunityToolkit.Maui.Camera" Version="1.0.5" />
 		<PackageReference Include="CommunityToolkit.Maui.Core" Version="9.1.0" />
@@ -113,9 +184,211 @@
 	  <MauiXaml Update="Pages\PartnersPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Pages\TemporaryGallery.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\TestGallery.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Pages\WebViewPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiImage Include="Resources\Raw\Gallery\a10.jpg">
+	    <CopyToOutputDirectory></CopyToOutputDirectory>
+	  </MauiImage>
+	  <MauiImage Include="Resources\Raw\Gallery\a2.jpg">
+	    <CopyToOutputDirectory></CopyToOutputDirectory>
+	  </MauiImage>
+	  <MauiImage Include="Resources\Raw\Gallery\a37.jpg">
+	    <CopyToOutputDirectory></CopyToOutputDirectory>
+	  </MauiImage>
+	  <MauiImage Include="Resources\Raw\Gallery\a36.jpg">
+	    <CopyToOutputDirectory></CopyToOutputDirectory>
+	  </MauiImage>
+	  <MauiImage Include="Resources\Raw\Gallery\a35.jpg">
+	    <CopyToOutputDirectory></CopyToOutputDirectory>
+	  </MauiImage>
+	  <MauiImage Include="Resources\Raw\Gallery\a34.jpg">
+	    <CopyToOutputDirectory></CopyToOutputDirectory>
+	  </MauiImage>
+	  <MauiImage Include="Resources\Raw\Gallery\a33.jpg">
+	    <CopyToOutputDirectory></CopyToOutputDirectory>
+	  </MauiImage>
+	  <MauiImage Include="Resources\Raw\Gallery\a32.jpg">
+	    <CopyToOutputDirectory></CopyToOutputDirectory>
+	  </MauiImage>
+	  <MauiImage Include="Resources\Raw\Gallery\a31.jpg">
+	    <CopyToOutputDirectory></CopyToOutputDirectory>
+	  </MauiImage>
+	  <MauiImage Include="Resources\Raw\Gallery\a30.jpg">
+	    <CopyToOutputDirectory></CopyToOutputDirectory>
+	  </MauiImage>
+	  <MauiImage Include="Resources\Raw\Gallery\a29.jpg">
+	    <CopyToOutputDirectory></CopyToOutputDirectory>
+	  </MauiImage>
+	  <MauiImage Include="Resources\Raw\Gallery\a28.jpg">
+	    <CopyToOutputDirectory></CopyToOutputDirectory>
+	  </MauiImage>
+	  <MauiImage Include="Resources\Raw\Gallery\a27.jpg">
+	    <CopyToOutputDirectory></CopyToOutputDirectory>
+	  </MauiImage>
+	  <MauiImage Include="Resources\Raw\Gallery\a26.jpg">
+	    <CopyToOutputDirectory></CopyToOutputDirectory>
+	  </MauiImage>
+	  <MauiImage Include="Resources\Raw\Gallery\a25.jpg">
+	    <CopyToOutputDirectory></CopyToOutputDirectory>
+	  </MauiImage>
+	  <MauiImage Include="Resources\Raw\Gallery\a24.jpg">
+	    <CopyToOutputDirectory></CopyToOutputDirectory>
+	  </MauiImage>
+	  <MauiImage Include="Resources\Raw\Gallery\a23.jpg">
+	    <CopyToOutputDirectory></CopyToOutputDirectory>
+	  </MauiImage>
+	  <MauiImage Include="Resources\Raw\Gallery\a22.jpg">
+	    <CopyToOutputDirectory></CopyToOutputDirectory>
+	  </MauiImage>
+	  <MauiImage Include="Resources\Raw\Gallery\a21.jpg">
+	    <CopyToOutputDirectory></CopyToOutputDirectory>
+	  </MauiImage>
+	  <MauiImage Include="Resources\Raw\Gallery\a20.jpg">
+	    <CopyToOutputDirectory></CopyToOutputDirectory>
+	  </MauiImage>
+	  <MauiImage Include="Resources\Raw\Gallery\a19.jpg">
+	    <CopyToOutputDirectory></CopyToOutputDirectory>
+	  </MauiImage>
+	  <MauiImage Include="Resources\Raw\Gallery\a18.jpg">
+	    <CopyToOutputDirectory></CopyToOutputDirectory>
+	  </MauiImage>
+	  <MauiImage Include="Resources\Raw\Gallery\a17.jpg">
+	    <CopyToOutputDirectory></CopyToOutputDirectory>
+	  </MauiImage>
+	  <MauiImage Include="Resources\Raw\Gallery\a16.jpg">
+	    <CopyToOutputDirectory></CopyToOutputDirectory>
+	  </MauiImage>
+	  <MauiImage Include="Resources\Raw\Gallery\a15.jpg">
+	    <CopyToOutputDirectory></CopyToOutputDirectory>
+	  </MauiImage>
+	  <MauiImage Include="Resources\Raw\Gallery\a14.jpg">
+	    <CopyToOutputDirectory></CopyToOutputDirectory>
+	  </MauiImage>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Platforms\Android\Resources\test_gallery\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiAsset Update="Resources\Raw\Gallery\a10.jpg">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </MauiAsset>
+	  <MauiAsset Update="Resources\Raw\Gallery\a11.jpg">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </MauiAsset>
+	  <MauiAsset Update="Resources\Raw\Gallery\a12.jpg">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </MauiAsset>
+	  <MauiAsset Update="Resources\Raw\Gallery\a13.jpg">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </MauiAsset>
+	  <MauiAsset Update="Resources\Raw\Gallery\a14.jpg">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </MauiAsset>
+	  <MauiAsset Update="Resources\Raw\Gallery\a15.jpg">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </MauiAsset>
+	  <MauiAsset Update="Resources\Raw\Gallery\a16.jpg">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </MauiAsset>
+	  <MauiAsset Update="Resources\Raw\Gallery\a17.jpg">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </MauiAsset>
+	  <MauiAsset Update="Resources\Raw\Gallery\a18.jpg">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </MauiAsset>
+	  <MauiAsset Update="Resources\Raw\Gallery\a19.jpg">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </MauiAsset>
+	  <MauiAsset Update="Resources\Raw\Gallery\a2.jpg">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </MauiAsset>
+	  <MauiAsset Update="Resources\Raw\Gallery\a20.jpg">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </MauiAsset>
+	  <MauiAsset Update="Resources\Raw\Gallery\a21.jpg">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </MauiAsset>
+	  <MauiAsset Update="Resources\Raw\Gallery\a22.jpg">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </MauiAsset>
+	  <MauiAsset Update="Resources\Raw\Gallery\a23.jpg">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </MauiAsset>
+	  <MauiAsset Update="Resources\Raw\Gallery\a24.jpg">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </MauiAsset>
+	  <MauiAsset Update="Resources\Raw\Gallery\a25.jpg">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </MauiAsset>
+	  <MauiAsset Update="Resources\Raw\Gallery\a26.jpg">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </MauiAsset>
+	  <MauiAsset Update="Resources\Raw\Gallery\a27.jpg">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </MauiAsset>
+	  <MauiAsset Update="Resources\Raw\Gallery\a28.jpg">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </MauiAsset>
+	  <MauiAsset Update="Resources\Raw\Gallery\a29.jpg">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </MauiAsset>
+	  <MauiAsset Update="Resources\Raw\Gallery\a3.jpg">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </MauiAsset>
+	  <MauiAsset Update="Resources\Raw\Gallery\a30.jpg">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </MauiAsset>
+	  <MauiAsset Update="Resources\Raw\Gallery\a31.jpg">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </MauiAsset>
+	  <MauiAsset Update="Resources\Raw\Gallery\a32.jpg">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </MauiAsset>
+	  <MauiAsset Update="Resources\Raw\Gallery\a33.jpg">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </MauiAsset>
+	  <MauiAsset Update="Resources\Raw\Gallery\a34.jpg">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </MauiAsset>
+	  <MauiAsset Update="Resources\Raw\Gallery\a35.jpg">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </MauiAsset>
+	  <MauiAsset Update="Resources\Raw\Gallery\a36.jpg">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </MauiAsset>
+	  <MauiAsset Update="Resources\Raw\Gallery\a37.jpg">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </MauiAsset>
+	  <MauiAsset Update="Resources\Raw\Gallery\a4.jpg">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </MauiAsset>
+	  <MauiAsset Update="Resources\Raw\Gallery\a5.jpg">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </MauiAsset>
+	  <MauiAsset Update="Resources\Raw\Gallery\a6.jpg">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </MauiAsset>
+	  <MauiAsset Update="Resources\Raw\Gallery\a7.jpg">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </MauiAsset>
+	  <MauiAsset Update="Resources\Raw\Gallery\a8.jpg">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </MauiAsset>
+	  <MauiAsset Update="Resources\Raw\Gallery\a9.jpg">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </MauiAsset>
 	</ItemGroup>
 
 </Project>

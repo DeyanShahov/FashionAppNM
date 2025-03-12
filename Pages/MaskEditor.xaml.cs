@@ -3,6 +3,7 @@ using FashionApp.core.draw;
 using FashionApp.core.services;
 using FashionApp.Data.Constants;
 using SkiaSharp;
+using System.Reflection;
 
 namespace FashionApp.Pages;
 
@@ -64,6 +65,60 @@ public partial class MaskEditor : ContentPage
         // Отваряне на модалния прозорец с пътя на изображението
         if (file != null) await Navigation.PushModalAsync(new ImageEditPage(file.FullPath));
     }
+
+    private async void TestGalleryButton_Clicked(object sender, EventArgs e)
+    {
+        var tempGallery = new TemporaryGallery();
+        await Navigation.PushModalAsync(tempGallery);
+        string selectedImageName = await tempGallery.ImageSelectedTask.Task;
+        //SelectedImage.Source = selectedImageName;
+        //await ProcessAndCleanupImageAsync($"TestGallery/{selectedImageName}.jpg");
+
+        //Stream stream = await FileSystem.OpenAppPackageFileAsync($"TestGallery/{selectedImageName}.jpg");
+
+        //var assembly = Assembly.GetExecutingAssembly();
+        //string resourceId = $"FashionApp.Resources.Images.TestGallery.{selectedImageName}.jpg";
+        //Stream stream = assembly.GetManifestResourceStream(resourceId);
+
+        //if (stream == null)
+        //{
+        //    throw new FileNotFoundException($"Resource '{resourceId}' не е намерен.");
+        //}
+
+        await ProcessSelectedImage(selectedImageName);
+    }
+
+    public async Task ProcessAndCleanupImageAsync(string fileName)
+    {
+        // Името на изображението, както е в Resources/Images (или като вградени ресурси)
+        //string fileName = "example.png";
+
+        // Пълният път, където ще запишем файла в AppDataDirectory
+        string destinationPath = Path.Combine(FileSystem.AppDataDirectory, fileName);
+
+        // Копиране на изображението от пакетните ресурси в AppDataDirectory
+        // FileSystem.OpenAppPackageFileAsync търси файла в асемблито, където е включен като ресурс
+        using (Stream sourceStream = await FileSystem.OpenAppPackageFileAsync(fileName))
+        using (FileStream destinationStream = File.Create(destinationPath))
+        {
+            await sourceStream.CopyToAsync(destinationStream);
+        }
+
+        // Отваряне на файла от AppDataDirectory като поток за обработка
+        using (FileStream processingStream = File.OpenRead(destinationPath))
+        {
+            // Тук поставете логиката за обработка на изображението
+            // Например: зареждане в ImageSource, преобразуване или анализ
+            await ProcessSelectedImage(processingStream);
+        }
+
+        // Изтриване на файла от AppDataDirectory, за да не се трупа
+        if (File.Exists(destinationPath))
+        {
+            File.Delete(destinationPath);
+        }
+    }
+
     private async void OnImageCaptured(Stream imageStream)
     {
         await ProcessSelectedImage(imageStream);
@@ -249,6 +304,29 @@ public partial class MaskEditor : ContentPage
 
         // Задаване на източника на изображението
         SelectedImage.Source = ImageSource.FromStream(() => imageWithAlpha);
+
+        // Настройка на ширината и височината на изображението
+        SelectedImage.WidthRequest = Application.Current.MainPage.Width;
+        SelectedImage.HeightRequest = Application.Current.MainPage.Height;
+
+        // Центриране на изображението
+        SelectedImage.HorizontalOptions = LayoutOptions.Center;
+        SelectedImage.VerticalOptions = LayoutOptions.Center;
+
+        // Показване на елементите
+        SelectedImage.IsVisible = true;
+        DrawingView.IsVisible = true;
+        DrawingTools.IsVisible = true;
+        DrawingBottons.IsVisible = true;
+    }
+
+    private async Task ProcessSelectedImage(string fileName)
+    {
+        //Stream stream = new MemoryStream();
+        //var imageWithAlpha = await AddAlphaChanel(stream);
+        // Задаване на източника на изображението
+        //SelectedImage.Source = ImageSource.FromStream(() => imageWithAlpha);
+        SelectedImage.Source = fileName;
 
         // Настройка на ширината и височината на изображението
         SelectedImage.WidthRequest = Application.Current.MainPage.Width;

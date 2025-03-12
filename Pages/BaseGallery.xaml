@@ -28,6 +28,7 @@
 
             <!-- Елемент 2: Изображението с единичната снимка -->
             <Frame 
+             x:Name="LargeImageFrame"
              Grid.Row="1"
              Padding="5"
              HasShadow="True"
@@ -55,6 +56,7 @@
              Margin="10,0,10,10">
                 <CollectionView.ItemsLayout>
                     <GridItemsLayout 
+                     x:Name="GridItemList"
                      Orientation="Vertical"
                      Span="3"
                      HorizontalItemSpacing="5"
@@ -66,14 +68,15 @@
                          Padding="0"
                          IsClippedToBounds="True"
                          CornerRadius="0">
-                            <Image 
+                            <Image                             
                              Source="{Binding .}"
                              Aspect="AspectFill"
                              HeightRequest="120"
                              WidthRequest="120">
                                 <Image.GestureRecognizers>
                                     <TapGestureRecognizer 
-                                     Tapped="TapGestureRecognizer_Tapped"/>
+                                        Tapped="TapGestureRecognizer_Tapped"
+                                        NumberOfTapsRequired="1"/>
                                 </Image.GestureRecognizers>
                             </Image>
                         </Frame>

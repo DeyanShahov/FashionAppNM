@@ -5,6 +5,9 @@ using FashionApp.Data.Constants;
 using FashionApp.core;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using CommunityToolkit.Maui.Views;
+using System.Reflection;
+//using static Android.Provider.MediaStore.Audio;
 
 namespace FashionApp.Pages;
 
@@ -21,10 +24,12 @@ public partial class CombineImages : ContentPage
     private readonly SingleImageLoader singleImageLoader;
     private CameraService _cameraService;
 
-    private bool isCustomMask = true;
+    private int maskDetectionMethod = 1;
 
     private List<string> selectedItems = new List<string>();
     private List<string> selectedOptionsForZoneToMarcFromAI = new List<string>(); // Колекция с избрани стойности
+
+    private bool isFromClothImage = true;
 
     public CombineImages()
     {
@@ -51,16 +56,7 @@ public partial class CombineImages : ContentPage
     private void OnSelectClothImageClicked(object sender, EventArgs e) => SetAnImageAsSourceAsync(SelectedClothImage, nameof(_clothImagePath));
     private void OnSelectBodyImageClicked(object sender, EventArgs e) => SetAnImageAsSourceAsync(SelectedBodyImage, nameof(_bodyImagePath));
     private void OnCaptureClicked(object sender, EventArgs e) => _cameraService.CaptureClicked();
-    private void MaskTypeSwitch_Toggled(object sender, ToggledEventArgs e)
-    {
-        ButtonPanel.IsVisible = e.Value;
-        isCustomMask = !e.Value;
-        SelectBodyImageButton.Text = "Select Body Image - " + (e.Value ? "AI Mask"  : "Custom Mask");
-
-#if ANDROID
-        CheckAvailableMasksAndroid(!e.Value);
-#endif
-    }
+    
     private void OptionButton_Clicked(object sender, EventArgs e)
     {
         Button clickedButton = (Button)sender;
@@ -109,7 +105,7 @@ public partial class CombineImages : ContentPage
                 function_name = AppConstants.Parameters.CONFY_FUNCTION_GENERATE_NAME,
                 cloth_image = AppConstants.Parameters.INPUT_IMAGE_CLOTH,
                 body_image = AppConstants.Parameters.INPUT_IMAGE_BODY,
-                is_custom_mask = isCustomMask, // Задаване типа на маската: ръчна ( true ) / АI ( false )
+                mask_detection_method = maskDetectionMethod, // Задаване типа на маската: ръчна ( true ) / АI ( false )
                 args = selectedOptionsForZoneToMarcFromAI // Списъка с евентуалните зони за маркиране от АЙ-то
             };
 
@@ -152,9 +148,17 @@ public partial class CombineImages : ContentPage
     }
     private void PanelButton_Clicked(object sender, EventArgs e)
     {
+        isFromClothImage = true;
         HideMenus();
         _cameraService.StartCamera();
     }
+    private void PanelButton6_Clicked(object sender, EventArgs e)
+    {
+        isFromClothImage = false;
+        HideMenus();
+        _cameraService.StartCamera();
+    }
+
     private void HidePanelCommand(object sender, EventArgs e)
     {
         HideMenus();
@@ -215,14 +219,78 @@ public partial class CombineImages : ContentPage
 
     }
 
+
+    // Общият метод за CheckedChanged за всички RadioButton-и
+    private void RadioButton_CheckedChanged(object sender, CheckedChangedEventArgs e)
+    {
+        // Изпълняваме кода само ако бутонът е избран (e.Value == true)
+        if (e.Value)
+        {
+            var radioButton = sender as RadioButton;
+            if (radioButton == null)
+                return;
+
+            
+
+            string selectedContent = radioButton.Content?.ToString();
+
+            // Разграничаваме кой бутон е избран чрез неговия текст
+            switch (selectedContent)
+            {
+                case "Mask":
+                    ExecuteStandartMaskFunction();                   
+                    break;
+                case "AIv1":
+                    ExecuteAIv1Function();
+                    break;
+                case "AIv2":
+                    ExecuteAIv2Function();
+                    break;
+                case "AIv3":
+                    ExecuteAIv3Function();
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    private void ExecuteStandartMaskFunction() => SetButtonForAiMasking(1, false);
+
+    private void ExecuteAIv1Function() => SetButtonForAiMasking(2, true);
+
+    private void ExecuteAIv2Function() => SetButtonForAiMasking(3, true);
+
+    private void ExecuteAIv3Function() => SetButtonForAiMasking(4, true);
+
+    private void SetButtonForAiMasking(int sender, bool toSet)
+    {
+        maskDetectionMethod = sender;
+        ButtonPanel.IsVisible = toSet;
+#if ANDROID
+        CheckAvailableMasksAndroid(!toSet);
+#endif
+    }
+
     //-------------------------------------------- FUNCTIONS --------------------------------------------------------- 
     private async Task<bool> UploadImages()
     {
         var uploader = new ComfyUIUploader(ApiUrl);
         if (!string.IsNullOrEmpty(_clothImagePath) && !string.IsNullOrEmpty(_bodyImagePath))
         {
-            await uploader.UploadImageAsync(_clothImagePath, "input"); // Качваме първата картинка            
-            await uploader.UploadImageAsync(_bodyImagePath, "input"); // Качваме втората картинка
+            //if (_clothImagePath.Contains("testgallery"))
+            //{
+            //    await UploadEmbeddedImageAsync(_clothImagePath);
+            //    return true;
+            //}
+            //else
+            //{
+                
+            //}
+
+            await uploader.UploadImageAsync(_clothImagePath, !_clothImagePath.Contains("storage"), "input"); // Качваме първата картинка            
+            await uploader.UploadImageAsync(_bodyImagePath, !_bodyImagePath.Contains("storage"), "input"); // Качваме втората картинка
+
 
             DeleteTemporaryImage();
             return true;
@@ -233,6 +301,60 @@ public partial class CombineImages : ContentPage
             return false;
         }
     }
+
+    public async Task<byte[]> LoadEmbeddedImageAsync(string fileName)
+    {
+        var assembly = Assembly.GetExecutingAssembly();
+        var resourcePath = $"FashionApp.Resources.EmbeddedResource.{fileName}"; // Задай правилното име на namespace-а!
+
+        using Stream stream = assembly.GetManifestResourceStream(resourcePath);
+        if (stream == null)
+            throw new FileNotFoundException($"Embedded resource {fileName} not found.");
+
+        using MemoryStream memoryStream = new();
+        await stream.CopyToAsync(memoryStream);
+        return memoryStream.ToArray();
+    }
+
+    public async Task UploadEmbeddedImageAsync(string fileName)
+    {
+        try
+        {
+            //using var stream2 = await FileSystem.OpenAppPackageFileAsync(fileName);
+            //using var stream = await FileSystem.OpenAppPackageFileAsync(fileName);
+            //using var memoryStream = new MemoryStream();
+            //await stream.CopyToAsync(memoryStream);
+            //byte[] imageData = memoryStream.ToArray();
+
+            //var filePath = Path.Combine(FileSystem.AppDataDirectory, Path.GetFileName(fileName));
+            //using var stream = File.OpenRead(filePath);
+            var result = Path.Combine("EmbeddedResource", Path.GetFileName(fileName));
+            using var stream = File.OpenRead(result);
+            using var memoryStream = new MemoryStream();
+            await stream.CopyToAsync(memoryStream);
+            byte[] imageData = memoryStream.ToArray();
+
+            using var content = new MultipartFormDataContent{
+                { new ByteArrayContent(imageData), "file", fileName }};
+
+            using var client = new HttpClient();
+            var response = await client.PostAsync("http://127.0.0.1:8188/upload_image", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                Console.WriteLine("Image uploaded successfully!");
+            }
+            else
+            {
+                Console.WriteLine($"Upload failed: {response.StatusCode}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+    }
+
     private async void DeleteTemporaryImage()
     {
         // Получаване на пътя към кеш директорията
@@ -270,25 +392,85 @@ public partial class CombineImages : ContentPage
         _cameraService.StopCamera();
         HideMenus();
     }
+
+
+
+    private async void TestGalleryButton_Clicked(object sender, EventArgs e)
+    {
+        isFromClothImage = true;
+        var tempGallery = new TemporaryGallery();
+        await Navigation.PushModalAsync(tempGallery);
+        string selectedImageName = await tempGallery.ImageSelectedTask.Task;
+        await ProcessSelectedImage(selectedImageName);
+    }
+
+    private async void TestGalleryButton5_Clicked(object sender, EventArgs e)
+    {
+        isFromClothImage = false;
+        var tempGallery = new TemporaryGallery();
+        await Navigation.PushModalAsync(tempGallery);
+        string selectedImageName = await tempGallery.ImageSelectedTask.Task;
+        await ProcessSelectedImage(selectedImageName);
+    }
     private async Task ProcessSelectedImage(Stream? stream)
     {
         var resizedImageResult = await ImageStreamResize.ResizeImageStream(stream, 500, 700); // Преоразмеряване на изображението
         var resultPath = await SetCameraImageRealPathForSelectedClothImage(resizedImageResult.ResizedStream);
-        _clothImagePath = resultPath;
 
-        // Задаване на източника на изображението
-        SelectedClothImage.Source = ImageSource.FromFile(resultPath);
+        if(isFromClothImage)
+        {
+            _clothImagePath = resultPath;
 
-        // Настройка на ширината и височината на изображението
-        SelectedClothImage.WidthRequest = Application.Current.MainPage.Width;
-        SelectedClothImage.HeightRequest = Application.Current.MainPage.Height;
+            // Задаване на източника на изображението
+            SelectedClothImage.Source = ImageSource.FromFile(resultPath);
 
-        // Центриране на изображението
-        SelectedClothImage.HorizontalOptions = LayoutOptions.Center;
-        SelectedClothImage.VerticalOptions = LayoutOptions.Center;
-        // Показване на елементите
-        SelectedClothImage.IsVisible = true;
-    } 
+            // Настройка на ширината и височината на изображението
+            //SelectedClothImage.WidthRequest = Application.Current.MainPage.Width;
+            //SelectedClothImage.HeightRequest = Application.Current.MainPage.Height;
+
+            // Центриране на изображението
+            //SelectedClothImage.HorizontalOptions = LayoutOptions.Center;
+            //SelectedClothImage.VerticalOptions = LayoutOptions.Center;
+            // Показване на елементите
+            SelectedClothImage.IsVisible = true;
+        }
+        else
+        {
+            _bodyImagePath = resultPath;
+
+            // Задаване на източника на изображението
+            SelectedBodyImage.Source = ImageSource.FromFile(resultPath);
+
+            // Настройка на ширината и височината на изображението
+            //SelectedClothImage.WidthRequest = Application.Current.MainPage.Width;
+            //SelectedClothImage.HeightRequest = Application.Current.MainPage.Height;
+
+            // Центриране на изображението
+            //SelectedClothImage.HorizontalOptions = LayoutOptions.Center;
+            //SelectedClothImage.VerticalOptions = LayoutOptions.Center;
+            // Показване на елементите
+            SelectedBodyImage.IsVisible = true;
+        }
+       
+    }
+
+    private async Task ProcessSelectedImage(string fileName)
+    {
+        if (isFromClothImage)
+        {
+            _clothImagePath = Path.Combine("Gallery", $"{fileName}.jpg");
+            SelectedClothImage.Source = fileName;
+            SelectedClothImage.IsVisible = true;
+        }
+        else
+        {
+            _bodyImagePath = Path.Combine("Gallery", $"{fileName}.jpg");
+            SelectedBodyImage.Source = fileName;
+            SelectedBodyImage.IsVisible = true;
+        }
+        
+    }
+
     private async Task LoadCorrectImageMaskWindows(string maskName)
     {
         try

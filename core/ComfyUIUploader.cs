@@ -12,10 +12,10 @@ public class ComfyUIUploader
         _httpClient = new HttpClient();
     }
 
-    public async Task<string> UploadImageAsync(string filePath, string uploadType = "input")
+    public async Task<string> UploadImageAsync(string filePath, bool isFromInAppGallery = false, string uploadType = "input")
     {
         // Проверка дали файлът съществува
-        if (!File.Exists(filePath))
+        if (!isFromInAppGallery && !File.Exists(filePath))
         {
             return $"{AppConstants.Errors.ERROR}: {AppConstants.Errors.FILE_NOT_FOUND}: {filePath}";
         }
@@ -28,7 +28,7 @@ public class ComfyUIUploader
             using var form = new MultipartFormDataContent();
 
             // Отваряме файла в бинарен режим
-            using var fileStream = File.OpenRead(filePath);
+            using var fileStream = isFromInAppGallery ?  await FileSystem.OpenAppPackageFileAsync(filePath) : File.OpenRead(filePath);
             var streamContent = new StreamContent(fileStream);
             streamContent.Headers.ContentType = new MediaTypeHeaderValue("image/png"); // Променете, ако имате различен формат
 
