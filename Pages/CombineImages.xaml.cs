@@ -27,7 +27,9 @@ public partial class CombineImages : ContentPage
     private int maskDetectionMethod = 1;
 
     private List<string> selectedItems = new List<string>();
-    private List<string> selectedOptionsForZoneToMarcFromAI = new List<string>(); // Колекция с избрани стойности
+    private List<string> selectedOptionsForZoneToMarcFromAI2 = new List<string>(); // Колекция с избрани стойности
+    private List<string> selectedOptionsForZoneToMarcFromAI3 = new List<string>(); // Колекция с избрани стойности
+    private List<string> selectedOptionsForZoneToMarcFromAI4 = new List<string>(); // Колекция с избрани стойности
 
     private bool isFromClothImage = true;
 
@@ -64,20 +66,57 @@ public partial class CombineImages : ContentPage
 
         if (string.IsNullOrEmpty(value)) return; // Предпазване от грешки
 
-        if (selectedOptionsForZoneToMarcFromAI.Contains(value))
+        if(maskDetectionMethod == 2)
         {
-            // Премахване от списъка
-            selectedOptionsForZoneToMarcFromAI.Remove(value);
-            clickedButton.BackgroundColor = Colors.Black;
-            clickedButton.TextColor = Colors.Red;
+            if (selectedOptionsForZoneToMarcFromAI2.Contains(value))
+            {
+                // Премахване от списъка
+                selectedOptionsForZoneToMarcFromAI2.Remove(value);
+                clickedButton.BackgroundColor = Colors.Black;
+                clickedButton.TextColor = Colors.Red;
+            }
+            else
+            {
+                // Добавяне в списъка
+                selectedOptionsForZoneToMarcFromAI2.Add(value);
+                clickedButton.BackgroundColor = Colors.White;
+                clickedButton.TextColor = Colors.Black;
+            }
         }
-        else
+        else if (maskDetectionMethod == 3)
         {
-            // Добавяне в списъка
-            selectedOptionsForZoneToMarcFromAI.Add(value);
-            clickedButton.BackgroundColor = Colors.White;
-            clickedButton.TextColor = Colors.Black;
+            if (selectedOptionsForZoneToMarcFromAI3.Contains(value))
+            {
+                // Премахване от списъка
+                selectedOptionsForZoneToMarcFromAI3.Remove(value);
+                clickedButton.BackgroundColor = Colors.LightBlue;
+                clickedButton.TextColor = Colors.Red;
+            }
+            else
+            {
+                // Добавяне в списъка
+                selectedOptionsForZoneToMarcFromAI3.Add(value);
+                clickedButton.BackgroundColor = Colors.White;
+                clickedButton.TextColor = Colors.Black;
+            }
         }
+        else if (maskDetectionMethod == 4)
+        {
+            if (selectedOptionsForZoneToMarcFromAI4.Contains(value))
+            {
+                // Премахване от списъка
+                selectedOptionsForZoneToMarcFromAI4.Remove(value);
+                clickedButton.BackgroundColor = Colors.Orange;
+                clickedButton.TextColor = Colors.Red;
+            }
+            else
+            {
+                // Добавяне в списъка
+                selectedOptionsForZoneToMarcFromAI4.Add(value);
+                clickedButton.BackgroundColor = Colors.White;
+                clickedButton.TextColor = Colors.Black;
+            }
+        }    
     }
 
     private async void OnCombineImages_Clicked(object sender, EventArgs e)
@@ -106,7 +145,8 @@ public partial class CombineImages : ContentPage
                 cloth_image = AppConstants.Parameters.INPUT_IMAGE_CLOTH,
                 body_image = AppConstants.Parameters.INPUT_IMAGE_BODY,
                 mask_detection_method = maskDetectionMethod, // Задаване типа на маската: ръчна ( true ) / АI ( false )
-                args = selectedOptionsForZoneToMarcFromAI // Списъка с евентуалните зони за маркиране от АЙ-то
+                //args = selectedOptionsForZoneToMarcFromAI2 // Списъка с евентуалните зони за маркиране от АЙ-то
+                args = GetNeededCollectionOfButtons(maskDetectionMethod) // Списъка с евентуалните зони за маркиране от АЙ-то
             };
 
             var jsonContent = new StringContent(
@@ -146,6 +186,18 @@ public partial class CombineImages : ContentPage
             ToggleLoading(false);
         }
     }
+
+    private List<string> GetNeededCollectionOfButtons(int maskDetectionMethod)
+    {
+        switch (maskDetectionMethod)
+        {
+            case 2: return selectedOptionsForZoneToMarcFromAI2;
+            case 3: return selectedOptionsForZoneToMarcFromAI3;
+            case 4: return selectedOptionsForZoneToMarcFromAI4;
+            default: return new List<string>();
+        }
+    }
+
     private void PanelButton_Clicked(object sender, EventArgs e)
     {
         isFromClothImage = true;
@@ -227,46 +279,40 @@ public partial class CombineImages : ContentPage
         if (e.Value)
         {
             var radioButton = sender as RadioButton;
-            if (radioButton == null)
-                return;
-
+            if (radioButton == null) return;     
             
-
             string selectedContent = radioButton.Content?.ToString();
 
             // Разграничаваме кой бутон е избран чрез неговия текст
             switch (selectedContent)
             {
-                case "Mask":
-                    ExecuteStandartMaskFunction();                   
-                    break;
-                case "AIv1":
-                    ExecuteAIv1Function();
-                    break;
-                case "AIv2":
-                    ExecuteAIv2Function();
-                    break;
-                case "AIv3":
-                    ExecuteAIv3Function();
-                    break;
-                default:
-                    break;
+                case "Mask": ExecuteStandartMaskFunction(); break;
+                case "AIv1": ExecuteAIv1Function(); break;
+                case "AIv2": ExecuteAIv2Function(); break;
+                case "AIv3": ExecuteAIv3Function(); break;
+                default: break;
             }
         }
     }
 
     private void ExecuteStandartMaskFunction() => SetButtonForAiMasking(1, false);
-
     private void ExecuteAIv1Function() => SetButtonForAiMasking(2, true);
-
     private void ExecuteAIv2Function() => SetButtonForAiMasking(3, true);
-
     private void ExecuteAIv3Function() => SetButtonForAiMasking(4, true);
-
     private void SetButtonForAiMasking(int sender, bool toSet)
     {
+        ButtonPanel.IsVisible = false;
+        ButtonPanel2.IsVisible = false;
+        ButtonPanel3.IsVisible = false;     
+
         maskDetectionMethod = sender;
-        ButtonPanel.IsVisible = toSet;
+        switch (sender)
+        {
+            case 2: ButtonPanel.IsVisible = true; break;
+            case 3: ButtonPanel2.IsVisible = true; break;
+            case 4: ButtonPanel3.IsVisible = true; break;
+            default: break;
+        }
 #if ANDROID
         CheckAvailableMasksAndroid(!toSet);
 #endif

@@ -152,7 +152,7 @@
                     </Grid>
 
                     <VerticalStackLayout x:Name="ButtonPanel" IsVisible="False" Padding="5" VerticalOptions="End">
-                        <Label Text="Choice normal body photo for AI mask and select zones for change." HorizontalOptions="Center" TextColor="Black" Margin="10" FontSize="Large"/>
+                        <Label Text="Choice normal body photo for FashionV1-AI mask and select zones for change." HorizontalOptions="Center" TextColor="Black" Margin="10" FontSize="Large"/>
                         <Frame Padding="2" BorderColor="Gray">
                             <Grid ColumnDefinitions="*,*,*,*" RowDefinitions="*,*,*,*" ColumnSpacing="2" RowSpacing="4">
                                 <Button Text="Hat" CommandParameter="Hat" TextColor="Red" BackgroundColor="Black" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="0" Grid.Column="0"/>
@@ -175,7 +175,54 @@
                         </Frame>
                     </VerticalStackLayout>
 
-                <BoxView Color="Black" HeightRequest="5" HorizontalOptions="FillAndExpand"/>
+                    <VerticalStackLayout x:Name="ButtonPanel2" IsVisible="False" Padding="5" VerticalOptions="End">
+                        <Label Text="Choice normal body photo for FashionV2-AI mask and select zones for change." HorizontalOptions="Center" TextColor="Black" Margin="10" FontSize="Large"/>
+                        <Frame Padding="2" BorderColor="Gray">
+                            <Grid ColumnDefinitions="*,*,*,*" RowDefinitions="*,*,*,*,*" ColumnSpacing="2" RowSpacing="4">
+                                <Button Text="Coat" CommandParameter="coat" TextColor="Red" BackgroundColor="LightBlue" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="0" Grid.Column="0"/>
+                                <Button Text="Jacket" CommandParameter="jacket" TextColor="Red" BackgroundColor="LightBlue" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="0" Grid.Column="1"/>
+                                <Button Text="Cardigan" CommandParameter="cardigan" TextColor="Red" BackgroundColor="LightBlue" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="0" Grid.Column="2"/>
+                                <Button Text="Vest" CommandParameter="vest" TextColor="Red" BackgroundColor="LightBlue" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="0" Grid.Column="3"/>
+                                <Button Text="Sweater" CommandParameter="sweater" TextColor="Red" BackgroundColor="LightBlue" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="1" Grid.Column="0"/>
+                                <Button Text="Hood" CommandParameter="hood" TextColor="Red" BackgroundColor="LightBlue" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="1" Grid.Column="1"/>
+                                <Button Text="Shirt, blouse" CommandParameter="shirt, blouse" TextColor="Red" BackgroundColor="LightBlue" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="1" Grid.Column="2"/>
+                                <Button Text="Top, t-shirt, sweatshirt" CommandParameter="top, t-shirt, sweatshirt" TextColor="Red" BackgroundColor="LightBlue" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="1" Grid.Column="3"/>
+                                <Button Text="Sleeve" CommandParameter="sleeve" TextColor="Red" BackgroundColor="LightBlue" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="2" Grid.Column="0"/>
+                                <Button Text="Dress" CommandParameter="dress" TextColor="Red" BackgroundColor="LightBlue" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="2" Grid.Column="1"/>
+                                <Button Text="Jumpsuit" CommandParameter="jumpsuit" TextColor="Red" BackgroundColor="LightBlue" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="2" Grid.Column="2"/>
+                                <Button Text="Cape" CommandParameter="cape" TextColor="Red" BackgroundColor="LightBlue" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="2" Grid.Column="3"/>
+                                <Button Text="Pants" CommandParameter="pants" TextColor="Red" BackgroundColor="LightBlue" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="3" Grid.Column="0"/>
+                                <Button Text="Shorts" CommandParameter="shorts" TextColor="Red" BackgroundColor="LightBlue" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="3" Grid.Column="1"/>
+                                <Button Text="Skirt" CommandParameter="skirt" TextColor="Red" BackgroundColor="LightBlue" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="3" Grid.Column="2"/>
+                                <Button Text="Tights, stockings" CommandParameter="tights, stockings" TextColor="Red" BackgroundColor="LightBlue" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="3" Grid.Column="3"/>
+                                <Button Text="Sock" CommandParameter="sock" TextColor="Red" BackgroundColor="LightBlue" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="4" Grid.Column="0"/>
+                                <Button Text="Shoe" CommandParameter="shoe" TextColor="Red" BackgroundColor="LightBlue" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="4" Grid.Column="1"/>
+                            </Grid>
+                        </Frame>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout x:Name="ButtonPanel3" IsVisible="False" Padding="5" VerticalOptions="End">
+                        <Label Text="Choice normal body photo for Segformer B2-AI mask and select zones for change." HorizontalOptions="Center" TextColor="Black" Margin="10" FontSize="Large"/>
+                        <Frame Padding="2" BorderColor="Gray">
+                            <Grid ColumnDefinitions="*,*,*,*" RowDefinitions="*,*,*,*" ColumnSpacing="2" RowSpacing="4">
+                                <Button Text="Face" CommandParameter="Face" TextColor="Red" BackgroundColor="Orange" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="0" Grid.Column="0"/>
+                                <Button Text="Hat" CommandParameter="Hat" TextColor="Red" BackgroundColor="Orange" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="0" Grid.Column="1"/>
+                                <Button Text="Hair" CommandParameter="Hair" TextColor="Red" BackgroundColor="Orange" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="0" Grid.Column="2"/>
+                                <Button Text="Upper_clothes" CommandParameter="Upper_clothes" TextColor="Red" BackgroundColor="Orange" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="0" Grid.Column="3"/>
+                                <Button Text="Skirt" CommandParameter="Skirt" TextColor="Red" BackgroundColor="Orange" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="1" Grid.Column="0"/>
+                                <Button Text="Pants" CommandParameter="Pants" TextColor="Red" BackgroundColor="Orange" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="1" Grid.Column="1"/>
+                                <Button Text="Dress" CommandParameter="Dress" TextColor="Red" BackgroundColor="Orange" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="1" Grid.Column="2"/>
+                                <Button Text="Belt" CommandParameter="Belt" TextColor="Red" BackgroundColor="Orange" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="1" Grid.Column="3"/>
+                                <Button Text="Shoe" CommandParameter="shoe" TextColor="Red" BackgroundColor="Orange" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="2" Grid.Column="0"/>
+                                <Button Text="Leg" CommandParameter="leg" TextColor="Red" BackgroundColor="Orange" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="2" Grid.Column="1"/>
+                                <Button Text="Arm" CommandParameter="arm" TextColor="Red" BackgroundColor="Orange" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="2" Grid.Column="2"/>
+                                <Button Text="Bag" CommandParameter="Bag" TextColor="Red" BackgroundColor="Orange" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="2" Grid.Column="3"/>
+                                <Button Text="Scarf" CommandParameter="Scarf" TextColor="Red" BackgroundColor="Orange" BorderColor="Red" BorderWidth="2" Clicked="OptionButton_Clicked" Grid.Row="3" Grid.Column="0"/>
+                            </Grid>
+                        </Frame>
+                    </VerticalStackLayout>
+
+                    <BoxView Color="Black" HeightRequest="5" HorizontalOptions="FillAndExpand"/>
                     
                 <Button x:Name="CombineImagesButton"
                     Text="Create New Image"
