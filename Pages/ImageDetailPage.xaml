@@ -41,6 +41,14 @@
                 BackgroundColor="Transparent"
                 HorizontalOptions="Start"
                 Clicked="DeleteButton_Clicked" />
+            <Button 
+                x:Name="Source"
+                IsVisible="False"
+                Text="Source"
+                TextColor="White"
+                BackgroundColor="Transparent"
+                HorizontalOptions="EndAndExpand"
+                Clicked="SourceButton_Clicked"/>
             <Button
                 Text="Close"
                 TextColor="White"

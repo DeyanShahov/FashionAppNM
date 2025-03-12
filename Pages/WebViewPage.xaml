@@ -76,16 +76,26 @@
             </StackLayout>
         </StackLayout>
         
-        
-        <WebView x:Name="View" 
-                 Source="https://www.bing.com" 
-                 VerticalOptions="Fill" 
-                 HorizontalOptions="Fill" 
-                 Margin="0,50,0,0" 
-                 AbsoluteLayout.LayoutBounds="0, 50, 1, 1" 
+       
+
+        <Label x:Name="currentUrlLabel"
+               Text="Текущ адрес: "
+               TextColor="Black"
+               FontSize="Small"
+               Margin="0,45,0,0"
+               AbsoluteLayout.LayoutBounds="0, 0, 1, AutoSize"
+               AbsoluteLayout.LayoutFlags="WidthProportional"
+               HorizontalOptions="Start" />
+
+        <WebView x:Name="View"
+                 Source="https://www.bing.com"
+                 VerticalOptions="Fill"
+                 HorizontalOptions="Fill"
+                 Margin="0,50,0,0"
+                 AbsoluteLayout.LayoutBounds="0, 50, 1, 1"
                  AbsoluteLayout.LayoutFlags="All" />
 
-        <Button x:Name="CaptureButton" 
+        <Button x:Name="CaptureButton"
                 Text="REC" 
                 BackgroundColor="DarkRed" 
                 TextColor="White" 
