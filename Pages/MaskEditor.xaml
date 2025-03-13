@@ -11,30 +11,83 @@
               IsVisible="False" 
               IsEnabled="False" >
             <!-- Camera Preview -->
-            <Frame x:Name="test" Grid.Row="0" BackgroundColor="Gray" CornerRadius="0" BorderColor="Black">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Frame x:Name="test" Grid.Row="0" BackgroundColor="Gray" CornerRadius="0" BorderColor="Black" Padding="0">
                 <!-- Here will be the CameraView when implemented -->
                 <toolkit:CameraView
                     x:Name="MyCameraView"       
-                    HorizontalOptions="CenterAndExpand"
+                    HorizontalOptions="FillAndExpand"
+                    VerticalOptions="FillAndExpand"
                     HeightRequest="600"
                     SelectedCamera="{Binding SelectedCamera}"
                     ZoomFactor="{Binding CurrentZoom}"
                     CameraFlashMode="{Binding FlashMode}" />
             </Frame>
-
-            <!-- Zoom Slider -->
-            <!--<Slider Grid.Row="1" Minimum="1" Maximum="10" Value="1" x:Name="ZoomSlider"/>-->
-
+            
+            <!-- Contour Overlay placed directly over the camera view -->
+            <Image 
+                x:Name="ContourOverlay"
+                Source="Camera/top_body.png"
+                Aspect="Fill"
+                HorizontalOptions="FillAndExpand"
+                VerticalOptions="FillAndExpand"
+                Grid.Row="0"
+                IsVisible="False"/>
+            
             <!-- Bottom Controls -->
-            <Grid Grid.Row="2" ColumnDefinitions="*,Auto,*" Padding="10" VerticalOptions="End">
-                <Frame Grid.Column="1" HeightRequest="80" WidthRequest="80" CornerRadius="40" HorizontalOptions="Center">
-                    <Button x:Name="Capture" Text="REC" BackgroundColor="DarkRed" TextColor="White" HeightRequest="40" WidthRequest="100" Clicked="OnCaptureClicked"/>
-
+            <Grid Grid.Row="1" ColumnDefinitions="*,*,*" Padding="10" VerticalOptions="End">
+                <Frame  
+                    Grid.Column="0"
+                    WidthRequest="120" 
+                    HeightRequest="60" 
+                    BackgroundColor="Black" 
+                    HorizontalOptions="Center" 
+                    CornerRadius="10"
+                    Padding="5">
+                    <Button 
+                        Text="CLOSE" 
+                        TextColor="White" 
+                        VerticalOptions="Center" 
+                        HorizontalOptions="Center"  
+                        Clicked="HidePanelCommand"
+                        BackgroundColor="Transparent"/>
                 </Frame>
+                
+                <Frame 
+                    Grid.Column="1" 
+                    HeightRequest="80" 
+                    WidthRequest="80" 
+                    CornerRadius="40" 
+                    HorizontalOptions="Center"
+                    Padding="0">
+                    <Button 
+                        x:Name="Capture" 
+                        Text="REC" 
+                        BackgroundColor="DarkRed" 
+                        TextColor="White" 
+                        CornerRadius="40"
+                        Clicked="OnCaptureClicked"/>
+                </Frame>            
 
-                <Frame  WidthRequest="120" HeightRequest="100" BackgroundColor="Black" HorizontalOptions="Start" ScaleY="0.7" ScaleX="0.7">
-
-                    <Button Text="CLOSE" TextColor="White" VerticalOptions="Center" HorizontalOptions="Center"  Clicked="HidePanelCommand"/>
+                <Frame  
+                    Grid.Column="2" 
+                    WidthRequest="120" 
+                    HeightRequest="60" 
+                    BackgroundColor="Black" 
+                    HorizontalOptions="Center" 
+                    CornerRadius="10"
+                    Padding="5">
+                    <Button 
+                        Text="MASK" 
+                        TextColor="White" 
+                        VerticalOptions="Center" 
+                        HorizontalOptions="Center"  
+                        Clicked="ContourSwitch_Clicked"
+                        BackgroundColor="Transparent"/>
                 </Frame>
             </Grid>
         </Grid>
@@ -45,11 +98,6 @@
             Grid.Row="0"
             Spacing="10"
             Padding="30,10">
-            <Label
-                Text="Image paramaeters"
-                VerticalOptions="Center"
-                HorizontalOptions="Center" />
-
             <Label 
                 Text="Select an image from your device"
                 VerticalOptions="Center" 

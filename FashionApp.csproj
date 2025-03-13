@@ -68,6 +68,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\Raw\Camera\top_body.png" />
 	  <None Remove="Resources\Images\Icons\images_regular_24.png" />
 	</ItemGroup>
 
@@ -78,30 +79,7 @@
 	  <Content Include="Platforms\Android\Resources\a3.jpg">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </Content>
-	  <EmbeddedResource Include="Resources\Images\EmbeddedResource\a2.jpg">
-	    <CopyToOutputDirectory></CopyToOutputDirectory>
-	  </EmbeddedResource>
-	  <EmbeddedResource Include="Resources\Images\EmbeddedResource\a3.jpg">
-	    <CopyToOutputDirectory></CopyToOutputDirectory>
-	  </EmbeddedResource>
-	  <EmbeddedResource Include="Resources\Images\EmbeddedResource\a4.jpg">
-	    <CopyToOutputDirectory></CopyToOutputDirectory>
-	  </EmbeddedResource>
-	  <EmbeddedResource Include="Resources\Images\EmbeddedResource\a5.jpg">
-	    <CopyToOutputDirectory></CopyToOutputDirectory>
-	  </EmbeddedResource>
-	  <EmbeddedResource Include="Resources\Images\EmbeddedResource\a6.jpg">
-	    <CopyToOutputDirectory></CopyToOutputDirectory>
-	  </EmbeddedResource>
-	  <EmbeddedResource Include="Resources\Images\EmbeddedResource\a7.jpg">
-	    <CopyToOutputDirectory></CopyToOutputDirectory>
-	  </EmbeddedResource>
-	  <EmbeddedResource Include="Resources\Images\EmbeddedResource\a8.jpg">
-	    <CopyToOutputDirectory></CopyToOutputDirectory>
-	  </EmbeddedResource>
-	  <EmbeddedResource Include="Resources\Images\EmbeddedResource\a9.jpg">
-	    <CopyToOutputDirectory></CopyToOutputDirectory>
-	  </EmbeddedResource>
+	  <MauiImage Include="Resources\Raw\Camera\top_body.png" />
 	  <MauiImage Include="Resources\Images\Icons\camera_regular_24.png" />
 	  <MauiImage Include="Resources\Images\Icons\folder_open_regular_24.png" />
 	  <MauiImage Include="Resources\Images\Icons\folder_open_solid_24.png" />
@@ -282,6 +260,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiAsset Update="Resources\Raw\Camera\top_body.png">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </MauiAsset>
 	  <MauiAsset Update="Resources\Raw\Gallery\a10.jpg">
 	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
 	  </MauiAsset>

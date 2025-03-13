@@ -121,10 +121,93 @@ public partial class MaskEditor : ContentPage
 
     private async void OnImageCaptured(Stream imageStream)
     {
+        //Capture the image
+        if (ContourOverlay.IsVisible)
+        {
+            // Merge the overlay with the captured image
+            imageStream = await MergeOverlayWithImage(imageStream);
+        }
+
         await ProcessSelectedImage(imageStream);
         _cameraService.StopCamera();
         HideMenus();
-    }   
+    }
+
+    private async Task<Stream> MergeOverlayWithImage(Stream imageStream)
+    {
+        var assembly = typeof(MaskEditor).GetTypeInfo().Assembly;
+        //var overlayStream = assembly.GetManifestResourceStream("FashionApp.Resources.Images.Camera.top_body.png"); //Correct path?
+        var overlayStream = await FileSystem.OpenAppPackageFileAsync("Camera/top_body.png");
+
+        if (overlayStream == null)
+        {
+            await DisplayAlert("Error", "Overlay image not found.", "OK");
+            return imageStream;
+        }
+
+        using (var imageBitmap = SKBitmap.Decode(imageStream))
+        using (var overlayBitmap = SKBitmap.Decode(overlayStream))
+        using (var resizedOverlay = overlayBitmap.Resize(imageBitmap.Width, imageBitmap.Height, SKFilterQuality.High)) // Resize the overlay
+        using (var mergedBitmap = new SKBitmap(imageBitmap.Width, imageBitmap.Height, true))
+        using (var canvas = new SKCanvas(mergedBitmap))
+        {
+            canvas.DrawBitmap(imageBitmap, 0, 0);
+            canvas.DrawBitmap(resizedOverlay, 0, 0, resizedOverlay.ToColorMatrix(SKColors.White));
+
+            var mergedStream = new MemoryStream();
+            mergedBitmap.Encode(mergedStream, SKEncodedImageFormat.Png, 100);
+            mergedStream.Position = 0;
+            return mergedStream;
+        }
+    }
+
+   
+
+    //private async Task<Stream> MergeOverlayWithImage(Stream imageStream)
+    //{
+    //    // Load the overlay image
+    //    var assembly = typeof(MaskEditor).GetTypeInfo().Assembly;
+    //    //var stream = assembly.GetManifestResourceStream("FashionApp.Resources.Raw.Camera.top_body.png");
+    //    var stream = await FileSystem.OpenAppPackageFileAsync("Camera/top_body.png");
+    //    if (stream == null)
+    //    {
+    //        await DisplayAlert("Error", "Overlay image not found.", "OK");
+    //        return imageStream; // Return original stream if overlay not found
+    //    }
+
+    //    SKBitmap overlayBitmap = null;
+    //    SKBitmap imageBitmap = null;
+    //    SKBitmap mergedBitmap = null;
+
+    //    try
+    //    {
+    //        overlayBitmap = SKBitmap.Decode(stream);
+    //        imageBitmap = SKBitmap.Decode(imageStream);
+
+    //        // Create a new bitmap to hold the merged image
+    //        mergedBitmap = new SKBitmap(imageBitmap.Width, imageBitmap.Height, true);
+    //        using (var canvas = new SKCanvas(mergedBitmap))
+    //        {
+    //            // Draw the original image
+    //            canvas.DrawBitmap(imageBitmap, 0, 0);
+    //            // Draw the Overlay
+    //            canvas.DrawBitmap(overlayBitmap, 0, 0, overlayBitmap.ToColorMatrix(SKColors.White));
+    //        }
+
+    //        var mergedStream = new MemoryStream();
+    //        mergedBitmap.Encode(mergedStream, SKEncodedImageFormat.Png, 100);
+    //        mergedStream.Position = 0;
+    //        return mergedStream;
+    //    }
+    //    finally
+    //    {
+    //        overlayBitmap?.Dispose();
+    //        imageBitmap?.Dispose();
+    //        mergedBitmap?.Dispose();
+    //        stream?.Dispose();
+    //    }
+    //}
+
     private async void OnSaveImageClicked(object sender, EventArgs e)
     {
         if (SelectedImage.Source == null) return;
@@ -186,6 +269,11 @@ public partial class MaskEditor : ContentPage
         HideMenus();
     }
     private void OnCaptureClicked(object sender, EventArgs e) => _cameraService.CaptureClicked();
+
+    private void ContourSwitch_Clicked(object sender, EventArgs e)
+    {
+        ContourOverlay.IsVisible = !ContourOverlay.IsVisible;
+    }
 
     // ------------------------------------------- SUPORT METHODS ----------------------------------------------------------------
     private async Task<bool> CheckAvailableMasksAndroidAsync(string fileName)
@@ -417,6 +505,35 @@ public partial class MaskEditor : ContentPage
         {
             _lines.RemoveAt(_lines.Count - 1);
             DrawingView.Invalidate();
+        }
+    }
+}
+
+public static class SKBitmapExtensions
+{
+    public static SKPaint ToColorMatrix(this SKBitmap bitmap, SKColor color)
+    {
+        var paint = new SKPaint();
+        paint.Color = color;
+        paint.Shader = SKShader.CreateColor(color);
+        return paint;
+    }
+
+    public static SKBitmap Resize(this SKBitmap bitmap, int maxWidth, int maxHeight, SKFilterQuality filterQuality = SKFilterQuality.High)
+    {
+        float widthScale = (float)maxWidth / bitmap.Width;
+        float heightScale = (float)maxHeight / bitmap.Height;
+        float scale = Math.Min(widthScale, heightScale);
+
+        int newWidth = (int)(bitmap.Width * scale);
+        int newHeight = (int)(bitmap.Height * scale);
+
+        using (var scaledBitmap = new SKBitmap(newWidth, newHeight))
+        using (var canvas = new SKCanvas(scaledBitmap))
+        {
+            canvas.Scale(scale); // Scale the canvas
+            canvas.DrawBitmap(bitmap, 0, 0);  // Draw the original bitmap onto the scaled canvas
+            return scaledBitmap.Copy(); //return a copy to prevent disposing
         }
     }
 }
