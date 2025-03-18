@@ -56,6 +56,9 @@
 		<MauiImage Include="Resources\Images\*" />
 		<MauiImage Update="Resources\Images\dotnet_bot.png" Resize="True" BaseSize="300,185" />
 		<MauiImage Update="Resources\Images\loading_page_image.png" />
+		<MauiImage Update="Resources\Images\open_jacket_2.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</MauiImage>
 		<MauiImage Update="Resources\Images\open_jacket.png">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</MauiImage>
@@ -68,8 +71,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\Images\Icons\blank_image_photo.png" />
+	  <None Remove="Resources\Images\Icons\icons8_zoom_mode_60.png" />
+	  <None Remove="Resources\Images\Icons\icons_close.png" />
+	  <None Remove="Resources\Images\Icons\icons_eraser.png" />
+	  <None Remove="Resources\Images\Icons\icons_save.png" />
+	  <None Remove="Resources\Images\Icons\icons_tools.png" />
+	  <None Remove="Resources\Images\Icons\icons_undo.png" />
+	  <None Remove="Resources\Images\Macros\icons_skirt_long.png" />
 	  <None Remove="Resources\Raw\Camera\top_body.png" />
-	  <None Remove="Resources\Images\Icons\images_regular_24.png" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -79,11 +89,32 @@
 	  <Content Include="Platforms\Android\Resources\a3.jpg">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </Content>
-	  <MauiImage Include="Resources\Raw\Camera\top_body.png" />
 	  <MauiImage Include="Resources\Images\Icons\camera_regular_24.png" />
 	  <MauiImage Include="Resources\Images\Icons\folder_open_regular_24.png" />
 	  <MauiImage Include="Resources\Images\Icons\folder_open_solid_24.png" />
 	  <MauiImage Include="Resources\Images\Icons\images_regular_24.png" />
+	  <MauiImage Include="Resources\Images\Icons\icons8_image_100.png" />
+	  <MauiImage Include="Resources\Images\Icons\icons8_brush_50.png" />
+	  <MauiImage Include="Resources\Images\Icons\icons8_zoom_mode_60.png" />
+	  <MauiImage Include="Resources\Images\Icons\icons_close.png" />
+	  <MauiImage Include="Resources\Images\Icons\icons_eraser.png" />
+	  <MauiImage Include="Resources\Images\Icons\icons_save.png" />
+	  <MauiImage Include="Resources\Images\Icons\icons_tools.png" />
+	  <MauiImage Include="Resources\Images\Icons\icons_undo.png" />
+	  <MauiImage Include="Resources\Images\Macros\icons_dress_full.png" />
+	  <MauiImage Include="Resources\Images\Macros\icons_dress.png" />
+	  <MauiImage Include="Resources\Images\Macros\icons_no_set.png" />
+	  <MauiImage Include="Resources\Images\Macros\icons_jacket_open.png" />
+	  <MauiImage Include="Resources\Images\Macros\icons_jacket_closed.png" />
+	  <MauiImage Include="Resources\Images\Macros\icons_jacket.png" />
+	  <MauiImage Include="Resources\Images\Macros\icons_raincoat.png" />
+	  <MauiImage Include="Resources\Images\Macros\icons_pants.png" />
+	  <MauiImage Include="Resources\Images\Macros\icons_shirt.png" />
+	  <MauiImage Include="Resources\Images\Macros\icons_pants_short.png" />
+	  <MauiImage Include="Resources\Images\Macros\icons_skirt.png" />
+	  <MauiImage Include="Resources\Images\Macros\icons_skirt_long.png" />
+	  <MauiImage Include="Resources\Images\Macros\icons_tank_top.png" />
+	  <MauiImage Include="Resources\Raw\Camera\top_body.png" />
 	  <MauiImage Include="Resources\Raw\Gallery\a13.jpg">
 	    <CopyToOutputDirectory></CopyToOutputDirectory>
 	  </MauiImage>
@@ -257,6 +288,10 @@
 
 	<ItemGroup>
 	  <Folder Include="Platforms\Android\Resources\test_gallery\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiImage Include="Resources\Images\Icons\blank_image_photo.png" />
 	</ItemGroup>
 
 	<ItemGroup>

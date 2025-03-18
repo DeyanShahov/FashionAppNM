@@ -1,133 +1,263 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="FashionApp.Pages.MainPage"
-             Title="Fashion App"
-             BackgroundColor="LightGray">
+<ContentPage
+    x:Class="FashionApp.Pages.MainPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Fashion App"
+    BackgroundColor="LightGray">
 
     <ScrollView>
-        <VerticalStackLayout
-            Padding="30,0"
-            Spacing="25">
-            <Button 
-                x:Name="EditorButton"
-                Text="Go to Editor"
-                Clicked="OnNavigateClicked"
-                HorizontalOptions="Center"/>
-            <Button
-                x:Name="GalleryImagesButton"
-                Text="Go to Gallery"
-                Clicked="GalleryButton_Clicked"
-                HorizontalOptions="Center"/>
-            <Button
-                x:Name="MaskGalleryButton"
-                Text="Go to Mask Gallery"
-                Clicked="MaskGalleryButton_Clicked"
-                HorizontalOptions="Center"/>
-            <Button
-                x:Name="TestGalleryButton"
-                Text="Test Gallery"
-                Clicked="TestGalleryButton_Clicked"
-                HorizontalOptions="Center"/>
+        <VerticalStackLayout Padding="30,0" Spacing="25">
+            <Label
+                CharacterSpacing="3"
+                FontSize="Medium"
+                HorizontalOptions="Center"
+                Text="TOOLS"
+                TextColor="Blue"
+                TextTransform="Uppercase"
+                VerticalOptions="Center" />
+            <HorizontalStackLayout Margin="-15,0,10,0" Spacing="5">
+                <Button
+                    x:Name="EditorButton"
+                    Clicked="OnEditorButtonClicked"
+                    HorizontalOptions="Start"
+                    Text="Editor"
+                    WidthRequest="120" />
+
+                <Button
+                    x:Name="PartnersPageButton"
+                    Clicked="PartnersPageButton_Clicked"
+                    HorizontalOptions="Center"
+                    Text="Partners"
+                    WidthRequest="120" />
+
+                <Button
+                    x:Name="NavigateButtonToWeb"
+                    Clicked="OnNavigateClickedToWeb"
+                    HorizontalOptions="Center"
+                    Text="Web"
+                    WidthRequest="120" />
+            </HorizontalStackLayout>
+
+
+            <BoxView
+                HeightRequest="5"
+                HorizontalOptions="FillAndExpand"
+                Color="Black" />
+
+            <Label
+                CharacterSpacing="3"
+                FontSize="Medium"
+                HorizontalOptions="Center"
+                Text="GALLERYS"
+                TextColor="Blue"
+                TextTransform="Uppercase"
+                VerticalOptions="Center" />
+
+            <Grid
+                x:Name="GridForGallerys"
+                ColumnDefinitions="Auto, *, Auto"
+                ColumnSpacing="5"
+                HorizontalOptions="Center"
+                RowDefinitions="Auto, *, Auto"
+                RowSpacing="5"
+                VerticalOptions="Center">
+                <Button
+                    x:Name="GalleryImagesButton"
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Clicked="GalleryButton_Clicked"
+                    HorizontalOptions="Center"
+                    Text="Results"
+                    WidthRequest="100" />
+                <Button
+                    x:Name="MaskGalleryButton"
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Clicked="MaskGalleryButton_Clicked"
+                    HorizontalOptions="Center"
+                    Text="Mask"
+                    WidthRequest="100" />
+                <Button
+                    x:Name="TestGalleryButton"
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Clicked="TestGalleryButton_Clicked"
+                    HorizontalOptions="Center"
+                    IsVisible="False"
+                    Text="Test"
+                    WidthRequest="100" />
+                <Button
+                    x:Name="WebGalleryButton"
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Clicked="WebGalleryButton_Clicked"
+                    HorizontalOptions="Center"
+                    Text="Web"
+                    WidthRequest="100" />
+            </Grid>
+
             <!--<Button
                 x:Name="NavigateButtonToMaskJS"
                 Text="Go to MaskJS"
                 IsEnabled="False"
                 Clicked="OnNavigateClickedToMaskJS"
                 HorizontalOptions="Center"/>-->
+
+            <BoxView
+                HeightRequest="5"
+                HorizontalOptions="FillAndExpand"
+                Color="Black" />
+
             <Button
-                x:Name="NavigateButtonToWeb"
-                Text="Go to WebView"              
-                Clicked="OnNavigateClickedToWeb"
-                HorizontalOptions="Center"/>
-            <Button
-                x:Name="WebGalleryButton"
-                Text="Go to web gallery"
-                Clicked="WebGalleryButton_Clicked"
-                HorizontalOptions="Center"/>
-            <Button
-                x:Name="PartnersPageButton"
-                Text="Partners page"
-                Clicked="PartnersPageButton_Clicked"
-                HorizontalOptions="Center"/>
-            <Button 
                 x:Name="CombineImagesButton"
-                Text="Go to Combine Images"
                 Clicked="CombineImagesButton_Clicked"
-                HorizontalOptions="Center"/>
-            <Image
-                Source="dotnet_bot.png"
-                HeightRequest="185"
+                HorizontalOptions="Center"
+                Text="Combine Images" />
+
+            <BoxView
+                HeightRequest="5"
+                HorizontalOptions="FillAndExpand"
+                Color="Black" />
+
+            <CarouselView ItemsSource="{Binding Monkeys}" Loop="True">
+                <CarouselView.ItemTemplate>
+                    <DataTemplate>
+                        <StackLayout>
+                            <Frame
+                                Margin="20"
+                                BackgroundColor="White"
+                                BorderColor="Black"
+                                CornerRadius="5"
+                                HasShadow="True"
+                                HeightRequest="300"
+                                HorizontalOptions="Center"
+                                VerticalOptions="CenterAndExpand">
+                                <Frame.Shadow>
+                                    <Shadow
+                                        Brush="Black"
+                                        Opacity="0.99"
+                                        Radius="10"
+                                        Offset="5, 5" />
+                                </Frame.Shadow>
+                                <StackLayout>
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="Large"
+                                        HorizontalOptions="Center"
+                                        Text="{Binding Name}"
+                                        TextColor="Black"
+                                        VerticalOptions="Center" />
+                                    <Image
+                                        Aspect="AspectFill"
+                                        HeightRequest="150"
+                                        HorizontalOptions="Center"
+                                        Source="{Binding Image}"
+                                        WidthRequest="150" />
+                                    <Label Text="{Binding Details}" TextColor="Black" />
+                                </StackLayout>
+                            </Frame>
+                        </StackLayout>
+                    </DataTemplate>
+                </CarouselView.ItemTemplate>
+
+            </CarouselView>
+
+
+            <BoxView
+                HeightRequest="5"
+                HorizontalOptions="FillAndExpand"
+                Color="Black" />
+
+            <!--<Image
                 Aspect="AspectFit"
-                SemanticProperties.Description="dot net bot in a race car number eight" />
+                HeightRequest="185"
+                SemanticProperties.Description="dot net bot in a race car number eight"
+                Source="dotnet_bot.png" />-->
 
-            <Label
-                x:Name="WelcomeMessage"
-                Text="Hello"
-                Style="{StaticResource Headline}"
-                SemanticProperties.HeadingLevel="Level1" />
+            <StackLayout />
 
-            <Label
-                x:Name="WelcomeInfo"
-                Text="The logged-in users have access to additional features."
-                Style="{StaticResource SubHeadline}"
-                SemanticProperties.HeadingLevel="Level2"
-                SemanticProperties.Description="Welcome to dot net Multi platform App U I" />
-
-            <Button
-                x:Name="LoginBtn"
-                SemanticProperties.Hint="Counts the number of times you click"
-                Clicked="OnLoginButton_Clicked"
-                HorizontalOptions="Fill" />
-
-            <Button x:Name="LoadButton" 
-                    Text="Load Content" 
-                    Clicked="OnLoadClicked"
-                    HorizontalOptions="Center"/>
-
-            <Entry x:Name="InputEntry" 
-                   Placeholder="Enter text here"
-                   PlaceholderColor="Gray"
-                   TextColor="Black"
-                   BackgroundColor="White"
-                   Margin="0,10,0,0"
-                   HeightRequest="40"
-                   HorizontalOptions="FillAndExpand"
-                   VerticalOptions="Center" 
-                   IsEnabled="False"
-                   IsVisible="False"/>
-
-          
-
-            <Button x:Name="SaveButton"
-                Text="Save Image"
-                Clicked="OnSaveClicked"
+            <StackLayout
+                x:Name="AdminTestFields"
                 IsVisible="False"
-                IsEnabled="False"
-                HorizontalOptions="Center"/>
+                Spacing="5">
+                <Label
+                    x:Name="WelcomeMessage"
+                    SemanticProperties.HeadingLevel="Level1"
+                    Style="{StaticResource Headline}"
+                    Text="Hello" />
+                <Label
+                    x:Name="WelcomeInfo"
+                    SemanticProperties.Description="Welcome to dot net Multi platform App U I"
+                    SemanticProperties.HeadingLevel="Level2"
+                    Style="{StaticResource SubHeadline}"
+                    Text="The logged-in users have access to additional features." />
 
-            <ActivityIndicator x:Name="LoadingIndicator"
-                         IsRunning="False"
-                         IsVisible="False"   
-                         Color="Azure"
-                         HorizontalOptions="Center"/>
+                <Button
+                    x:Name="LoginBtn"
+                    Clicked="OnLoginButton_Clicked"
+                    HorizontalOptions="Fill"
+                    SemanticProperties.Hint="Counts the number of times you click" />
 
-            <Image x:Name="ResponseImage"
-               IsVisible="False"
-               Aspect="AspectFit"/>
+                <Button
+                    x:Name="LoadButton"
+                    Clicked="OnLoadClicked"
+                    HorizontalOptions="Center"
+                    Text="Load Content" />
 
-            
+                <Entry
+                    x:Name="InputEntry"
+                    Margin="0,10,0,0"
+                    BackgroundColor="White"
+                    HeightRequest="40"
+                    HorizontalOptions="FillAndExpand"
+                    IsEnabled="False"
+                    IsVisible="False"
+                    Placeholder="Enter text here"
+                    PlaceholderColor="Gray"
+                    TextColor="Black"
+                    VerticalOptions="Center" />
 
-            <Label x:Name="ResponseText" 
-               IsVisible="False"
-               FontSize="18"
-               HorizontalOptions="Center"/>
 
-            <Label x:Name="ContentLabel" 
-               Style="{StaticResource Headline}"
-               TextColor="Black"
-               FontSize="18"
-               HorizontalOptions="Center"/>
+
+                <Button
+                    x:Name="SaveButton"
+                    Clicked="OnSaveClicked"
+                    HorizontalOptions="Center"
+                    IsEnabled="False"
+                    IsVisible="False"
+                    Text="Save Image" />
+
+                <ActivityIndicator
+                    x:Name="LoadingIndicator"
+                    HorizontalOptions="Center"
+                    IsRunning="False"
+                    IsVisible="False"
+                    Color="Azure" />
+
+                <Image
+                    x:Name="ResponseImage"
+                    Aspect="AspectFit"
+                    IsVisible="False" />
+
+
+
+                <Label
+                    x:Name="ResponseText"
+                    FontSize="18"
+                    HorizontalOptions="Center"
+                    IsVisible="False" />
+            </StackLayout>
+
+
+
+
+            <Label
+                x:Name="ContentLabel"
+                FontSize="18"
+                HorizontalOptions="Center"
+                Style="{StaticResource Headline}"
+                TextColor="Black" />
         </VerticalStackLayout>
     </ScrollView>
 

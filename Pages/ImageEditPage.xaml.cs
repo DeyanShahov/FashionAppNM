@@ -5,7 +5,12 @@ using Android.Net;
 using Android.Provider;
 #endif
 
+using CommunityToolkit.Maui.Views;
+using FashionApp.core;
 using FashionApp.core.draw;
+using FashionApp.core.services;
+using FashionApp.Data.Constants;
+using System.Diagnostics;
 
 namespace FashionApp.Pages;
 
@@ -21,26 +26,54 @@ public partial class ImageEditPage : ContentPage
 
     private double _currentScale = 1;
     private double _startScale = 1;
+    private double _currentScaleBrush = 20;
+    private double _startScaleBrush = 20;
     private double _xOffset = 0;
     private double _yOffset = 0;
     private double _startX;
     private double _startY;
 
-    public ImageEditPage(string imageUri)
+    private string imageFileName = $"masked_image_{DateTime.Now:yyyyMMdd_HHmmss}.png";
+
+    //private Image _basicImage;
+    //private GraphicsView _graphicsView;
+
+    public ImageEditPage()
 	{
 		InitializeComponent();
-        // Използваме SizeChanged, за да сме сигурни, че страницата и елементите са с правилния размер
+        //_basicImage = image;
+        //_graphicsView = graphicsView;
+        
         this.SizeChanged += OnSizeChanged;
-
-        LoadImage(imageUri);
      
         _drawable = new DrawingViewDrawable(_lines);
         DrawingView.Drawable = _drawable;
     }
 
-	private void LoadImage(string imagePath)
+    // РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ, РєРѕР№С‚Рѕ РїСЂРёРµРјР° imageUri (string)
+    public ImageEditPage(string imageUri)
+        : this()
+    {
+        LoadImageFromUrl(imageUri);
+    }
+
+    // РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ, РєРѕР№С‚Рѕ РїСЂРёРµРјР° Stream
+    public ImageEditPage(Stream imageStream)
+        : this()
+    {
+        LoadImageFromStream(imageStream);
+    }
+
+    private void LoadImageFromStream(Stream imageStream)
+    {
+        ImageForEdit.Source = ImageSource.FromStream(() => imageStream);
+        ZoomSlider_ValueChanged(ZoomSlider, new ValueChangedEventArgs(ZoomSlider.Value, ZoomSlider.Value));
+    }
+
+    private void LoadImageFromUrl(string imagePath)
 	{
-        ImageForEdit.Source = ImageSource.FromFile(imagePath);
+        //ImageForEdit.Source = ImageSource.FromFile(imagePath);
+        ImageForEdit.Source = imagePath;
         ZoomSlider_ValueChanged(ZoomSlider, new ValueChangedEventArgs(ZoomSlider.Value, ZoomSlider.Value));
     }
 
@@ -50,6 +83,8 @@ public partial class ImageEditPage : ContentPage
 	}
     void OnStartInteraction(object sender, TouchEventArgs e)
     {
+        if (ZoomSliderPanel.IsVisible == true) return;
+
         var touch = e.Touches[0];
 
         if (touch.X >= 0 && touch.X <= DrawingView.Width &&
@@ -58,7 +93,8 @@ public partial class ImageEditPage : ContentPage
             _currentLine = new DrawingLine
             {
                 Color = Colors.Gray,
-                Thickness = (float)20 //(float)BrushSlider.Value
+                //Thickness = (float)20 
+                Thickness = (float)_currentScaleBrush
             };
             _currentLine.Points.Add(touch);
             _lines.Add(_currentLine);
@@ -67,11 +103,13 @@ public partial class ImageEditPage : ContentPage
     }
     void OnDragInteraction(object sender, TouchEventArgs e)
     {
+        //if (ZoomSliderPanel.IsVisible == true) return;
+
         if (_currentLine != null)
         {
             var touch = e.Touches[0];
 
-            // Проверяваме дали докосването е в рамките на DrawingView
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ DrawingView
             if (touch.X >= 0 && touch.X <= DrawingView.Width &&
                 touch.Y >= 0 && touch.Y <= DrawingView.Height)
             {
@@ -99,20 +137,18 @@ public partial class ImageEditPage : ContentPage
     }
     private void OnSaveImageClicked(object sender, EventArgs e)
     {
-        
+        SavePanelOptions.IsVisible = !SavePanelOptions.IsVisible;
     }
 
-    //private void OnZoomClicked(object sender, EventArgs e)
-    //{
-    //    ZoomSliderPanel.IsVisible = !ZoomSliderPanel.IsVisible;
-    //    ZoomSliderPanel.IsEnabled = !ZoomSliderPanel.IsEnabled;
-    //}
 
     private void OnZoomClicked(object sender, EventArgs e)
     {
         // Toggle visibility and enabled state
         ZoomSliderPanel.IsVisible = !ZoomSliderPanel.IsVisible;
         ZoomSliderPanel.IsEnabled = !ZoomSliderPanel.IsEnabled;
+        BrushSliderPanel.IsVisible = !BrushSliderPanel.IsVisible;
+        BrushSliderPanel.IsEnabled = !BrushSliderPanel.IsEnabled;
+        DrawingView.IsVisible = !DrawingView.IsVisible;
 
         if (ZoomSliderPanel.IsVisible)
         {
@@ -122,18 +158,17 @@ public partial class ImageEditPage : ContentPage
         {
             ZoomButton.BackgroundColor = Color.FromRgba(0, 0, 0, 0);
         }
-        // Reset the zoom value
-        //ZoomSlider.Value = 1;
-        //_currentScale = 1;
-        //ImageForEdit.Scale = _currentScale;
-        //ImageForEdit.TranslationX = 0;
-        //ImageForEdit.TranslationY = 0;
-        //_xOffset = 0;
-        //_yOffset = 0;
     }
 
     private void OnPanUpdated(object sender, PanUpdatedEventArgs e)
     {
+        if (!ZoomSliderPanel.IsVisible)
+        {
+            DrawingView.IsVisible = !DrawingView.IsVisible;
+            DrawingView.IsEnabled = !DrawingView.IsEnabled;
+            return;
+        }
+
         if (e.StatusType == GestureStatus.Started)
         {
             _startX = _xOffset;
@@ -172,36 +207,37 @@ public partial class ImageEditPage : ContentPage
             ImageForEdit.TranslationX = newX;
             ImageForEdit.TranslationY = newY;
 
+            DrawingView.TranslationX = newX;
+            DrawingView.TranslationY = newY;
+
             _xOffset = newX;
             _yOffset = newY;
         }
     }
 
-    // Обработчик за промените в слайдъра
-    //private async void ZoomSlider_ValueChanged(object sender, ValueChangedEventArgs e)
-    //{
-    //    // Новата желана скала се взема от стойността на слайдъра
-    //    double newScale = e.NewValue;
-    //    // Анимираме плавно промяната на мащаба
-    //    await ImageForEdit.ScaleTo(newScale, 250, Easing.CubicInOut);
-    //}
+    private void BrushSlider_ValueChanged(object sender, ValueChangedEventArgs e) => _currentScaleBrush = e.NewValue;
 
     private void ZoomSlider_ValueChanged(object sender, ValueChangedEventArgs e)
     {
-        _currentScale = e.NewValue;
+        try
+        {
+            Slider slider = (Slider)sender;
+            double zoomValue = slider.Value;
+            _currentScale = zoomValue;
 
-        // Scale the image
-        ImageForEdit.Scale = _currentScale;
-        //Center the image
-        //ImageForEdit.TranslationX = 0;
-        //ImageForEdit.TranslationY = 0;
-        //_xOffset = 0;
-        //_yOffset = 0;
-        // Reset the slider to the start
-        ZoomSlider.Value = _currentScale;
-        // Reset the zoomButton to the original color
-        ZoomButton.BackgroundColor = Color.FromRgba(0, 0, 0, 0);
+            if (ImageForEdit != null) ImageForEdit.Scale = _currentScale;
+            if (DrawingView != null) DrawingView.Scale = _currentScale;
 
+            ZoomButton.BackgroundColor = Color.FromRgba(0, 0, 0, 0);
+        }
+        catch (NullReferenceException ex)
+        {
+            Debug.WriteLine($"NullReferenceException: {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Exception: {ex.Message}");
+        }
     }
 
 
@@ -210,8 +246,183 @@ public partial class ImageEditPage : ContentPage
         if (!alreadyZoomed)
         {
             alreadyZoomed = true;
-            // Анимирайте промяната на скалата към центъра на изображението.
             await ImageForEdit.ScaleTo(ZoomSlider.Value, 500, Easing.CubicInOut);
+        }
+    }
+
+    private async void OnJacketSelected(object sender, TappedEventArgs e)
+    {
+        if (e.Parameter is string selectedCloth)
+        {
+            selectedCloth = selectedCloth.Remove(selectedCloth.Length - 4).Remove(0, 13).Replace('_', ' ');
+            var result = false;
+
+            bool checkForSave = await DisplayAlert("Message",
+                              $"{selectedCloth} {"Р»Рё РёСЃРєР°С…С‚Рµ РґР° РјР°СЂРєРёСЂР°С‚Рµ?"}",
+                              AppConstants.Messages.YES,
+                              AppConstants.Messages.CANCEL);
+
+            if (!checkForSave) return;
+
+            switch (selectedCloth)
+            {
+                case "dress":
+                    result = await MacroMechanics(sender, "dress_mask.png");
+                    break;
+                case "dress full":
+                    result = await MacroMechanics(sender, "dress_full_mask.png");
+                    break;
+                case "jacket closed":
+                    result = await MacroMechanics(sender, AppConstants.ImagesConstants.CLOSED_JACKET_MASK);
+                    break;
+                case "jacket open":
+                    result = await MacroMechanics(sender, AppConstants.ImagesConstants.OPEN_JACKET_MASK);
+                    break;
+                case "jacket":
+                    result = await MacroMechanics(sender, "jacket_mask.png");             
+                    break;
+                case "pants":
+                    result = await MacroMechanics(sender, "pants_mask.png");
+                    break;
+                case "pants short":
+                    result = await MacroMechanics(sender, "pants_short_mask.png");
+                    break;
+                case "raincoat":
+                    result = await MacroMechanics(sender, "raincoat_mask.png");
+                    break;
+                case "shirt":
+                    result = await MacroMechanics(sender, "shirt_mask.png");
+                    break;
+                case "skirt":
+                    result = await MacroMechanics(sender, "skirt_mask.png");
+                    break;
+                case "skirt long":
+                    result = await MacroMechanics(sender, "skirt_long_mask.png");
+                    break;
+                case "tank top":
+                    result = await MacroMechanics(sender, "tank_top_mask.png");
+                    break;
+                case "no set":
+                    result = true;
+                    break;
+            }
+
+            string ops = imageFileName;
+
+           
+
+            if (result && checkForSave)
+            {
+                SaveImage();
+                await Navigation.PopModalAsync();
+            }
+            //else
+            //{
+            //    await DisplayAlert("РР·Р±СЂР°РЅ РµР»РµРјРµРЅС‚", $"Р’РёРµ РёР·Р±СЂР°С…С‚Рµ: {selectedCloth}", "OK");
+            //}
+        }
+    }
+
+    private async Task<bool> MacroMechanics(object sender, string appConstants)
+    {
+        if (imageFileName != appConstants)
+        {
+            bool resultFromMessage = await MessageForMacroChangesAsync(appConstants);
+
+            if (!resultFromMessage) return false;
+
+            //SetActiveButton(sender as ImageButton);
+            imageFileName = appConstants;
+            return true;
+        }
+        else
+        {
+            await DisplayAlert("РР·Р±СЂР°РЅРѕ СЏРєРµ", $"Р’РµС‡Рµ Рµ СЃРµС‚РЅР°С‚Рѕ РєР°С‚Рѕ: {imageFileName}", "OK");
+            return false;
+        }
+        //else
+        //{
+        //    //SetActiveButton(new ImageButton());
+        //    imageFileName = $"masked_image_{DateTime.Now:yyyyMMdd_HHmmss}.png";
+        //}
+    }
+
+    private async Task<bool> MessageForMacroChangesAsync(string macroImageFullName)
+    {
+        // РџСЂРѕРІРµСЂРєР° Р·Р° СЃСЉС‰РµСЃС‚РІСѓРІР°С‰Р° РІРµС‡Рµ РјР°СЃРєР° РєСЉРј РґР°РґРµРЅРѕС‚Рѕ РњР°РєСЂРѕ
+        var isMaskExist = await CheckAvailableMasksAndroidAsync(macroImageFullName);
+        //if (isMaskExist)
+        //{
+        //    // РџРёС‚Р°РЅРµ Р·Р° РїРѕС‚РІСЉСЂР¶РґРµРЅРёРµ РґР°Р»Рё РґР° РїРѕРґРјРµРЅРё РјР°СЃРєР°С‚Р° РёР»Рё РЅРµ СЃ РЅРѕРІР°
+        //    bool confirmation = await DisplayAlert(
+        //        AppConstants.Messages.REPLACE_CONFIRMATION,
+        //        $"{AppConstants.Messages.MESSAGE_FOR_REPLACE} {macroImageFullName.Replace('_', ' ').Remove(macroImageFullName.Length - 4)}?",
+        //        AppConstants.Messages.YES,
+        //        AppConstants.Messages.CANCEL);
+        //    return confirmation;
+        //}
+        //else
+        //{
+        //    // Р¦СЉРѕР±С‰РµРЅРёРµ С‡Рµ С‰Рµ СЃРµ Р·Р°РїР°Р·Рё РєР°С‚Рѕ РјР°СЃРєР° РєСЉРј РЅРµР·Р°РµС‚Рѕ РњР°РєСЂРѕ
+        //    return await DisplayAlert(isMaskExist ? AppConstants.Messages.REPLACE_CONFIRMATION : AppConstants.Messages.SET_CONFIRMATION,
+        //                       isMaskExist ? 
+        //                            $"{AppConstants.Messages.MESSAGE_FOR_REPLACE} {macroImageFullName.Replace('_', ' ').Remove(macroImageFullName.Length - 4)}?" 
+        //                            : AppConstants.Messages.MESSAGE_FOR_SAVE_MASK,
+        //                       AppConstants.Messages.YES,
+        //                       AppConstants.Messages.CANCEL);
+        //}
+
+        return await DisplayAlert(isMaskExist ? AppConstants.Messages.REPLACE_CONFIRMATION : AppConstants.Messages.SET_CONFIRMATION,
+                               isMaskExist ?
+                                    $"{AppConstants.Messages.MESSAGE_FOR_REPLACE} {macroImageFullName.Replace('_', ' ').Remove(macroImageFullName.Length - 4)}?"
+                                    : AppConstants.Messages.MESSAGE_FOR_SAVE_MASK,
+                               AppConstants.Messages.YES,
+                               AppConstants.Messages.CANCEL);
+    }
+
+    private async Task<bool> CheckAvailableMasksAndroidAsync(string fileName)
+    {
+        try
+        {
+            var fileChecker = App.Current?.Handler.MauiContext?.Services.GetService<IFileChecker>();
+            var fileExists = await fileChecker.CheckFileExistsAsync(fileName);
+            return fileExists;
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert(
+                AppConstants.Errors.ERROR,
+                $"{AppConstants.Errors.ERROR_CKECK_MASKS}: {ex.Message}",
+                AppConstants.Messages.OK);
+            return false;
+        }
+    }
+
+    private async void SaveImage()
+    {
+        if (ImageForEdit.Source == null) return;
+
+        // Р”РµР°РєС‚РёРІРёСЂР°РЅРµ РЅР° Р±СѓС‚РѕРЅР°
+        //ChangeVisibilityOnSaveButton(false);
+
+        try
+        {
+            var resultStream = await AddMaskToImage.AddMaskToImageMetadata(ImageForEdit, DrawingView);
+#if ANDROID
+            SaveImageToAndroid.Save(imageFileName, resultStream, AppConstants.ImagesConstants.IMAGES_MASKS_DIRECTORY);                       
+#endif
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert(
+                AppConstants.Errors.ERROR,
+                $"{AppConstants.Errors.FAILED_TO_SAVE_IMAGE}: {ex.Message}",
+                AppConstants.Messages.OK);
+        }
+        finally
+        {
+            // Р’РєР»СЋС‡РІР°РЅРµ РЅР° Р±СѓС‚РѕРЅР° РѕС‚РЅРѕРІРѕ
+            //ChangeVisibilityOnSaveButton(true);
         }
     }
 }

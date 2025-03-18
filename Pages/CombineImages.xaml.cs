@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using CommunityToolkit.Maui.Views;
 using System.Reflection;
+using System.Collections.ObjectModel;
+using System.Windows.Input;
 //using static Android.Provider.MediaStore.Audio;
 
 namespace FashionApp.Pages;
@@ -20,6 +22,7 @@ public partial class CombineImages : ContentPage
     private byte[] _imageData = [];
     private string _clothImagePath = String.Empty;
     private string _bodyImagePath = String.Empty;
+    private readonly bool _isAdmin = false;
 
     private readonly SingleImageLoader singleImageLoader;
     private CameraService _cameraService;
@@ -31,11 +34,24 @@ public partial class CombineImages : ContentPage
     private List<string> selectedOptionsForZoneToMarcFromAI3 = new List<string>(); // Колекция с избрани стойности
     private List<string> selectedOptionsForZoneToMarcFromAI4 = new List<string>(); // Колекция с избрани стойности
 
+
+    public ObservableCollection<JacketModel> Jackets { get; set; } = new ObservableCollection<JacketModel>();
+    public ICommand SelectJacketCommand { get; set; }
+
+
     private bool isFromClothImage = true;
 
-    public CombineImages()
+    public CombineImages(bool isAdmin)
     {
         InitializeComponent();
+
+        BindingContext = this;
+
+        _isAdmin = isAdmin;
+        
+
+        ChoiseForMaskMethod.IsVisible = isAdmin;
+
         _cameraService = new CameraService(MyCameraView, CameraPanel);
         _cameraService.ImageCaptured += OnImageCaptured;
         _cameraService.StopCamera();
@@ -45,12 +61,22 @@ public partial class CombineImages : ContentPage
             setImage: (uri) => SelectedBodyImage.Source = Microsoft.Maui.Controls.ImageSource.FromUri(new System.Uri(uri))
         );
 
+        StandartMask.IsChecked = true;
+
 
 #if WINDOWS
         CheckAvailableMasksWindows();
 #elif ANDROID
         CheckAvailableMasksAndroid(true);
 #endif
+        SelectJacketCommand = new Command<string>(OnJacketSelected);
+
+    }
+
+    private async void OnJacketSelected(string jacket)
+    {
+        // Изпълнете желаното действие при избиране на яке
+        await Application.Current.MainPage.DisplayAlert("Избрано яке", $"Вие избрахте: {jacket}", "OK");
     }
 
     //---------------------------------------- BUTONS ACTIONS --------------------------------------------------------------
@@ -244,7 +270,7 @@ public partial class CombineImages : ContentPage
     }
     private async void OpenJacketImageButton_Clicked(object sender, EventArgs e)
     {
-        SetActiveButton(sender as ImageButton);
+        SetActiveButton((ImageButton)sender);
 #if WINDOWS
         await LoadCorrectImageMaskWindows(AppConstants.ImagesConstants.OPEN_JACKET_MASK);
 #elif ANDROID
@@ -252,15 +278,40 @@ public partial class CombineImages : ContentPage
 #endif
     }
     private async void ClosedJacketImageButton_Clicked(object sender, EventArgs e)
-    {
-        SetActiveButton(sender as ImageButton);
+    {      
+        SetActiveButton((ImageButton)sender);
 #if WINDOWS
         await LoadCorrectImageMaskWindows(AppConstants.ImagesConstants.CLOSED_JACKET_MASK);
 #elif ANDROID
         LoadLargeImage(AppConstants.ImagesConstants.CLOSED_JACKET_MASK);
 #endif
     }
-    
+
+    private void MacroButton_Clicked(object sender, EventArgs e)
+    {
+        ImageButton clickedButton = (ImageButton)sender;
+        string value = (string)clickedButton.CommandParameter;
+
+        if (string.IsNullOrEmpty(value)) return;
+
+        SetActiveButton((ImageButton)sender);
+
+        string? futureImageName = new MacroIconToPhoto(value).Value;
+
+        //bool res1 = futureImageName == null;
+        //bool res2 = futureImageName == "Default";
+
+        //if (res1 || res2) return;
+
+        if (futureImageName == null || futureImageName == "Default") return;
+
+#if ANDROID
+        //LoadLargeImage(AppConstants.ImagesConstants.CLOSED_JACKET_MASK);
+        LoadLargeImage(futureImageName);
+
+#endif
+    }
+
     private void SelectClothFromApp_Clicked(object sender, EventArgs e)
     {
 
@@ -582,6 +633,8 @@ public partial class CombineImages : ContentPage
         {
             await DisplayAlert(AppConstants.Errors.ERROR, $"{AppConstants.Errors.ERROR_OCCURRED}: {ex.Message}", AppConstants.Messages.OK);
         }
+
+        
     }
 
 #if WINDOWS
@@ -613,9 +666,13 @@ public partial class CombineImages : ContentPage
             Console.WriteLine($"Error checking masks: {ex.Message}");
         }
     }
+
 #elif ANDROID
     private async void CheckAvailableMasksAndroid(bool toSet)
     {
+        //премахваме стари записи
+        Jackets.Clear();
+
         // Проверка за разрешения
         App.Current?.Handler.MauiContext?.Services.GetService<CheckForAndroidPermissions>()?.CheckStorage();
 
@@ -628,6 +685,8 @@ public partial class CombineImages : ContentPage
             {
                 ClosedJacketImageButton.IsEnabled = toSet;
                 ClosedJacketImageButton.IsVisible = toSet;
+
+                Jackets.Add( new JacketModel { ImagePath = "Macros/icons_jacket_closed.png" });
             }
 
             fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.OPEN_JACKET_MASK);
@@ -635,6 +694,17 @@ public partial class CombineImages : ContentPage
             {
                 OpenJacketImageButton.IsEnabled = toSet;
                 OpenJacketImageButton.IsVisible = toSet;
+
+                Jackets.Add( new JacketModel { ImagePath = "Macros/icons_jacket_open.png" });
+            }
+
+            fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.DRESS_MASK);
+            if (fileExists)
+            {
+                DressButton.IsEnabled = toSet;
+                DressButton.IsVisible = toSet;
+
+                Jackets.Add( new JacketModel { ImagePath = "Macros/icons_dress.png" });
             }
         }
         catch (Exception ex)

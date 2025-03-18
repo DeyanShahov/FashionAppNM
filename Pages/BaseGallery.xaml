@@ -1,82 +1,83 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="FashionApp.Pages.BaseGallery"
-             BackgroundColor="Black">
-    <!-- Използваме AbsoluteLayout за да можем да поставим ActivityIndicator над съдържанието -->
+<ContentPage
+    x:Class="FashionApp.Pages.BaseGallery"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    BackgroundColor="Black">
+    <!--  Използваме AbsoluteLayout за да можем да поставим ActivityIndicator над съдържанието  -->
     <AbsoluteLayout>
-        <!-- Главно съдържание: Grid с редове за съобщение за грешка, единичната снимка и галерията -->
-        <Grid AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="0,0,1,1">
+        <!--  Главно съдържание: Grid с редове за съобщение за грешка, единичната снимка и галерията  -->
+        <Grid AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All">
 
             <Grid.RowDefinitions>
-                <!-- Ред за съобщение за грешка -->
-                <RowDefinition Height="Auto"/>
-                <!-- Ред за единичната снимка -->
-                <RowDefinition Height="Auto"/>
-                <!-- Ред за галерията, която ще скролира сама -->
-                <RowDefinition Height="*"/>
+                <!--  Ред за съобщение за грешка  -->
+                <RowDefinition Height="Auto" />
+                <!--  Ред за единичната снимка  -->
+                <RowDefinition Height="Auto" />
+                <!--  Ред за галерията, която ще скролира сама  -->
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <!-- Елемент 1: Текст за грешка -->
+            <!--  Елемент 1: Текст за грешка  -->
             <Label
-             x:Name="ErrorLabel"
-             Grid.Row="0"
-             Text=""
-             IsVisible="False"
-             TextColor="Red"
-             HorizontalOptions="Center"/>
+                x:Name="ErrorLabel"
+                Grid.Row="0"
+                HorizontalOptions="Center"
+                IsVisible="False"
+                Text=""
+                TextColor="Red" />
 
-            <!-- Елемент 2: Изображението с единичната снимка -->
-            <Frame 
-             x:Name="LargeImageFrame"
-             Grid.Row="1"
-             Padding="5"
-             HasShadow="True"
-             BorderColor="Black"
-             Margin="10,10,10,0">
-                <Image 
-                 x:Name="SelectedBodyImage"
-                 HeightRequest="400"
-                 WidthRequest="300"
-                 Aspect="AspectFit">
+            <!--  Елемент 2: Изображението с единичната снимка  -->
+            <Frame
+                x:Name="LargeImageFrame"
+                Grid.Row="1"
+                Margin="10,10,10,0"
+                Padding="5"
+                BackgroundColor="Silver"
+                BorderColor="Black"
+                HasShadow="True">
+                <Image
+                    x:Name="SelectedBodyImage"
+                    Aspect="AspectFill"
+                    HeightRequest="400"
+                    WidthRequest="300">
                     <Image.GestureRecognizers>
-                        <TapGestureRecognizer 
-                         Tapped="SelectedBodyImage_Tapped"/>
+                        <TapGestureRecognizer Tapped="SelectedBodyImage_Tapped" />
                     </Image.GestureRecognizers>
                 </Image>
             </Frame>
 
-            <!-- Елемент 3: Галерията със снимки (CollectionView скролира)
-         Този контрол ще запълни оставащото пространство (RowDefinition="*") -->
-            <CollectionView 
-             x:Name="GalleryCollectionView"
-             Grid.Row="2"
-             ItemsSource="{Binding ImagesList}"
-             SelectionMode="Single"
-             Margin="10,0,10,10">
+            <!--
+                Елемент 3: Галерията със снимки (CollectionView скролира)
+                Този контрол ще запълни оставащото пространство (RowDefinition="*")
+            -->
+            <CollectionView
+                x:Name="GalleryCollectionView"
+                Grid.Row="2"
+                Margin="10,0,10,10"
+                ItemsSource="{Binding ImagesList}"
+                SelectionMode="Single">
                 <CollectionView.ItemsLayout>
-                    <GridItemsLayout 
-                     x:Name="GridItemList"
-                     Orientation="Vertical"
-                     Span="3"
-                     HorizontalItemSpacing="5"
-                     VerticalItemSpacing="5"/>
+                    <GridItemsLayout
+                        x:Name="GridItemList"
+                        HorizontalItemSpacing="5"
+                        Orientation="Vertical"
+                        Span="3"
+                        VerticalItemSpacing="5" />
                 </CollectionView.ItemsLayout>
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Frame 
-                         Padding="0"
-                         IsClippedToBounds="True"
-                         CornerRadius="0">
-                            <Image                             
-                             Source="{Binding .}"
-                             Aspect="AspectFill"
-                             HeightRequest="120"
-                             WidthRequest="120">
+                        <Frame
+                            Padding="0"
+                            CornerRadius="0"
+                            IsClippedToBounds="True">
+                            <Image
+                                Aspect="AspectFill"
+                                HeightRequest="120"
+                                Source="{Binding .}"
+                                WidthRequest="120">
                                 <Image.GestureRecognizers>
-                                    <TapGestureRecognizer 
-                                        Tapped="TapGestureRecognizer_Tapped"
-                                        NumberOfTapsRequired="1"/>
+                                    <TapGestureRecognizer NumberOfTapsRequired="1" Tapped="TapGestureRecognizer_Tapped" />
                                 </Image.GestureRecognizers>
                             </Image>
                         </Frame>
@@ -86,11 +87,12 @@
 
         </Grid>
 
-        <!-- ActivityIndicator, като overlay, центриран върху съдържанието -->
-        <ActivityIndicator IsRunning="{Binding IsBusy}"
-                 IsVisible="{Binding IsBusy}"
-                 AbsoluteLayout.LayoutFlags="PositionProportional"
-                 AbsoluteLayout.LayoutBounds="0.5,0.5,-1,-1"/>
+        <!--  ActivityIndicator, като overlay, центриран върху съдържанието  -->
+        <ActivityIndicator
+            AbsoluteLayout.LayoutBounds="0.5,0.5,-1,-1"
+            AbsoluteLayout.LayoutFlags="PositionProportional"
+            IsRunning="{Binding IsBusy}"
+            IsVisible="{Binding IsBusy}" />
 
     </AbsoluteLayout>
 </ContentPage>

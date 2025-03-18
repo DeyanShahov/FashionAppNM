@@ -9,7 +9,7 @@ namespace FashionApp.Pages;
 
 public partial class BaseGallery : ContentPage
 {
-
+    private bool isInUse = false;
     private string selectedImageUri;
     private readonly string imagesPath;
 
@@ -119,9 +119,21 @@ public partial class BaseGallery : ContentPage
 
     private async void SelectedBodyImage_Tapped(object sender, TappedEventArgs e)
     {
-        if (selectedImageUri != null) await Navigation.PushModalAsync(new ImageDetailPage(selectedImageUri));
+        if (isInUse) return;
+
+        isInUse = true;
+
+        var page = new ImageDetailPage(selectedImageUri);
+        page.Disappearing += Page_Disappearing;
+        if (selectedImageUri != null) await Navigation.PushModalAsync(page);
+
     }
 
+    private void Page_Disappearing(object sender, EventArgs e)
+    {
+        isInUse = false; // Reset isInUse when the page disappears
+        ((ImageDetailPage)sender).Disappearing -= Page_Disappearing; // Unsubscribe
+    }
 
     private async void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
     {

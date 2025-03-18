@@ -1,99 +1,221 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="FashionApp.Pages.ImageEditPage"
-             Title="ImageEditPage"
-             BackgroundColor="Black">
+<ContentPage
+    x:Class="FashionApp.Pages.ImageEditPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="ImageEditPage"
+    BackgroundColor="Black">
     <Grid>
         <Grid.RowDefinitions>
-            <!-- Областта с изображението -->
-            <RowDefinition Height="*"/>
-            <!-- Областта със слайдъра -->
-            <RowDefinition Height="Auto"/>
+            <!--  Областта с изображението  -->
+            <RowDefinition Height="*" />
+            <!--  Областта със слайдъра  -->
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        
-        <Grid x:Name="ImageContainer" Grid.Row="0" IsClippedToBounds="True">
-            <!-- Показва избраната снимка в цял екран -->
-            <Image 
-                x:Name="ImageForEdit" 
-                Aspect="AspectFit">
+
+        <Grid
+            x:Name="ImageContainer"
+            Grid.Row="0"
+            IsClippedToBounds="True">
+            <!--  Показва избраната снимка в цял екран  -->
+            <Image x:Name="ImageForEdit" Aspect="AspectFit">
                 <Image.GestureRecognizers>
                     <PanGestureRecognizer PanUpdated="OnPanUpdated" />
                 </Image.GestureRecognizers>
             </Image>
 
         </Grid>
-        
+
         <GraphicsView
             x:Name="DrawingView"
-            IsVisible="False"
-            StartInteraction="OnStartInteraction"
+            BackgroundColor="Red"
             DragInteraction="OnDragInteraction"
             EndInteraction="OnEndInteraction"
             HorizontalOptions="Start"
-            VerticalOptions="Start"/>
+            IsVisible="True"
+            StartInteraction="OnStartInteraction"
+            VerticalOptions="Start" />
 
-        <StackLayout
-             x:Name="ZoomSliderPanel"
-             IsVisible="False"
-             IsEnabled="False"
-             Orientation="Horizontal"
-             HorizontalOptions="FillAndExpand"
-             VerticalOptions="End"
-             BackgroundColor="#80000000"
-             Padding="10"
-             Margin="0,70"
-             Spacing="20">
-            <Slider x:Name="ZoomSlider"
-                    Minimum="1"
-                    Maximum="4"
-                    Value="3"
-                    ValueChanged="ZoomSlider_ValueChanged"
-                    ThumbColor="DarkGray"
-                    MinimumTrackColor="LightGray"
-                    MaximumTrackColor="Gray"
-                    HorizontalOptions="FillAndExpand"/>
+        <StackLayout x:Name="SavePanelOptions" IsVisible="False">
+            <Frame
+                Margin="20"
+                BackgroundColor="#80000000"
+                BorderColor="Black"
+                CornerRadius="5"
+                HasShadow="False"
+                HorizontalOptions="FillAndExpand"
+                VerticalOptions="CenterAndExpand"
+                WidthRequest="350">
+                <Frame.Shadow>
+                    <Shadow
+                        Brush="Red"
+                        Opacity="0.99"
+                        Radius="10"
+                        Offset="3, 3" />
+                </Frame.Shadow>
+                <StackLayout Spacing="10">
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="Large"
+                        HorizontalOptions="Center"
+                        Text="Choise how to save"
+                        TextColor="White"
+                        VerticalOptions="Center" />
+
+                    <CarouselView HeightRequest="100" PeekAreaInsets="100">
+                        <CarouselView.ItemsSource>
+                            <x:Array Type="{x:Type x:String}">
+                                <x:String>Macros/icons_no_set.png</x:String>
+                                <x:String>Macros/icons_dress.png</x:String>
+                                <x:String>Macros/icons_dress_full.png</x:String>
+                                <x:String>Macros/icons_jacket.png</x:String>
+                                <x:String>Macros/icons_jacket_closed.png</x:String>
+                                <x:String>Macros/icons_jacket_open.png</x:String>
+                                <x:String>Macros/icons_pants.png</x:String>
+                                <x:String>Macros/icons_pants_short.png</x:String>
+                                <x:String>Macros/icons_raincoat.png</x:String>
+                                <x:String>Macros/icons_shirt.png</x:String>
+                                <x:String>Macros/icons_skirt.png</x:String>
+                                <x:String>Macros/icons_skirt_long.png</x:String>
+                                <x:String>Macros/icons_tank_top.png</x:String>
+                            </x:Array>
+                        </CarouselView.ItemsSource>
+
+                        <CarouselView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Image
+                                        Aspect="AspectFit"
+                                        BackgroundColor="White"
+                                        HeightRequest="80"
+                                        Source="{Binding .}"
+                                        WidthRequest="80">
+                                        <Image.GestureRecognizers>
+                                            <TapGestureRecognizer CommandParameter="{Binding .}" Tapped="OnJacketSelected" />
+                                        </Image.GestureRecognizers>
+                                    </Image>
+                                </Grid>
+                            </DataTemplate>
+                        </CarouselView.ItemTemplate>
+                    </CarouselView>
+                </StackLayout>
+            </Frame>
         </StackLayout>
 
-        <!-- Bottom overlay with buttons -->
         <StackLayout
-             Orientation="Horizontal"
-             HorizontalOptions="FillAndExpand"
-             VerticalOptions="End"
-             BackgroundColor="#80000000"
-             Padding="10"
-             Spacing="3">
-            <Button
-            Text="Save"
-            TextColor="White"
-            BackgroundColor="Transparent"
-            HorizontalOptions="Start"
-            Clicked="OnSaveImageClicked"/>
-            <Button
-            Text="Clear"
-            TextColor="White"
-            BackgroundColor="Transparent"
-            HorizontalOptions="Center"
-            Clicked="OnClearClicked"/>
-            <Button
-            Text="Undo"
-            TextColor="White"
-            BackgroundColor="Transparent"
-            HorizontalOptions="Center"
-            Clicked="OnUndoClicked"/>
-            <Button
-            x:Name="ZoomButton"
-            Text="Zoom"
-            TextColor="White"
-            BackgroundColor="Transparent"
-            HorizontalOptions="Center"
-            Clicked="OnZoomClicked"/>
-            <Button
-            Text="Close"
-            TextColor="White"
-            BackgroundColor="Transparent"
-            HorizontalOptions="EndAndExpand"
-            Clicked="CloseButton_Clicked" />
+            x:Name="BrushSliderPanel"
+            Margin="0,115"
+            Padding="10"
+            BackgroundColor="#80000000"
+            HorizontalOptions="FillAndExpand"
+            IsEnabled="False"
+            IsVisible="False"
+            Orientation="Horizontal"
+            Spacing="20"
+            VerticalOptions="End">
+            <Image HeightRequest="20" Source="icons8_brush_50.png" />
+            <Slider
+                x:Name="BrushSlider"
+                HorizontalOptions="FillAndExpand"
+                Maximum="50"
+                MaximumTrackColor="Gray"
+                Minimum="5"
+                MinimumTrackColor="LightGray"
+                ThumbColor="DarkGray"
+                ValueChanged="BrushSlider_ValueChanged"
+                Value="20" />
+        </StackLayout>
+
+
+        <StackLayout
+            x:Name="ZoomSliderPanel"
+            Margin="0,70"
+            Padding="10"
+            BackgroundColor="#80000000"
+            HorizontalOptions="FillAndExpand"
+            IsEnabled="False"
+            IsVisible="False"
+            Orientation="Horizontal"
+            Spacing="20"
+            VerticalOptions="End">
+            <Image HeightRequest="20" Source="icons8_zoom_mode_60.png" />
+            <Slider
+                x:Name="ZoomSlider"
+                HorizontalOptions="FillAndExpand"
+                Maximum="4"
+                MaximumTrackColor="Gray"
+                Minimum="1"
+                MinimumTrackColor="LightGray"
+                ThumbColor="DarkGray"
+                ValueChanged="ZoomSlider_ValueChanged"
+                Value="3" />
+        </StackLayout>
+
+        <!--  Bottom overlay with buttons  -->
+        <StackLayout
+            Padding="10"
+            Spacing="15"
+            BackgroundColor="#80000000"
+            HorizontalOptions="FillAndExpand"
+            Orientation="Horizontal"
+            VerticalOptions="End">
+            <!--<Button
+                BackgroundColor="Transparent"
+                Clicked="OnSaveImageClicked"
+                HorizontalOptions="Start"
+                Text="Save"
+                TextColor="White" />-->
+            <ImageButton
+                BackgroundColor="Transparent"
+                Clicked="OnSaveImageClicked"
+                HorizontalOptions="Start"
+                Source="Icons/icons_save.png" />
+            <!--<Button
+                BackgroundColor="Transparent"
+                Clicked="OnClearClicked"
+                HorizontalOptions="Center"
+                Text="Clear"
+                TextColor="White" />-->
+            <ImageButton
+                BackgroundColor="Transparent"
+                Clicked="OnClearClicked"
+                HorizontalOptions="Center"
+                Source="Icons/icons_eraser.png" />
+            <!--<Button
+                BackgroundColor="Transparent"
+                Clicked="OnUndoClicked"
+                HorizontalOptions="Center"
+                Text="Undo"
+                TextColor="White" />-->
+            <ImageButton
+                BackgroundColor="Transparent"
+                Clicked="OnUndoClicked"
+                HorizontalOptions="Center"
+                Source="Icons/icons_undo.png" />
+            <!--<Button
+                x:Name="ZoomButton"
+                BackgroundColor="Transparent"
+                Clicked="OnZoomClicked"
+                HorizontalOptions="Center"
+                Text="Zoom / Move"
+                TextColor="White" />-->
+            <ImageButton
+                x:Name="ZoomButton"
+                BackgroundColor="Transparent"
+                Clicked="OnZoomClicked"
+                HorizontalOptions="Center"
+                Source="Icons/icons_tools.png" />
+            <!--<Button
+                BackgroundColor="Transparent"
+                Clicked="CloseButton_Clicked"
+                HorizontalOptions="EndAndExpand"
+                Text="Close"
+                TextColor="White" />-->
+            <ImageButton
+                BackgroundColor="Transparent"
+                Clicked="CloseButton_Clicked"
+                HorizontalOptions="EndAndExpand"
+                Source="Image/icons_close.png" />
         </StackLayout>
     </Grid>
 </ContentPage>

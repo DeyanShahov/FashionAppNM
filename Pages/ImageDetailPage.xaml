@@ -1,60 +1,59 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="FashionApp.Pages.ImageDetailPage"
-             Title="ImageDetailPage"
-             BackgroundColor="Black">
+<ContentPage
+    x:Class="FashionApp.Pages.ImageDetailPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="ImageDetailPage"
+    BackgroundColor="Black">
     <Grid>
-        <!-- Показва избраната снимка в цял екран -->
-        <Image 
-            x:Name="DetailImage" 
-            Aspect="AspectFill" />
-        <!-- Overlay с бутоните Delete и Close -->
-        <!-- Top overlay with image name -->
+        <!--  Показва избраната снимка в цял екран  -->
+        <Image x:Name="DetailImage" Aspect="AspectFill" />
+        <!--  Overlay с бутоните Delete и Close  -->
+        <!--  Top overlay with image name  -->
         <StackLayout
-                Orientation="Horizontal"
-                HorizontalOptions="FillAndExpand"
-                VerticalOptions="Start"
-                BackgroundColor="#80000000"
-                Padding="10"
-                Spacing="20">
+            Padding="10"
+            BackgroundColor="#80000000"
+            HorizontalOptions="FillAndExpand"
+            Orientation="Horizontal"
+            Spacing="20"
+            VerticalOptions="Start">
             <Label
                 x:Name="ImageName"
-                TextColor="White"
                 BackgroundColor="Transparent"
-                VerticalTextAlignment="Center"
+                HorizontalOptions="CenterAndExpand"
                 HorizontalTextAlignment="Center"
-                HorizontalOptions="CenterAndExpand" />
+                TextColor="White"
+                VerticalTextAlignment="Center" />
         </StackLayout>
 
-        <!-- Bottom overlay with buttons -->
+        <!--  Bottom overlay with buttons  -->
         <StackLayout
-                Orientation="Horizontal"
-                HorizontalOptions="FillAndExpand"
-                VerticalOptions="End"
-                BackgroundColor="#80000000"
-                Padding="10"
-                Spacing="20">
+            Padding="10"
+            BackgroundColor="#80000000"
+            HorizontalOptions="FillAndExpand"
+            Orientation="Horizontal"
+            Spacing="20"
+            VerticalOptions="End">
             <Button
-                Text="Delete"
-                TextColor="White"
                 BackgroundColor="Transparent"
+                Clicked="DeleteButton_Clicked"
                 HorizontalOptions="Start"
-                Clicked="DeleteButton_Clicked" />
-            <Button 
+                Text="Delete"
+                TextColor="White" />
+            <Button
                 x:Name="Source"
+                BackgroundColor="Transparent"
+                Clicked="SourceButton_Clicked"
+                HorizontalOptions="EndAndExpand"
                 IsVisible="False"
                 Text="Source"
-                TextColor="White"
-                BackgroundColor="Transparent"
-                HorizontalOptions="EndAndExpand"
-                Clicked="SourceButton_Clicked"/>
+                TextColor="White" />
             <Button
-                Text="Close"
-                TextColor="White"
                 BackgroundColor="Transparent"
+                Clicked="CloseButton_Clicked"
                 HorizontalOptions="EndAndExpand"
-                Clicked="CloseButton_Clicked" />
+                Text="Close"
+                TextColor="White" />
         </StackLayout>
     </Grid>
 </ContentPage>

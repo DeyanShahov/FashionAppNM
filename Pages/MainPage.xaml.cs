@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Maui.Core.Platform;
 using FashionApp.Data.Constants;
 using FashionApp.Pages;
+using Newtonsoft.Json;
+using System.Collections.ObjectModel;
 using System.Text;
 using System.Text.Json;
 
@@ -12,16 +14,51 @@ namespace FashionApp.Pages
         private const string ApiUrl = "https://eminently-verified-walleye.ngrok-free.app";
         //private const string ApiUrl = "http://192.168.0.101:80";
         bool isGuest = true;
+        bool isAdmin = false;
         private byte[] _imageData = [];
+
+
+        private const string monkeyUrl = "https://montemagno.com/monkeys.json";
+        private readonly HttpClient httpClient = new HttpClient();
+
+        public ObservableCollection<Monkey> Monkeys { get; set; } = new ObservableCollection<Monkey> { };
 
         public MainPage()
         {
             InitializeComponent();
 
-            WelcomeMessage.Text = AppConstants.Messages.WELCOME_GUEST;
-            LoginBtn.Text = AppConstants.Messages.LOGIN_AS_USER;
+            BindingContext = this;
 
+            if (isAdmin)
+            {
+                WelcomeMessage.Text = AppConstants.Messages.WELCOME_GUEST;
+                LoginBtn.Text = AppConstants.Messages.LOGIN_AS_USER;
+                AdminTestFields.IsVisible = true;
+
+                TestGalleryButton.IsVisible = true;
+                Grid.SetRow(TestGalleryButton, 1);
+                Grid.SetColumn(TestGalleryButton, 0);
+
+                Grid.SetRow(WebGalleryButton, 1);
+                Grid.SetColumn(WebGalleryButton, 1);
+            }
+            else
+            {
+                //GridForGallerys.ColumnSpacing = 5;
+                Grid.SetRow(WebGalleryButton, 0);
+                Grid.SetColumn(WebGalleryButton, 2);
+            }
+            
             SetContentLabel();
+        }
+
+        protected override async void OnAppearing()
+        {
+            base.OnAppearing();
+            var monkeyJson = await httpClient.GetStringAsync(monkeyUrl);
+            var monkeys = JsonConvert.DeserializeObject<Monkey[]>(monkeyJson);
+            Monkeys.Clear();
+            monkeys.ToList().ForEach( monkey => Monkeys.Add(monkey));
         }
 
         private void SetContentLabel()
@@ -74,7 +111,7 @@ namespace FashionApp.Pages
                     args = isGuest ? AppConstants.Parameters.CONFY_FUNCTION_GENERATE_ARG : inputText
                 };
 
-                var jsonContent = new StringContent(JsonSerializer.Serialize(requestBody), Encoding.UTF8, "application/json");
+                var jsonContent = new StringContent(System.Text.Json.JsonSerializer.Serialize(requestBody), Encoding.UTF8, "application/json");
                 var response = await _client.PostAsync(requestUrl, jsonContent);
 
                 if (!response.IsSuccessStatusCode)
@@ -133,11 +170,11 @@ namespace FashionApp.Pages
             }
         }
 
-        private async void OnNavigateClicked(object sender, EventArgs e)
-            => await Navigation.PushAsync(new MaskEditor());
+        private async void OnEditorButtonClicked(object sender, EventArgs e)
+            => await Navigation.PushAsync(new MaskEditor(isAdmin));
 
         private async void CombineImagesButton_Clicked(object sender, EventArgs e)
-            => await Navigation.PushAsync(new CombineImages());
+            => await Navigation.PushAsync(new CombineImages(isAdmin));
 
         private async void OnNavigateClickedToWeb(object sender, EventArgs e)
             => await Navigation.PushAsync(new WebViewPage());

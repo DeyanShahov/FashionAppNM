@@ -65,6 +65,21 @@
         {
             public const string CLOSED_JACKET_MASK = "closed_jacket_mask.png";
             public const string OPEN_JACKET_MASK = "open_jacket_mask.png";
+
+            public const string DRESS_MASK = "dress_mask.png";
+            public const string DRESS_FULL_MASK = "dress_full_mask.png";
+            public const string JACKET_MASK = "jacket_mask.png";
+            public const string JACKET_CLOSED_MASK = "jacket_closed_mask.png";
+            public const string JACKET_OPEN_MASK = "jacket_open_mask.png";
+            public const string NO_SET_MASK = "no_set_mask.png";
+            public const string PANTS_MASK = "pants_mask.png";
+            public const string PANTS_SHORT_MASK = "pants_short_mask.png";
+            public const string RAINCOAT_MASK = "raincoat_mask.png";
+            public const string SHIRT_MASK = "shirt_mask.png";
+            public const string SKIRT_MASK = "skirt_mask.png";
+            public const string SKIRT_LONG_MASK = "skirt_long_mask.png";
+            public const string TANK_TOP_MASK = "tank_top_mask.png";
+
             public const string IMAGES_DIRECTORY = "Pictures/FashionApp/Images";
             public const string IMAGES_MASKS_DIRECTORY = "FashionApp/MasksImages";
             public const string IMAGES_CAPTURE_SCREEN = "FashionApp/CaptureScreen";

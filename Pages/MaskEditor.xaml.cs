@@ -14,10 +14,20 @@ public partial class MaskEditor : ContentPage
     private readonly IDrawable _drawable;
     private string imageFileName = $"masked_image_{DateTime.Now:yyyyMMdd_HHmmss}.png";
     private readonly CameraService _cameraService;
+    private readonly bool _isAdmin = false;
 
-    public MaskEditor()
+    public MaskEditor(bool isAdmin)
     {
         InitializeComponent();
+        _isAdmin = isAdmin;
+
+        if (isAdmin)
+        {
+            //SelectImageButton.IsVisible = isAdmin;
+            TestGalleryPanel.IsVisible = isAdmin;
+            MacroPanel.IsVisible = isAdmin;
+        }
+
         _drawable = new DrawingViewDrawable(_lines);
         DrawingView.Drawable = _drawable;
 
@@ -37,17 +47,21 @@ public partial class MaskEditor : ContentPage
                 PickerTitle = AppConstants.Messages.PICK_AN_IMAGE
             });
 
-            if (result != null)
-            {
-                if (result.FileName.EndsWith("jpg", StringComparison.OrdinalIgnoreCase) ||
-                    result.FileName.EndsWith("png", StringComparison.OrdinalIgnoreCase))
-                {
-                    var stream = await result.OpenReadAsync();
-                    await ProcessSelectedImage(stream);
-                }
-                else
-                    await DisplayAlert(AppConstants.Errors.ERROR, AppConstants.Errors.SELECT_A_VALID_IMAGE, AppConstants.Messages.OK);
-            }
+            if (result != null) await Navigation.PushModalAsync(new ImageEditPage(result.FullPath));
+            else
+                await DisplayAlert(AppConstants.Errors.ERROR, AppConstants.Errors.SELECT_A_VALID_IMAGE, AppConstants.Messages.OK);
+
+            //if (result != null)
+            //{
+            //    if (result.FileName.EndsWith("jpg", StringComparison.OrdinalIgnoreCase) ||
+            //        result.FileName.EndsWith("png", StringComparison.OrdinalIgnoreCase))
+            //    {
+            //        var stream = await result.OpenReadAsync();
+            //        await ProcessSelectedImage(stream);
+            //    }
+            //    else
+            //        await DisplayAlert(AppConstants.Errors.ERROR, AppConstants.Errors.SELECT_A_VALID_IMAGE, AppConstants.Messages.OK);
+            //}
         }
         catch (Exception ex)
         {
@@ -85,7 +99,24 @@ public partial class MaskEditor : ContentPage
         //    throw new FileNotFoundException($"Resource '{resourceId}' не е намерен.");
         //}
 
-        await ProcessSelectedImage(selectedImageName);
+        
+
+        //await Navigation.PopModalAsync();
+
+        await Task.Delay(1);
+
+        // Ако има избрано изображение, отваряме ImageEditPage
+        if (!string.IsNullOrEmpty(selectedImageName))
+        {
+            await Navigation.PushModalAsync(new ImageEditPage(selectedImageName));
+        }
+        else
+        {
+            // Обработка на ситуацията, когато не е избрано изображение
+            await DisplayAlert("Грешка", "Не е избрано изображение.", "OK");
+        }
+
+        //await ProcessSelectedImage(selectedImageName);
     }
 
     public async Task ProcessAndCleanupImageAsync(string fileName)
@@ -135,7 +166,7 @@ public partial class MaskEditor : ContentPage
 
     private async Task<Stream> MergeOverlayWithImage(Stream imageStream)
     {
-        var assembly = typeof(MaskEditor).GetTypeInfo().Assembly;
+        //var assembly = typeof(MaskEditor).GetTypeInfo().Assembly;
         //var overlayStream = assembly.GetManifestResourceStream("FashionApp.Resources.Images.Camera.top_body.png"); //Correct path?
         var overlayStream = await FileSystem.OpenAppPackageFileAsync("Camera/top_body.png");
 
@@ -160,53 +191,6 @@ public partial class MaskEditor : ContentPage
             return mergedStream;
         }
     }
-
-   
-
-    //private async Task<Stream> MergeOverlayWithImage(Stream imageStream)
-    //{
-    //    // Load the overlay image
-    //    var assembly = typeof(MaskEditor).GetTypeInfo().Assembly;
-    //    //var stream = assembly.GetManifestResourceStream("FashionApp.Resources.Raw.Camera.top_body.png");
-    //    var stream = await FileSystem.OpenAppPackageFileAsync("Camera/top_body.png");
-    //    if (stream == null)
-    //    {
-    //        await DisplayAlert("Error", "Overlay image not found.", "OK");
-    //        return imageStream; // Return original stream if overlay not found
-    //    }
-
-    //    SKBitmap overlayBitmap = null;
-    //    SKBitmap imageBitmap = null;
-    //    SKBitmap mergedBitmap = null;
-
-    //    try
-    //    {
-    //        overlayBitmap = SKBitmap.Decode(stream);
-    //        imageBitmap = SKBitmap.Decode(imageStream);
-
-    //        // Create a new bitmap to hold the merged image
-    //        mergedBitmap = new SKBitmap(imageBitmap.Width, imageBitmap.Height, true);
-    //        using (var canvas = new SKCanvas(mergedBitmap))
-    //        {
-    //            // Draw the original image
-    //            canvas.DrawBitmap(imageBitmap, 0, 0);
-    //            // Draw the Overlay
-    //            canvas.DrawBitmap(overlayBitmap, 0, 0, overlayBitmap.ToColorMatrix(SKColors.White));
-    //        }
-
-    //        var mergedStream = new MemoryStream();
-    //        mergedBitmap.Encode(mergedStream, SKEncodedImageFormat.Png, 100);
-    //        mergedStream.Position = 0;
-    //        return mergedStream;
-    //    }
-    //    finally
-    //    {
-    //        overlayBitmap?.Dispose();
-    //        imageBitmap?.Dispose();
-    //        mergedBitmap?.Dispose();
-    //        stream?.Dispose();
-    //    }
-    //}
 
     private async void OnSaveImageClicked(object sender, EventArgs e)
     {
@@ -384,28 +368,32 @@ public partial class MaskEditor : ContentPage
     }
     private async Task ProcessSelectedImage(Stream? stream)
     {
+        
         // Преоразмеряване на изображението
         var resizedImageResult = await ImageStreamResize.ResizeImageStream(stream, 500, 700); // Преоразмеряване на изображението
 
         // Конвертиране на изображението, за да включва алфа канал
         var imageWithAlpha = await AddAlphaChanel(resizedImageResult.ResizedStream);
+        //var resultPath = await SetCameraImageRealPathForSelectedClothImage(imageWithAlpha);
 
-        // Задаване на източника на изображението
-        SelectedImage.Source = ImageSource.FromStream(() => imageWithAlpha);
+        await Navigation.PushModalAsync(new ImageEditPage(imageWithAlpha));
 
-        // Настройка на ширината и височината на изображението
-        SelectedImage.WidthRequest = Application.Current.MainPage.Width;
-        SelectedImage.HeightRequest = Application.Current.MainPage.Height;
+        //// Задаване на източника на изображението
+        //SelectedImage.Source = ImageSource.FromStream(() => imageWithAlpha);
 
-        // Центриране на изображението
-        SelectedImage.HorizontalOptions = LayoutOptions.Center;
-        SelectedImage.VerticalOptions = LayoutOptions.Center;
+        //// Настройка на ширината и височината на изображението
+        //SelectedImage.WidthRequest = Application.Current.MainPage.Width;
+        //SelectedImage.HeightRequest = Application.Current.MainPage.Height;
 
-        // Показване на елементите
-        SelectedImage.IsVisible = true;
-        DrawingView.IsVisible = true;
-        DrawingTools.IsVisible = true;
-        DrawingBottons.IsVisible = true;
+        //// Центриране на изображението
+        //SelectedImage.HorizontalOptions = LayoutOptions.Center;
+        //SelectedImage.VerticalOptions = LayoutOptions.Center;
+
+        //// Показване на елементите
+        //SelectedImage.IsVisible = true;
+        //DrawingView.IsVisible = true;
+        //DrawingTools.IsVisible = true;
+        //DrawingBottons.IsVisible = true;
     }
 
     private async Task ProcessSelectedImage(string fileName)
@@ -459,6 +447,38 @@ public partial class MaskEditor : ContentPage
         }
     }
 
+    private async Task<string> SetCameraImageRealPathForSelectedClothImage(Stream stream)
+    {
+        DeleteTemporaryImage(); // Изтриваме ако е имало предищно неизтрита снимка     
+        if (stream.CanSeek) stream.Position = 0; // Ако потокът е seekable, може да се наложи да го ресетнете:
+
+        string tempPath = Path.Combine(FileSystem.CacheDirectory, $"testImage_{DateTime.Now.Ticks}.png");
+        using (var fileStream = File.Create(tempPath)) await stream.CopyToAsync(fileStream);
+        return tempPath;
+    }
+
+    private async void DeleteTemporaryImage()
+    {
+        // Получаване на пътя към кеш директорията
+        string cacheDir = FileSystem.CacheDirectory;
+
+        // Изтриване на стари файлове, които съвпадат с шаблона "testImage_*.png"
+        var oldFiles = Directory.GetFiles(cacheDir, "testImage_*.png");
+        foreach (var oldFile in oldFiles)
+        {
+            try
+            {
+                File.Delete(oldFile);
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert(
+                    AppConstants.Errors.ERROR,
+                    $"{AppConstants.Errors.ERROR_DELETE_FILE} {oldFile}: {ex.Message}",
+                    AppConstants.Messages.OK);
+            }
+        }
+    }
 
     //--------------------------------------------- DRAW METHODS ------------------------------------------------------------
     void OnStartInteraction(object sender, TouchEventArgs e)

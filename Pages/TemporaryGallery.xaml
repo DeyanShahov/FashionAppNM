@@ -1,37 +1,34 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="FashionApp.Pages.TemporaryGallery"
-             BackgroundColor="Black"
-             Title="Gallery">
+<ContentPage
+    x:Class="FashionApp.Pages.TemporaryGallery"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Gallery"
+    BackgroundColor="Black">
     <AbsoluteLayout>
-        <Grid AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="0,0,1,1">
-            <CollectionView 
+        <Grid AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All">
+            <CollectionView
                 x:Name="GalleryCollectionView"
                 Grid.Row="2"
+                Margin="10,0,10,10"
                 ItemsSource="{Binding ImagesList}"
-                SelectionMode="Single"
-                Margin="10,0,10,10">
+                SelectionMode="Single">
                 <CollectionView.ItemsLayout>
-                    <GridItemsLayout 
+                    <GridItemsLayout
+                        HorizontalItemSpacing="5"
                         Orientation="Vertical"
                         Span="2"
-                        HorizontalItemSpacing="5"
-                        VerticalItemSpacing="5"/>
+                        VerticalItemSpacing="5" />
                 </CollectionView.ItemsLayout>
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Frame 
+                        <Frame
                             Padding="0"
-                            IsClippedToBounds="True"
-                            CornerRadius="0">
-                            <Image 
-                                Source="{Binding .}"
-                                Aspect="AspectFill">
+                            CornerRadius="0"
+                            IsClippedToBounds="True">
+                            <Image Aspect="AspectFill" Source="{Binding .}">
                                 <Image.GestureRecognizers>
-                                    <TapGestureRecognizer 
-                                        Tapped="TapGestureRecognizer_Tapped"
-                                        NumberOfTapsRequired="2"/>
+                                    <TapGestureRecognizer NumberOfTapsRequired="2" Tapped="TapGestureRecognizer_Tapped" />
                                 </Image.GestureRecognizers>
                             </Image>
                         </Frame>
