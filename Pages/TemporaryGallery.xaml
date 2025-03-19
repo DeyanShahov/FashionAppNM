@@ -28,7 +28,7 @@
                             IsClippedToBounds="True">
                             <Image Aspect="AspectFill" Source="{Binding .}">
                                 <Image.GestureRecognizers>
-                                    <TapGestureRecognizer NumberOfTapsRequired="2" Tapped="TapGestureRecognizer_Tapped" />
+                                    <TapGestureRecognizer NumberOfTapsRequired="1" Tapped="TapGestureRecognizer_Tapped" />
                                 </Image.GestureRecognizers>
                             </Image>
                         </Frame>

@@ -5,7 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     Title="Combine Images"
-    BackgroundColor="LightGray">
+    BackgroundImageSource="loading_page_image_2.png">
 
     <ScrollView>
 
@@ -72,227 +72,139 @@
                     </Grid>
                 </Grid>
 
-                <VerticalStackLayout
-                    x:Name="Menu1"
-                    Padding="10"
-                    Spacing="15">
-
-                    <Button
-                        x:Name="NavigateButton"
-                        Margin="0,10"
-                        Clicked="OnNavigateClicked"
-                        HorizontalOptions="Center"
-                        Text="Back to Main Page"
-                        WidthRequest="200" />
-
-                    <BoxView
-                        HeightRequest="5"
-                        HorizontalOptions="FillAndExpand"
-                        Color="Black" />
-
-
-                    <Frame
-                        Padding="0"
-                        BackgroundColor="LightGray"
-                        BorderColor="Black"
-                        HasShadow="True"
-                        HeightRequest="80"
-                        HorizontalOptions="End"
-                        VerticalOptions="CenterAndExpand"
-                        WidthRequest="360">
-                        <Frame.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.99"
-                                Radius="10"
-                                Offset="3, 3" />
-                        </Frame.Shadow>
-                        <HorizontalStackLayout Margin="5" Spacing="20">
-                            <ImageButton
-                                x:Name="TestGalleryButton"
-                                Clicked="TestGalleryButton_Clicked"
-                                HeightRequest="70"
-                                HorizontalOptions="Start"
-                                Source="Icons/images_regular_24.png"
-                                WidthRequest="70" />
-                            <ImageButton
-                                x:Name="TestGalleryButton2"
-                                Clicked="PanelButton_Clicked"
-                                HeightRequest="70"
-                                Source="Icons/camera_regular_24.png"
-                                WidthRequest="70" />
-                            <ImageButton
-                                x:Name="TestGalleryButton3"
-                                Clicked="OnSelectClothImageClicked"
-                                HeightRequest="70"
-                                Source="Icons/folder_open_regular_24.png"
-                                WidthRequest="70" />
-                            <ImageButton
-                                x:Name="TestGalleryButton4"
-                                Clicked="SelectClothFromApp_Clicked"
-                                HeightRequest="70"
-                                Source="Icons/folder_open_solid_24.png"
-                                WidthRequest="70" />
-                        </HorizontalStackLayout>
-                    </Frame>
-
+                <VerticalStackLayout x:Name="Menu1" Margin="5">
 
                     <Grid Grid.Row="1">
-                        <VerticalStackLayout
-                            Margin="10,0,0,0"
-                            HorizontalOptions="Start"
-                            IsVisible="False"
-                            Spacing="20"
-                            VerticalOptions="Center">
-                            <ImageButton
-                                x:Name="TestGalleryButton"
-                                Clicked="TestGalleryButton_Clicked"
-                                HeightRequest="40"
-                                Source="Icons/images_regular_24.png"
-                                WidthRequest="40" />
-                            <ImageButton
-                                x:Name="TestGalleryButton2"
-                                Clicked="PanelButton_Clicked"
-                                HeightRequest="40"
-                                Source="Icons/camera_regular_24.png"
-                                WidthRequest="40" />
-                        </VerticalStackLayout>
-
-                        <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
-                            <Label
-                                CharacterSpacing="3"
-                                FontSize="Medium"
-                                HorizontalOptions="Center"
-                                Text="Select Cloth"
-                                TextColor="Blue"
-                                TextTransform="Uppercase"
-                                VerticalOptions="Center" />
-
-                            <Button
-                                x:Name="SelectClothImageButton"
-                                Margin="5"
-                                Clicked="OnSelectClothImageClicked"
-                                HeightRequest="40"
-                                IsVisible="False"
-                                Text="Select Cloth Image"
-                                WidthRequest="160" />
-
-                            <Button
-                                x:Name="SelectClothFromApp"
-                                Margin="5"
-                                Clicked="SelectClothFromApp_Clicked"
-                                HeightRequest="40"
-                                IsVisible="False"
-                                Text="Select Cloth from App"
-                                WidthRequest="180" />
-
-                            <Button
-                                x:Name="PanelButton"
-                                Margin="5"
-                                Clicked="PanelButton_Clicked"
-                                HeightRequest="40"
-                                IsVisible="False"
-                                Text="Open Cam"
-                                WidthRequest="160" />
-
-
-
+                        <Grid RowDefinitions="Auto,*,Auto">
                             <Frame
-                                Margin="20"
+                                x:Name="ButtonClose"
+                                Grid.Row="2"
+                                Padding="0"
                                 BackgroundColor="#80000000"
-                                BorderColor="Black"
-                                CornerRadius="5"
+                                BorderColor="White"
                                 HasShadow="True"
-                                HeightRequest="300"
-                                WidthRequest="200">
+                                HeightRequest="60"
+                                HorizontalOptions="End"
+                                VerticalOptions="Start"
+                                WidthRequest="60">
                                 <Frame.Shadow>
                                     <Shadow
                                         Brush="Black"
-                                        Opacity="0.99"
-                                        Radius="10"
-                                        Offset="3, 3" />
+                                        Opacity="0.60"
+                                        Radius="5"
+                                        Offset="4, 4" />
                                 </Frame.Shadow>
-                                <Image
-                                    x:Name="SelectedClothImage"
-                                    Margin="0,20"
-                                    Aspect="AspectFill"
-                                    HeightRequest="300"
-                                    IsVisible="True"
-                                    Source="Icons/blank_image_photo.png"
-                                    WidthRequest="200" />
-
+                                <ImageButton BackgroundColor="Transparent" Clicked="OnNavigateClicked" Source="Icons/icons_close.png" />
                             </Frame>
 
-                        </VerticalStackLayout>
+                            <Grid Grid.Row="3">
+                                <Frame
+                                    x:Name="ImagePanelCloth"
+                                    Margin="20"
+                                    BackgroundColor="#80000000"
+                                    BorderColor="Black"
+                                    CornerRadius="5"
+                                    HasShadow="True"
+                                    HeightRequest="340"
+                                    WidthRequest="230">
+                                    <Frame.Shadow>
+                                        <Shadow
+                                            Brush="Black"
+                                            Opacity="0.99"
+                                            Radius="10"
+                                            Offset="3, 3" />
+                                    </Frame.Shadow>
+                                    <Image
+                                        x:Name="SelectedClothImage"
+                                        Margin="0,20"
+                                        Aspect="AspectFill"
+                                        HeightRequest="340"
+                                        IsVisible="True"
+                                        Source="Icons/blank_image_photo.png"
+                                        WidthRequest="230">
+                                        <Image.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="OnSelectedClothImageTapped" />
+                                        </Image.GestureRecognizers>
+                                    </Image>
+                                </Frame>
 
-                        <VerticalStackLayout
-                            Margin="10,0,0,0"
-                            HorizontalOptions="End"
-                            IsVisible="False"
-                            Spacing="20"
-                            VerticalOptions="Center">
-                            <ImageButton
-                                x:Name="TestGalleryButton3"
-                                Clicked="OnSelectClothImageClicked"
-                                HeightRequest="40"
-                                Source="Icons/folder_open_regular_24.png"
-                                WidthRequest="40" />
-                            <ImageButton
-                                x:Name="TestGalleryButton4"
-                                Clicked="SelectClothFromApp_Clicked"
-                                HeightRequest="40"
-                                Source="Icons/folder_open_solid_24.png"
-                                WidthRequest="40" />
-                        </VerticalStackLayout>
-                    </Grid>
+                                <Frame
+                                    x:Name="PanelButtons"
+                                    Padding="0"
+                                    BackgroundColor="LightGray"
+                                    BorderColor="Black"
+                                    HasShadow="True"
+                                    HeightRequest="220"
+                                    IsVisible="False"
+                                    WidthRequest="220">
+                                    <Frame.Shadow>
+                                        <Shadow
+                                            Brush="Black"
+                                            Opacity="0.99"
+                                            Radius="10"
+                                            Offset="3, 3" />
+                                    </Frame.Shadow>
+                                    <Grid ColumnDefinitions="*,*" RowDefinitions="*,*">
+                                        <ImageButton
+                                            x:Name="TestGalleryButton"
+                                            Grid.Row="0"
+                                            Grid.Column="0"
+                                            Clicked="TestGalleryButton_Clicked"
+                                            HeightRequest="70"
+                                            Source="Icons/images_regular_24.png"
+                                            WidthRequest="70" />
+                                        <ImageButton
+                                            x:Name="TestGalleryButton2"
+                                            Grid.Row="0"
+                                            Grid.Column="1"
+                                            Clicked="PanelButton_Clicked"
+                                            HeightRequest="70"
+                                            Source="Icons/camera_regular_24.png"
+                                            WidthRequest="70" />
+                                        <ImageButton
+                                            x:Name="TestGalleryButton3"
+                                            Grid.Row="1"
+                                            Grid.Column="0"
+                                            Clicked="OnSelectClothImageClicked"
+                                            HeightRequest="70"
+                                            Source="Icons/folder_open_regular_24.png"
+                                            WidthRequest="70" />
+                                        <ImageButton
+                                            x:Name="TestGalleryButton4"
+                                            Grid.Row="1"
+                                            Grid.Column="1"
+                                            Clicked="SelectClothFromApp_Clicked"
+                                            HeightRequest="70"
+                                            Source="Icons/folder_open_solid_24.png"
+                                            WidthRequest="70" />
+                                    </Grid>
+                                </Frame>
+                            </Grid>
 
-                    <BoxView
-                        HeightRequest="5"
-                        HorizontalOptions="FillAndExpand"
-                        Color="Black" />
-
-                    <Grid Grid.Row="2">
-                        <Grid RowDefinitions="Auto, *, Auto">
-                            <Grid Grid.Row="1">
+                            <Grid x:Name="Label" Grid.Row="2">
                                 <Label
+                                    x:Name="LabelSelectBody"
+                                    Margin="40"
                                     CharacterSpacing="3"
                                     FontSize="Medium"
                                     HorizontalOptions="Center"
-                                    Text="Select photo"
-                                    TextColor="Blue"
+                                    Text="Select Cloth"
+                                    TextColor="White"
                                     TextTransform="Uppercase"
                                     VerticalOptions="Start" />
-                                <HorizontalStackLayout
-                                    Margin="0,30"
-                                    HorizontalOptions="Center"
-                                    Spacing="20"
-                                    VerticalOptions="Start">
-                                    <ImageButton
-                                        x:Name="TestGalleryButton5"
-                                        Clicked="TestGalleryButton5_Clicked"
-                                        HeightRequest="40"
-                                        Source="Icons/images_regular_24.png"
-                                        WidthRequest="40" />
-                                    <ImageButton
-                                        x:Name="TestGalleryButton6"
-                                        Clicked="PanelButton6_Clicked"
-                                        HeightRequest="40"
-                                        Source="Icons/camera_regular_24.png"
-                                        WidthRequest="40" />
-                                    <ImageButton
-                                        x:Name="TestGalleryButton7"
-                                        Clicked="OnSelectBodyImageClicked"
-                                        HeightRequest="40"
-                                        Source="Icons/folder_open_regular_24.png"
-                                        WidthRequest="40" />
-                                    <ImageButton
-                                        x:Name="TestGalleryButton8"
-                                        Clicked="SelectBodyFromApp_Clicked"
-                                        HeightRequest="40"
-                                        Source="Icons/folder_open_solid_24.png"
-                                        WidthRequest="40" />
-                                </HorizontalStackLayout>
                             </Grid>
+
+
+                        </Grid>
+                    </Grid>
+
+                    <BoxView
+                        HeightRequest="1"
+                        HorizontalOptions="FillAndExpand"
+                        Color="Silver" />
+
+                    <Grid Grid.Row="2">
+                        <Grid RowDefinitions="Auto, *, Auto">
 
                             <Grid Grid.Row="2" IsVisible="False">
                                 <VerticalStackLayout
@@ -377,10 +289,10 @@
                                 </VerticalStackLayout>
                             </Grid>
 
-                            <StackLayout Grid.Row="2">
+                            <StackLayout x:Name="Carosel" Grid.Row="2">
                                 <Frame
                                     Padding="0"
-                                    BackgroundColor="LightGray"
+                                    BackgroundColor="Silver"
                                     BorderColor="Black"
                                     HasShadow="True"
                                     HorizontalOptions="End"
@@ -405,17 +317,22 @@
                                         <CarouselView.ItemTemplate>
                                             <DataTemplate>
                                                 <Grid>
-                                                    <Image
+                                                    <ImageButton
                                                         Aspect="AspectFit"
+                                                        Clicked="MacroButton_Clicked"
+                                                        CommandParameter="{Binding Data}"
                                                         HeightRequest="70"
                                                         HorizontalOptions="Center"
                                                         Source="{Binding ImagePath}"
                                                         VerticalOptions="Center"
                                                         WidthRequest="60">
-                                                        <Image.GestureRecognizers>
+                                                        <!--<Image.GestureRecognizers>
                                                             <TapGestureRecognizer Command="{Binding BindingContext.SelectJacketCommand, Source={x:Reference JacketCarousel}}" CommandParameter="{Binding ImagePath}" />
-                                                        </Image.GestureRecognizers>
-                                                    </Image>
+                                                        -->
+                                                        <!--<TapGestureRecognizer CommandParameter="{Binding Data}" Tapped="MacroButton_Clicked" />-->
+                                                        <!--
+                                                        </Image.GestureRecognizers>-->
+                                                    </ImageButton>
                                                 </Grid>
                                             </DataTemplate>
                                         </CarouselView.ItemTemplate>
@@ -423,15 +340,17 @@
                                 </Frame>
                             </StackLayout>
 
-                            <Grid Grid.Row="3" Padding="-20">
+
+                            <Grid Grid.Row="3">
                                 <Frame
+                                    x:Name="ImagePanelBody"
                                     Margin="20"
                                     BackgroundColor="#80000000"
                                     BorderColor="Black"
                                     CornerRadius="5"
                                     HasShadow="True"
-                                    HeightRequest="300"
-                                    WidthRequest="200">
+                                    HeightRequest="340"
+                                    WidthRequest="230">
                                     <Frame.Shadow>
                                         <Shadow
                                             Brush="Black"
@@ -442,11 +361,78 @@
                                     <Image
                                         x:Name="SelectedBodyImage"
                                         Aspect="AspectFill"
-                                        HeightRequest="300"
+                                        HeightRequest="340"
                                         IsVisible="True"
                                         Source="Icons/blank_image_photo.png"
-                                        WidthRequest="200" />
+                                        WidthRequest="230">
+                                        <Image.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="OnSelectedBodyImageTapped" />
+                                        </Image.GestureRecognizers>
+                                    </Image>
+                                </Frame>
 
+                                <Grid Grid.Row="2">
+                                    <Label
+                                        Margin="40"
+                                        CharacterSpacing="3"
+                                        FontSize="Medium"
+                                        HorizontalOptions="Center"
+                                        Text="Select body"
+                                        TextColor="White"
+                                        TextTransform="Uppercase"
+                                        VerticalOptions="Start" />
+                                </Grid>
+
+                                <Frame
+                                    x:Name="PanelButtons2"
+                                    Padding="0"
+                                    BackgroundColor="LightGray"
+                                    BorderColor="Black"
+                                    HasShadow="True"
+                                    HeightRequest="220"
+                                    IsVisible="False"
+                                    WidthRequest="220">
+                                    <Frame.Shadow>
+                                        <Shadow
+                                            Brush="Black"
+                                            Opacity="0.99"
+                                            Radius="10"
+                                            Offset="3, 3" />
+                                    </Frame.Shadow>
+                                    <Grid ColumnDefinitions="*,*" RowDefinitions="*,*">
+                                        <ImageButton
+                                            x:Name="TestGalleryButton5"
+                                            Grid.Row="0"
+                                            Grid.Column="0"
+                                            Clicked="TestGalleryButton5_Clicked"
+                                            HeightRequest="70"
+                                            Source="Icons/images_regular_24.png"
+                                            WidthRequest="70" />
+                                        <ImageButton
+                                            x:Name="TestGalleryButton6"
+                                            Grid.Row="0"
+                                            Grid.Column="1"
+                                            Clicked="PanelButton6_Clicked"
+                                            HeightRequest="70"
+                                            Source="Icons/camera_regular_24.png"
+                                            WidthRequest="70" />
+                                        <ImageButton
+                                            x:Name="TestGalleryButton7"
+                                            Grid.Row="1"
+                                            Grid.Column="0"
+                                            Clicked="OnSelectBodyImageClicked"
+                                            HeightRequest="70"
+                                            Source="Icons/folder_open_regular_24.png"
+                                            WidthRequest="70" />
+                                        <ImageButton
+                                            x:Name="TestGalleryButton8"
+                                            Grid.Row="1"
+                                            Grid.Column="1"
+                                            Clicked="SelectBodyFromApp_Clicked"
+                                            HeightRequest="70"
+                                            Source="Icons/folder_open_solid_24.png"
+                                            WidthRequest="70" />
+                                    </Grid>
                                 </Frame>
                             </Grid>
                         </Grid>
@@ -986,19 +972,38 @@
                     </VerticalStackLayout>
 
                     <BoxView
-                        HeightRequest="5"
+                        HeightRequest="1"
                         HorizontalOptions="FillAndExpand"
-                        Color="Black" />
+                        Color="Silver" />
 
-                    <Button
-                        x:Name="CombineImagesButton"
+                    <Frame
                         Margin="0,20"
-                        Clicked="OnCombineImages_Clicked"
-                        FontSize="16"
-                        HeightRequest="50"
+                        BackgroundColor="#80000000"                                          
+                        HasShadow="True"
                         HorizontalOptions="Center"
-                        Text="Create New Image"
-                        WidthRequest="220" />
+                        HeightRequest="50"
+                        WidthRequest="220">
+                        <Frame.Shadow>
+                            <Shadow
+                                Brush="Black"
+                                Opacity="0.60"
+                                Radius="5"
+                                Offset="4, 4" />
+                        </Frame.Shadow>
+
+                        <Button
+                            x:Name="CombineImagesButton"                           
+                            BackgroundColor="Transparent"
+                            BorderColor="White"
+                            BorderWidth="1"
+                            Clicked="OnCombineImages_Clicked"
+                            FontSize="16"
+                            HorizontalOptions="Center"
+                            Text="Create New Image"
+                            TextColor="White"
+                            HeightRequest="50"
+                            WidthRequest="220" />
+                    </Frame>
 
                     <ActivityIndicator
                         x:Name="LoadingIndicator"

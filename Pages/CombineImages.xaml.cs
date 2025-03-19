@@ -36,8 +36,7 @@ public partial class CombineImages : ContentPage
 
 
     public ObservableCollection<JacketModel> Jackets { get; set; } = new ObservableCollection<JacketModel>();
-    public ICommand SelectJacketCommand { get; set; }
-
+    //public ICommand SelectJacketCommand { get; set; }
 
     private bool isFromClothImage = true;
 
@@ -69,22 +68,44 @@ public partial class CombineImages : ContentPage
 #elif ANDROID
         CheckAvailableMasksAndroid(true);
 #endif
-        SelectJacketCommand = new Command<string>(OnJacketSelected);
+        //SelectJacketCommand = new Command<string>(OnJacketSelected);
 
     }
 
-    private async void OnJacketSelected(string jacket)
+    protected override void OnAppearing()
     {
-        // Изпълнете желаното действие при избиране на яке
-        await Application.Current.MainPage.DisplayAlert("Избрано яке", $"Вие избрахте: {jacket}", "OK");
+        base.OnAppearing();
+
+        PanelButtons.IsVisible = false;
+        PanelButtons2.IsVisible = false;
     }
+
+//    private async void OnJacketSelected(string jacket)
+//    {
+//        // Изпълнете желаното действие при избиране на яке
+//        //await Application.Current.MainPage.DisplayAlert("Избрано яке", $"Вие избрахте: {jacket}", "OK");
+
+//        string value = jacket.Remove(jacket.Length - 4).Remove(0, 13);
+
+//        if (string.IsNullOrEmpty(value)) return;
+
+//        string? futureImageName = new MacroIconToPhoto(value).Value;
+
+//        if (futureImageName == null || futureImageName == "Default") return;
+
+//#if ANDROID
+//        LoadLargeImage(futureImageName);
+//#endif
+//    }
 
     //---------------------------------------- BUTONS ACTIONS --------------------------------------------------------------
     private async void OnNavigateClicked(object sender, EventArgs e) => await Navigation.PopAsync();
     private void OnSelectClothImageClicked(object sender, EventArgs e) => SetAnImageAsSourceAsync(SelectedClothImage, nameof(_clothImagePath));
     private void OnSelectBodyImageClicked(object sender, EventArgs e) => SetAnImageAsSourceAsync(SelectedBodyImage, nameof(_bodyImagePath));
     private void OnCaptureClicked(object sender, EventArgs e) => _cameraService.CaptureClicked();
-    
+    private void OnSelectedClothImageTapped(object sender, TappedEventArgs e) => PanelButtons.IsVisible = !PanelButtons.IsVisible;
+    private void OnSelectedBodyImageTapped(object sender, TappedEventArgs e) => PanelButtons2.IsVisible = !PanelButtons2.IsVisible;
+
     private void OptionButton_Clicked(object sender, EventArgs e)
     {
         Button clickedButton = (Button)sender;
@@ -240,6 +261,8 @@ public partial class CombineImages : ContentPage
     private void HidePanelCommand(object sender, EventArgs e)
     {
         HideMenus();
+        PanelButtons.IsVisible = false;
+        PanelButtons2.IsVisible = false;
         _cameraService.StopCamera();
     }
     private async void OnSaveClicked(object sender, EventArgs e)
@@ -294,7 +317,7 @@ public partial class CombineImages : ContentPage
 
         if (string.IsNullOrEmpty(value)) return;
 
-        SetActiveButton((ImageButton)sender);
+        //SetActiveButton((ImageButton)sender);
 
         string? futureImageName = new MacroIconToPhoto(value).Value;
 
@@ -486,6 +509,8 @@ public partial class CombineImages : ContentPage
     private async void OnImageCaptured(Stream imageStream)
     {
         await ProcessSelectedImage(imageStream);
+        PanelButtons.IsVisible = false;
+        PanelButtons2.IsVisible = false;
         _cameraService.StopCamera();
         HideMenus();
     }
@@ -602,6 +627,7 @@ public partial class CombineImages : ContentPage
     }
     private async void SetAnImageAsSourceAsync(Image image, string imageToSave)
     {
+        
         try
         {
             var result = await FilePicker.PickAsync(new PickOptions
@@ -634,7 +660,9 @@ public partial class CombineImages : ContentPage
             await DisplayAlert(AppConstants.Errors.ERROR, $"{AppConstants.Errors.ERROR_OCCURRED}: {ex.Message}", AppConstants.Messages.OK);
         }
 
-        
+        PanelButtons.IsVisible = false;
+        PanelButtons2.IsVisible = false;
+
     }
 
 #if WINDOWS
@@ -680,32 +708,72 @@ public partial class CombineImages : ContentPage
         {
             var fileChecker = App.Current?.Handler.MauiContext?.Services.GetService<IFileChecker>();
 
-            var fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.CLOSED_JACKET_MASK);
-            if (fileExists)
-            {
-                ClosedJacketImageButton.IsEnabled = toSet;
-                ClosedJacketImageButton.IsVisible = toSet;
+            //var fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.CLOSED_JACKET_MASK);
+            //if (fileExists)
+            //{
+            //    ClosedJacketImageButton.IsEnabled = toSet;
+            //    ClosedJacketImageButton.IsVisible = toSet;
 
-                Jackets.Add( new JacketModel { ImagePath = "Macros/icons_jacket_closed.png" });
-            }
+            //    Jackets.Add( new JacketModel { ImagePath = "Macros/icons_jacket_closed.png", Data = "jacket_closed"  });
+            //}
+
+            //fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.OPEN_JACKET_MASK);
+            //if (fileExists)
+            //{
+            //    OpenJacketImageButton.IsEnabled = toSet;
+            //    OpenJacketImageButton.IsVisible = toSet;
+
+            //    Jackets.Add( new JacketModel { ImagePath = "Macros/icons_jacket_open.png", Data = "jacket_open" });
+            //}
+
+            //fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.DRESS_MASK);
+            //if (fileExists)
+            //{
+            //    DressButton.IsEnabled = toSet;
+            //    DressButton.IsVisible = toSet;
+
+            //    Jackets.Add( new JacketModel { ImagePath = "Macros/icons_dress.png", Data = "dress" });
+            //}
+
+            var fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.DRESS_MASK);
+            if (fileExists) Jackets.Add( new JacketModel { ImagePath = "Macros/icons_dress.png", Data = "dress" });
+
+            fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.DRESS_FULL_MASK);
+            if (fileExists) Jackets.Add( new JacketModel { ImagePath = "Macros/icons_dress_full.png", Data = "dress_full" });
+
+            fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.JACKET_MASK);
+            if (fileExists) Jackets.Add( new JacketModel { ImagePath = "Macros/icons_jacket.png", Data = "jacket" });
+
+            fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.CLOSED_JACKET_MASK);
+            if (fileExists) Jackets.Add( new JacketModel { ImagePath = "Macros/icons_jacket_closed.png", Data = "jacket_closed"  });
 
             fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.OPEN_JACKET_MASK);
-            if (fileExists)
-            {
-                OpenJacketImageButton.IsEnabled = toSet;
-                OpenJacketImageButton.IsVisible = toSet;
+            if (fileExists) Jackets.Add( new JacketModel { ImagePath = "Macros/icons_jacket_open.png", Data = "jacket_open" });
 
-                Jackets.Add( new JacketModel { ImagePath = "Macros/icons_jacket_open.png" });
-            }
+            fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.NO_SET_MASK );
+            if (fileExists) Jackets.Add( new JacketModel { ImagePath = "Macros/icons_no_set.png", Data = "no_set" });
 
-            fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.DRESS_MASK);
-            if (fileExists)
-            {
-                DressButton.IsEnabled = toSet;
-                DressButton.IsVisible = toSet;
+            fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.PANTS_MASK );
+            if (fileExists) Jackets.Add( new JacketModel { ImagePath = "Macros/icons_pants.png", Data = "pants" });
 
-                Jackets.Add( new JacketModel { ImagePath = "Macros/icons_dress.png" });
-            }
+            fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.PANTS_SHORT_MASK );
+            if (fileExists) Jackets.Add( new JacketModel { ImagePath = "Macros/icons_pants_short.png", Data = "pants_short" });
+
+            fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.RAINCOAT_MASK );
+            if (fileExists) Jackets.Add( new JacketModel { ImagePath = "Macros/icons_raincoat.png", Data = "raincoat" });
+
+            fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.SHIRT_MASK );
+            if (fileExists) Jackets.Add( new JacketModel { ImagePath = "Macros/icons_shirt.png", Data = "shirt" });
+
+            fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.SKIRT_MASK );
+            if (fileExists) Jackets.Add( new JacketModel { ImagePath = "Macros/icons_skirt.png", Data = "skirt" });
+
+            fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.SKIRT_LONG_MASK );
+            if (fileExists) Jackets.Add( new JacketModel { ImagePath = "Macros/icons_skirt_long.png", Data = "skirt_long" });
+
+            fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.TANK_TOP_MASK );
+            if (fileExists) Jackets.Add( new JacketModel { ImagePath = "Macros/icons_tank_top.png", Data = "tank_top" });
+
         }
         catch (Exception ex)
         {
@@ -768,5 +836,5 @@ public partial class CombineImages : ContentPage
     }
     private void HideMenus() => Menu1.IsVisible = !Menu1.IsVisible;
 
-   
+    
 }

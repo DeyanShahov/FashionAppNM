@@ -21,7 +21,7 @@ namespace FashionApp.Pages
         private const string monkeyUrl = "https://montemagno.com/monkeys.json";
         private readonly HttpClient httpClient = new HttpClient();
 
-        public ObservableCollection<Monkey> Monkeys { get; set; } = new ObservableCollection<Monkey> { };
+        //public ObservableCollection<Monkey> Monkeys { get; set; } = new ObservableCollection<Monkey> { };
 
         public MainPage()
         {
@@ -55,10 +55,13 @@ namespace FashionApp.Pages
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-            var monkeyJson = await httpClient.GetStringAsync(monkeyUrl);
-            var monkeys = JsonConvert.DeserializeObject<Monkey[]>(monkeyJson);
-            Monkeys.Clear();
-            monkeys.ToList().ForEach( monkey => Monkeys.Add(monkey));
+            //var monkeyJson = await httpClient.GetStringAsync(monkeyUrl);
+            //var monkeys = JsonConvert.DeserializeObject<Monkey[]>(monkeyJson);
+            //Monkeys.Clear();
+            //monkeys.ToList().ForEach( monkey => Monkeys.Add(monkey));
+
+            double screenWidth = DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density;
+            StartGaleery.WidthRequest = screenWidth;
         }
 
         private void SetContentLabel()

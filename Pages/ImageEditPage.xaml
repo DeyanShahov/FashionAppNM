@@ -104,7 +104,7 @@
 
         <StackLayout
             x:Name="BrushSliderPanel"
-            Margin="0,115"
+            Margin="0,150"
             Padding="10"
             BackgroundColor="#80000000"
             HorizontalOptions="FillAndExpand"
@@ -129,7 +129,7 @@
 
         <StackLayout
             x:Name="ZoomSliderPanel"
-            Margin="0,70"
+            Margin="0,100"
             Padding="10"
             BackgroundColor="#80000000"
             HorizontalOptions="FillAndExpand"
@@ -154,10 +154,10 @@
         <!--  Bottom overlay with buttons  -->
         <StackLayout
             Padding="10"
-            Spacing="15"
             BackgroundColor="#80000000"
             HorizontalOptions="FillAndExpand"
             Orientation="Horizontal"
+            Spacing="15"
             VerticalOptions="End">
             <!--<Button
                 BackgroundColor="Transparent"

@@ -4,53 +4,126 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     Title="Fashion App"
-    BackgroundColor="LightGray">
+    BackgroundImageSource="loading_page_image_2.png">
 
     <ScrollView>
-        <VerticalStackLayout Padding="30,0" Spacing="25">
+        <VerticalStackLayout Padding="10,0" Spacing="20">
             <Label
                 CharacterSpacing="3"
-                FontSize="Medium"
+                FontSize="Large"
+                FontAttributes="Bold"
                 HorizontalOptions="Center"
                 Text="TOOLS"
-                TextColor="Blue"
+                TextColor="White"
                 TextTransform="Uppercase"
                 VerticalOptions="Center" />
-            <HorizontalStackLayout Margin="-15,0,10,0" Spacing="5">
-                <Button
-                    x:Name="EditorButton"
-                    Clicked="OnEditorButtonClicked"
-                    HorizontalOptions="Start"
-                    Text="Editor"
-                    WidthRequest="120" />
-
-                <Button
-                    x:Name="PartnersPageButton"
-                    Clicked="PartnersPageButton_Clicked"
+            <Grid
+                ColumnDefinitions="Auto, *, Auto"
+                ColumnSpacing="5"
+                HorizontalOptions="Center"
+                RowDefinitions="Auto, *, Auto"
+                RowSpacing="5"
+                VerticalOptions="Center">
+                <Frame
+                    Grid.Column="0"
+                    BackgroundColor="#80000000"
+                    HasShadow="True"
+                    HeightRequest="50"
                     HorizontalOptions="Center"
-                    Text="Partners"
-                    WidthRequest="120" />
+                    WidthRequest="100">
+                    <Frame.Shadow>
+                        <Shadow
+                            Brush="Black"
+                            Opacity="0.60"
+                            Radius="5"
+                            Offset="4, 4" />
+                    </Frame.Shadow>
 
-                <Button
-                    x:Name="NavigateButtonToWeb"
-                    Clicked="OnNavigateClickedToWeb"
+                    <Button
+                        x:Name="EditorButton"
+                        BackgroundColor="Transparent"
+                        BorderColor="White"
+                        BorderWidth="1"
+                        Clicked="OnEditorButtonClicked"
+                        FontAttributes="Bold"
+                        FontSize="Body"
+                        HeightRequest="50"
+                        Text="EDITOR"
+                        TextColor="White"
+                        WidthRequest="100" />
+                </Frame>
+
+                <Frame
+                    Grid.Column="1"
+                    BackgroundColor="#80000000"
+                    HasShadow="True"
+                    HeightRequest="50"
                     HorizontalOptions="Center"
-                    Text="Web"
-                    WidthRequest="120" />
-            </HorizontalStackLayout>
+                    WidthRequest="110">
+                    <Frame.Shadow>
+                        <Shadow
+                            Brush="Black"
+                            Opacity="0.60"
+                            Radius="5"
+                            Offset="4, 4" />
+                    </Frame.Shadow>
 
+                    <Button
+                        x:Name="PartnersPageButton"
+                        BackgroundColor="Transparent"
+                        BorderColor="White"
+                        BorderWidth="1"
+                        Clicked="PartnersPageButton_Clicked"
+                        FontAttributes="Bold"
+                        FontSize="Body"
+                        HeightRequest="50"
+                        Text="PARTNERS"
+                        TextColor="White"
+                        WidthRequest="110" />
+                </Frame>
+
+                <Frame
+                    Grid.Column="2"
+                    BackgroundColor="#80000000"
+                    HasShadow="True"
+                    HeightRequest="50"
+                    HorizontalOptions="Center"
+                    WidthRequest="100">
+                    <Frame.Shadow>
+                        <Shadow
+                            Brush="Black"
+                            Opacity="0.60"
+                            Radius="5"
+                            Offset="4, 4" />
+                    </Frame.Shadow>
+
+                    <Button
+                        x:Name="NavigateButtonToWeb"
+                        BackgroundColor="Transparent"
+                        BorderColor="White"
+                        BorderWidth="1"
+                        Clicked="OnNavigateClickedToWeb"
+                        FontAttributes="Bold"
+                        FontSize="Body"
+                        HeightRequest="50"
+                        Text="WEB"
+                        TextColor="White"
+                        WidthRequest="100" />
+                </Frame>
+            </Grid>
 
             <BoxView
-                HeightRequest="5"
+                HeightRequest="1"
                 HorizontalOptions="FillAndExpand"
-                Color="Black" />
+                Color="Silver" />
 
             <Label
                 CharacterSpacing="3"
-                FontSize="Medium"
+                FontSize="Large"
+                FontAttributes="Bold"
                 HorizontalOptions="Center"
                 Text="GALLERYS"
-                TextColor="Blue"
+                TextColor="White"
                 TextTransform="Uppercase"
                 VerticalOptions="Center" />
 
@@ -62,22 +135,66 @@
                 RowDefinitions="Auto, *, Auto"
                 RowSpacing="5"
                 VerticalOptions="Center">
-                <Button
-                    x:Name="GalleryImagesButton"
+                <Frame
                     Grid.Row="0"
                     Grid.Column="0"
-                    Clicked="GalleryButton_Clicked"
+                    BackgroundColor="#80000000"
+                    HasShadow="True"
+                    HeightRequest="50"
                     HorizontalOptions="Center"
-                    Text="Results"
-                    WidthRequest="100" />
-                <Button
-                    x:Name="MaskGalleryButton"
+                    WidthRequest="100">
+                    <Frame.Shadow>
+                        <Shadow
+                            Brush="Black"
+                            Opacity="0.60"
+                            Radius="5"
+                            Offset="4, 4" />
+                    </Frame.Shadow>
+
+                    <Button
+                        x:Name="GalleryImagesButton"
+                        BackgroundColor="Transparent"
+                        BorderColor="White"
+                        BorderWidth="1"
+                        Clicked="GalleryButton_Clicked"
+                        FontAttributes="Bold"
+                        FontSize="Body"
+                        HeightRequest="50"
+                        Text="RESULT"
+                        TextColor="White"
+                        WidthRequest="100" />
+                </Frame>
+
+                <Frame
                     Grid.Row="0"
                     Grid.Column="1"
-                    Clicked="MaskGalleryButton_Clicked"
+                    BackgroundColor="#80000000"
+                    HasShadow="True"
+                    HeightRequest="50"
                     HorizontalOptions="Center"
-                    Text="Mask"
-                    WidthRequest="100" />
+                    WidthRequest="100">
+                    <Frame.Shadow>
+                        <Shadow
+                            Brush="Black"
+                            Opacity="0.60"
+                            Radius="5"
+                            Offset="4, 4" />
+                    </Frame.Shadow>
+
+                    <Button
+                        x:Name="MaskGalleryButton"
+                        BackgroundColor="Transparent"
+                        BorderColor="White"
+                        BorderWidth="1"
+                        Clicked="MaskGalleryButton_Clicked"
+                        FontAttributes="Bold"
+                        FontSize="Body"
+                        HeightRequest="50"
+                        Text="MASK"
+                        TextColor="White"
+                        WidthRequest="100" />
+                </Frame>
+
                 <Button
                     x:Name="TestGalleryButton"
                     Grid.Row="1"
@@ -87,14 +204,36 @@
                     IsVisible="False"
                     Text="Test"
                     WidthRequest="100" />
-                <Button
-                    x:Name="WebGalleryButton"
-                    Grid.Row="1"
-                    Grid.Column="1"
-                    Clicked="WebGalleryButton_Clicked"
+
+                <Frame
+                    Grid.Row="0"
+                    Grid.Column="2"
+                    BackgroundColor="#80000000"
+                    HasShadow="True"
+                    HeightRequest="50"
                     HorizontalOptions="Center"
-                    Text="Web"
-                    WidthRequest="100" />
+                    WidthRequest="100">
+                    <Frame.Shadow>
+                        <Shadow
+                            Brush="Black"
+                            Opacity="0.60"
+                            Radius="5"
+                            Offset="4, 4" />
+                    </Frame.Shadow>
+
+                    <Button
+                        x:Name="WebGalleryButton"
+                        BackgroundColor="Transparent"
+                        BorderColor="White"
+                        BorderWidth="1"
+                        Clicked="WebGalleryButton_Clicked"
+                        FontAttributes="Bold"
+                        FontSize="Body"
+                        HeightRequest="50"
+                        Text="WEB"
+                        TextColor="White"
+                        WidthRequest="100" />
+                </Frame>
             </Grid>
 
             <!--<Button
@@ -105,22 +244,106 @@
                 HorizontalOptions="Center"/>-->
 
             <BoxView
-                HeightRequest="5"
+                HeightRequest="1"
                 HorizontalOptions="FillAndExpand"
-                Color="Black" />
+                Color="Silver" />
 
-            <Button
-                x:Name="CombineImagesButton"
-                Clicked="CombineImagesButton_Clicked"
+            <Frame
+                Grid.Row="0"
+                Grid.Column="2"
+                BackgroundColor="#80000000"
+                HasShadow="True"
+                HeightRequest="50"
                 HorizontalOptions="Center"
-                Text="Combine Images" />
+                WidthRequest="200">
+                <Frame.Shadow>
+                    <Shadow
+                        Brush="Black"
+                        Opacity="0.60"
+                        Radius="5"
+                        Offset="4, 4" />
+                </Frame.Shadow>
+
+                <Button
+                    x:Name="CombineImagesButton"
+                    BackgroundColor="Transparent"
+                    BorderColor="White"
+                    BorderWidth="1"
+                    Clicked="CombineImagesButton_Clicked"
+                    FontAttributes="Bold"
+                    FontSize="Body"
+                    HeightRequest="50"
+                    Text="COMBINE IMAGES"
+                    TextColor="White"
+                    WidthRequest="200" />
+            </Frame>
 
             <BoxView
-                HeightRequest="5"
+                HeightRequest="1"
                 HorizontalOptions="FillAndExpand"
-                Color="Black" />
+                Color="Silver" />
 
-            <CarouselView ItemsSource="{Binding Monkeys}" Loop="True">
+            <StackLayout>
+                <CarouselView
+                    x:Name="StartGaleery"
+                    HeightRequest="300"
+                    Loop="True"
+                    PeekAreaInsets="200">
+                    <CarouselView.ItemsSource>
+                        <x:Array Type="{x:Type x:String}">
+                            <x:String>Gallery/a2.png</x:String>
+                            <x:String>Gallery/a3.png</x:String>
+                            <x:String>Gallery/a4.png</x:String>
+                            <x:String>Gallery/a5.png</x:String>
+                            <x:String>Gallery/a6.png</x:String>
+                            <x:String>Gallery/a7.png</x:String>
+                            <x:String>Gallery/a8.png</x:String>
+                            <x:String>Gallery/a9.png</x:String>
+                            <x:String>Gallery/a10.png</x:String>
+                            <x:String>Gallery/a11.png</x:String>
+                            <x:String>Gallery/a12.png</x:String>
+                            <x:String>Gallery/a13.png</x:String>
+                            <x:String>Gallery/a14.png</x:String>
+                            <x:String>Gallery/a15.png</x:String>
+                            <x:String>Gallery/a16.png</x:String>
+                            <x:String>Gallery/a17.png</x:String>
+                            <x:String>Gallery/a18.png</x:String>
+                            <x:String>Gallery/a19.png</x:String>
+                            <x:String>Gallery/a20.png</x:String>
+                            <x:String>Gallery/a21.png</x:String>
+                            <x:String>Gallery/a22.png</x:String>
+                            <x:String>Gallery/a23.png</x:String>
+                            <x:String>Gallery/a24.png</x:String>
+                            <x:String>Gallery/a25.png</x:String>
+                            <x:String>Gallery/a26.png</x:String>
+                            <x:String>Gallery/a27.png</x:String>
+                            <x:String>Gallery/a28.png</x:String>
+                            <x:String>Gallery/a29.png</x:String>
+                            <x:String>Gallery/a30.png</x:String>
+                            <x:String>Gallery/a31.png</x:String>
+                            <x:String>Gallery/a32.png</x:String>
+                            <x:String>Gallery/a33.png</x:String>
+                            <x:String>Gallery/a34.png</x:String>
+                            <x:String>Gallery/a35.png</x:String>
+                            <x:String>Gallery/a36.png</x:String>
+                            <x:String>Gallery/a37.png</x:String>
+                        </x:Array>
+                    </CarouselView.ItemsSource>
+
+                    <CarouselView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Image
+                                    Aspect="AspectFit"
+                                    BackgroundColor="Transparent"
+                                    Source="{Binding .}" />
+                            </Grid>
+                        </DataTemplate>
+                    </CarouselView.ItemTemplate>
+                </CarouselView>
+            </StackLayout>
+
+            <!--<CarouselView ItemsSource="{Binding Monkeys}" Loop="True">
                 <CarouselView.ItemTemplate>
                     <DataTemplate>
                         <StackLayout>
@@ -160,14 +383,13 @@
                         </StackLayout>
                     </DataTemplate>
                 </CarouselView.ItemTemplate>
-
-            </CarouselView>
+            </CarouselView>-->
 
 
             <BoxView
-                HeightRequest="5"
+                HeightRequest="1"
                 HorizontalOptions="FillAndExpand"
-                Color="Black" />
+                Color="Silver" />
 
             <!--<Image
                 Aspect="AspectFit"
