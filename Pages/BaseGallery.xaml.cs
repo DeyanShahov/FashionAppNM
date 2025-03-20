@@ -9,9 +9,9 @@ namespace FashionApp.Pages;
 
 public partial class BaseGallery : ContentPage
 {
+    public string ImagesPath {  get; set; } = string.Empty;
     private bool isInUse = false;
     private string selectedImageUri;
-    private readonly string imagesPath;
 
     public static readonly BindableProperty ImagesListProperty =
             BindableProperty.Create(nameof(ImagesList), typeof(List<string>), typeof(MainPage), new List<string>());
@@ -56,26 +56,12 @@ public partial class BaseGallery : ContentPage
     private readonly ImagesLoader imagesLoader;
     private readonly SingleImageLoader singleImageLoader;
 
-    //public double ImageWidth = 120;
-    //public double ImageHeight = 120;
-    //public bool isBaseVariant = true;
-    //public int RequiredTab = 1;
 
-    public BaseGallery(string galleryName, string galleryPath, bool singleImageInclude = true)
+    public BaseGallery()
 	{
-		InitializeComponent();
-
-        Title = galleryName; // Сетване името на глаерията 
-        imagesPath = galleryPath; // Сетване пътя до галерията
-        //isBaseVariant = singleImageInclude;
+		InitializeComponent();       
 
         BindingContext = this;
-
-        //LargeImageFrame.IsVisible = singleImageInclude; // Сетване дали да се вижда единична голяма снимка в зависимост мода
-        //GridItemList.Span = singleImageInclude ? 3 : 2;
-        //ImageWidth = singleImageInclude ? 120 : 250;
-        //ImageHeight = singleImageInclude ? 120 : 300;
-        //RequiredTab = singleImageInclude ? 1 : 2;
 
         imagesLoader = new ImagesLoader(
             setErrorMessage: (msg) => ErrorMessage = msg,
@@ -91,7 +77,7 @@ public partial class BaseGallery : ContentPage
 
     protected override void OnAppearing()
     {
-        base.OnAppearing();
+        base.OnAppearing();     
 
         LoadAllImagesForGallery();
 #if ANDROID
@@ -99,7 +85,7 @@ public partial class BaseGallery : ContentPage
 #endif
     }
 
-    private async void LoadAllImagesForGallery() => await imagesLoader.LoadImagesAsync(imagesPath);
+    private async void LoadAllImagesForGallery() => await imagesLoader.LoadImagesAsync(ImagesPath);
 
 #if ANDROID
     private async void LoadLargeImage()
@@ -113,6 +99,8 @@ public partial class BaseGallery : ContentPage
         // Зареждане на изображението асинхронно
         await singleImageLoader.LoadSingleImageAsync(imagePath);
         selectedImageUri = ImagesList.FirstOrDefault();
+
+       
     }
 #endif
 

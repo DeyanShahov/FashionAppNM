@@ -3,30 +3,26 @@ using FashionApp.core.draw;
 using FashionApp.core.services;
 using FashionApp.Data.Constants;
 using SkiaSharp;
-using System.Reflection;
 
 namespace FashionApp.Pages;
 
 public partial class MaskEditor : ContentPage
 {
+    //public string DynamicParameter { get; set; }
+    public bool _isAdmin { get; set; } = false;
+
     private List<DrawingLine> _lines = new();
     private DrawingLine _currentLine = new();
     private readonly IDrawable _drawable;
     private string imageFileName = $"masked_image_{DateTime.Now:yyyyMMdd_HHmmss}.png";
     private readonly CameraService _cameraService;
-    private readonly bool _isAdmin = false;
 
-    public MaskEditor(bool isAdmin)
+    public MaskEditor()//(bool isAdmin)
     {
         InitializeComponent();
-        _isAdmin = isAdmin;
+        //_isAdmin = isAdmin;
 
-        if (isAdmin)
-        {
-            //SelectImageButton.IsVisible = isAdmin;
-            TestGalleryPanel.IsVisible = isAdmin;
-            MacroPanel.IsVisible = isAdmin;
-        }
+        SetParameters(_isAdmin);
 
         _drawable = new DrawingViewDrawable(_lines);
         DrawingView.Drawable = _drawable;
@@ -34,6 +30,16 @@ public partial class MaskEditor : ContentPage
         _cameraService = new CameraService(MyCameraView, CameraPanel);
         _cameraService.ImageCaptured += OnImageCaptured;
         _cameraService.StopCamera();
+    }
+
+    private void SetParameters(bool isAdmin)
+    {
+        if (isAdmin)
+        {
+            //SelectImageButton.IsVisible = isAdmin;
+            TestGalleryPanel.IsVisible = isAdmin;
+            MacroPanel.IsVisible = isAdmin;
+        }
     }
 
     private async void OnBackButtonClicked(object sender, EventArgs e) => await Navigation.PopAsync();

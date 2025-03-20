@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Maui.Core.Platform;
+using FashionApp.core.services;
 using FashionApp.Data.Constants;
 using FashionApp.Pages;
 using Newtonsoft.Json;
@@ -17,15 +18,18 @@ namespace FashionApp.Pages
         bool isAdmin = false;
         private byte[] _imageData = [];
 
+        private readonly ExecutionGuardService _executionGuardService;
+
 
         private const string monkeyUrl = "https://montemagno.com/monkeys.json";
         private readonly HttpClient httpClient = new HttpClient();
 
         //public ObservableCollection<Monkey> Monkeys { get; set; } = new ObservableCollection<Monkey> { };
 
-        public MainPage()
+        public MainPage(ExecutionGuardService executionGuard)
         {
             InitializeComponent();
+            _executionGuardService = executionGuard;
 
             BindingContext = this;
 
@@ -174,39 +178,150 @@ namespace FashionApp.Pages
         }
 
         private async void OnEditorButtonClicked(object sender, EventArgs e)
-            => await Navigation.PushAsync(new MaskEditor(isAdmin));
+        {
+            string taskKey = AppConstants.Pages.EDITOR;
+            if (!_executionGuardService.TryStartTask(taskKey)) return;
 
-        private async void CombineImagesButton_Clicked(object sender, EventArgs e)
-            => await Navigation.PushAsync(new CombineImages(isAdmin));
+            try
+            {
+                //await Navigation.PushAsync(new MaskEditor(isAdmin));
+                var page = MauiProgram.ServiceProvider.GetRequiredService<MaskEditor>();
+                page._isAdmin = isAdmin; 
+                await Navigation.PushAsync(page);
+            }
+            finally
+            {
+                _executionGuardService.FinishTask(taskKey);
+            }         
+        }
+
+        private async void PartnersPageButton_Clicked(object sender, EventArgs e)
+        {         
+            string taskKey = AppConstants.Pages.PARTNERS;
+            if (!_executionGuardService.TryStartTask(taskKey)) return;
+            try
+            {
+                //await Navigation.PushAsync(new PartnersPage());
+                var page = MauiProgram.ServiceProvider.GetRequiredService<PartnersPage>();
+                await Navigation.PushAsync(page);
+            }
+            finally
+            {
+                _executionGuardService.FinishTask(taskKey);
+            }
+        }
 
         private async void OnNavigateClickedToWeb(object sender, EventArgs e)
-            => await Navigation.PushAsync(new WebViewPage());
+        {      
+            string taskKey = AppConstants.Pages.WEB_VIEW;
+            if (!_executionGuardService.TryStartTask(taskKey)) return;
+            try
+            {
+                //await Navigation.PushAsync(new WebViewPage());
+                var page = MauiProgram.ServiceProvider.GetRequiredService<WebViewPage>();
+                await Navigation.PushAsync(page);
+            }
+            finally
+            {
+                _executionGuardService.FinishTask(taskKey);
+            }
+        }
+
+        private async void GalleryButton_Clicked(object sender, EventArgs e)
+        {        
+            string taskKey = AppConstants.Pages.RESULTS_GALLERY;
+            if (!_executionGuardService.TryStartTask(taskKey)) return;
+            try
+            {
+                //await Navigation.PushAsync(new BaseGallery(
+                //    AppConstants.Parameters.APP_FOLDER_IMAGES,
+                //    $"{AppConstants.Parameters.APP_BASE_PATH}/{AppConstants.Parameters.APP_NAME}/{AppConstants.Parameters.APP_FOLDER_IMAGES}%"));
+                var page = MauiProgram.ServiceProvider.GetRequiredService<BaseGallery>();
+                page.ImagesPath = $"{AppConstants.Parameters.APP_BASE_PATH}/{AppConstants.Parameters.APP_NAME}/{AppConstants.Parameters.APP_FOLDER_IMAGES}%";
+                page.Title = AppConstants.Parameters.APP_FOLDER_IMAGES;               
+                await Navigation.PushAsync(page);
+            }
+            finally
+            {
+                _executionGuardService.FinishTask(taskKey);
+            }
+        }
+
+        private async void MaskGalleryButton_Clicked(object sender, EventArgs e)
+        {
+            
+            string taskKey = AppConstants.Pages.MASKS_GALLERY;
+            if (!_executionGuardService.TryStartTask(taskKey)) return;
+            try
+            {
+                //await Navigation.PushAsync(new BaseGallery(
+                //    AppConstants.Parameters.APP_FOLDER_MASK,
+                //    $"{AppConstants.Parameters.APP_BASE_PATH}/{AppConstants.Parameters.APP_NAME}/{AppConstants.Parameters.APP_FOLDER_MASK}%"));
+                var page = MauiProgram.ServiceProvider.GetRequiredService<BaseGallery>();
+                page.ImagesPath = $"{AppConstants.Parameters.APP_BASE_PATH}/{AppConstants.Parameters.APP_NAME}/{AppConstants.Parameters.APP_FOLDER_MASK}%";
+                page.Title = AppConstants.Parameters.APP_FOLDER_MASK;
+                await Navigation.PushAsync(page);
+            }
+            finally
+            {
+                _executionGuardService.FinishTask(taskKey);
+            }
+        }
 
         private async void WebGalleryButton_Clicked(object sender, EventArgs e)
-            => await Navigation.PushAsync(new BaseGallery(
-                AppConstants.Parameters.APP_CLOTH_GALLERY,
-                $"{AppConstants.Parameters.APP_BASE_PATH}/{AppConstants.Parameters.APP_NAME}/{AppConstants.Parameters.APP_FOLDER_SCREEN}%"));
+        {
+           
+            string taskKey = AppConstants.Pages.WEB_GALLERY;
+            if (!_executionGuardService.TryStartTask(taskKey)) return;
+            try
+            {
+                //await Navigation.PushAsync(new BaseGallery(
+                //     AppConstants.Parameters.APP_CLOTH_GALLERY,
+                //     $"{AppConstants.Parameters.APP_BASE_PATH}/{AppConstants.Parameters.APP_NAME}/{AppConstants.Parameters.APP_FOLDER_SCREEN}%"));
+                var page = MauiProgram.ServiceProvider.GetRequiredService<BaseGallery>();
+                page.ImagesPath = $"{AppConstants.Parameters.APP_BASE_PATH}/{AppConstants.Parameters.APP_NAME}/{AppConstants.Parameters.APP_FOLDER_SCREEN}%";
+                page.Title = AppConstants.Pages.WEB_GALLERY;
+                await Navigation.PushAsync(page);
+            }
+            finally
+            {
+                _executionGuardService.FinishTask(taskKey);
+            }
+        }
+      
+
+        private async void CombineImagesButton_Clicked(object sender, EventArgs e)
+        {
+            
+            string taskKey = AppConstants.Pages.COMBINE_IMAGES;
+            if (!_executionGuardService.TryStartTask(taskKey)) return;
+
+            try
+            {
+                //await Navigation.PushAsync(new CombineImages(isAdmin));
+                var page = MauiProgram.ServiceProvider.GetRequiredService<CombineImages>();
+                page.IsAdmin = isAdmin;
+                await Navigation.PushAsync(page);
+            }
+            finally
+            {
+                _executionGuardService.FinishTask(taskKey);
+            }
+        }
+            
 
         private async void TestGalleryButton_Clicked(object sender, EventArgs e)
         {
             await Navigation.PushAsync(new TestGallery("Test Gallery", "TestGallery"));
         }
 
-        private async void PartnersPageButton_Clicked(object sender, EventArgs e)
-            => await Navigation.PushAsync(new PartnersPage());
+       
 
         //private async void OnNavigateClickedToMaskJS(object sender, EventArgs e)
         //    => await Navigation.PushAsync(new MaskJS());  
 
-        private async void GalleryButton_Clicked(object sender, EventArgs e)
-           => await Navigation.PushAsync(new BaseGallery(
-               AppConstants.Parameters.APP_FOLDER_IMAGES,
-               $"{AppConstants.Parameters.APP_BASE_PATH}/{AppConstants.Parameters.APP_NAME}/{AppConstants.Parameters.APP_FOLDER_IMAGES}%"));
 
-        private async void MaskGalleryButton_Clicked(object sender, EventArgs e)
-           => await Navigation.PushAsync(new BaseGallery(
-               AppConstants.Parameters.APP_FOLDER_MASK,
-               $"{AppConstants.Parameters.APP_BASE_PATH}/{AppConstants.Parameters.APP_NAME}/{AppConstants.Parameters.APP_FOLDER_MASK}%"));
+        
 
 
         // ------------------------------------------------------------------------------------------------------

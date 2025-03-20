@@ -148,7 +148,7 @@
                 MinimumTrackColor="LightGray"
                 ThumbColor="DarkGray"
                 ValueChanged="ZoomSlider_ValueChanged"
-                Value="3" />
+                Value="1" />
         </StackLayout>
 
         <!--  Bottom overlay with buttons  -->

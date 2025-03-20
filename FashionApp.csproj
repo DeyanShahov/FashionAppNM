@@ -89,6 +89,7 @@
 	  <Content Include="Platforms\Android\Resources\a3.jpg">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </Content>
+	  <MauiImage Include="Resources\Images\Icons\blank_image_photo_2.png" />
 	  <MauiImage Include="Resources\Images\Icons\camera_regular_24.png" />
 	  <MauiImage Include="Resources\Images\Icons\folder_open_regular_24.png" />
 	  <MauiImage Include="Resources\Images\Icons\folder_open_solid_24.png" />

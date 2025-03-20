@@ -13,6 +13,7 @@
 
             <Grid RowDefinitions="Auto, *, Auto">
 
+
                 <Grid
                     x:Name="CameraPanel"
                     IsEnabled="False"
@@ -74,19 +75,1021 @@
 
                 <VerticalStackLayout x:Name="Menu1" Margin="5">
 
-                    <Grid Grid.Row="1">
-                        <Grid RowDefinitions="Auto,*,Auto">
-                            <Frame
-                                x:Name="ButtonClose"
-                                Grid.Row="2"
-                                Padding="0"
-                                BackgroundColor="#80000000"
+                    <VerticalStackLayout x:Name="InputStack">
+
+                        <Grid Grid.Row="1">
+                            <Grid RowDefinitions="Auto,*,Auto">
+                                <Frame
+                                    x:Name="ButtonClose"
+                                    Grid.Row="2"
+                                    Padding="0"
+                                    BackgroundColor="#80000000"
+                                    BorderColor="White"
+                                    HasShadow="True"
+                                    HeightRequest="60"
+                                    HorizontalOptions="End"
+                                    VerticalOptions="Start"
+                                    WidthRequest="60">
+                                    <Frame.Shadow>
+                                        <Shadow
+                                            Brush="Black"
+                                            Opacity="0.60"
+                                            Radius="5"
+                                            Offset="4, 4" />
+                                    </Frame.Shadow>
+                                    <ImageButton
+                                        BackgroundColor="Transparent"
+                                        Clicked="OnNavigateClicked"
+                                        Source="Icons/icons_close.png" />
+                                </Frame>
+
+                                <Grid Grid.Row="3">
+                                    <Frame
+                                        x:Name="ImagePanelCloth"
+                                        Margin="20"
+                                        BackgroundColor="#80000000"
+                                        BorderColor="Black"
+                                        CornerRadius="5"
+                                        HasShadow="True"
+                                        HeightRequest="340"
+                                        WidthRequest="230">
+                                        <Frame.Shadow>
+                                            <Shadow
+                                                Brush="Black"
+                                                Opacity="0.99"
+                                                Radius="10"
+                                                Offset="3, 3" />
+                                        </Frame.Shadow>
+                                        <Image
+                                            x:Name="SelectedClothImage"
+                                            Margin="0,20"
+                                            Aspect="AspectFit"
+                                            HeightRequest="340"
+                                            IsVisible="True"
+                                            Source="Icons/blank_image_photo.png"
+                                            WidthRequest="230">
+                                            <Image.GestureRecognizers>
+                                                <TapGestureRecognizer Tapped="OnSelectedClothImageTapped" />
+                                            </Image.GestureRecognizers>
+                                        </Image>
+                                    </Frame>
+
+                                    <Frame
+                                        x:Name="PanelButtons"
+                                        Padding="0"
+                                        BackgroundColor="LightGray"
+                                        BorderColor="Black"
+                                        HasShadow="True"
+                                        HeightRequest="220"
+                                        IsVisible="False"
+                                        WidthRequest="220">
+                                        <Frame.Shadow>
+                                            <Shadow
+                                                Brush="Black"
+                                                Opacity="0.99"
+                                                Radius="10"
+                                                Offset="3, 3" />
+                                        </Frame.Shadow>
+                                        <Grid ColumnDefinitions="*,*" RowDefinitions="*,*">
+                                            <ImageButton
+                                                x:Name="TestGalleryButton"
+                                                Grid.Row="0"
+                                                Grid.Column="0"
+                                                Clicked="TestGalleryButton_Clicked"
+                                                HeightRequest="70"
+                                                Source="Icons/images_regular_24.png"
+                                                WidthRequest="70" />
+                                            <ImageButton
+                                                x:Name="TestGalleryButton2"
+                                                Grid.Row="0"
+                                                Grid.Column="1"
+                                                Clicked="PanelButton_Clicked"
+                                                HeightRequest="70"
+                                                Source="Icons/camera_regular_24.png"
+                                                WidthRequest="70" />
+                                            <ImageButton
+                                                x:Name="TestGalleryButton3"
+                                                Grid.Row="1"
+                                                Grid.Column="0"
+                                                Clicked="OnSelectClothImageClicked"
+                                                HeightRequest="70"
+                                                Source="Icons/folder_open_regular_24.png"
+                                                WidthRequest="70" />
+                                            <!--<ImageButton
+                                            x:Name="TestGalleryButton4"
+                                            Grid.Row="1"
+                                            Grid.Column="1"
+                                            Clicked="SelectClothFromApp_Clicked"
+                                            HeightRequest="70"
+                                            Source="Icons/folder_open_solid_24.png"
+                                            WidthRequest="70" />-->
+                                        </Grid>
+                                    </Frame>
+                                </Grid>
+
+                                <Grid x:Name="Label" Grid.Row="2">
+                                    <Label
+                                        x:Name="LabelSelectBody"
+                                        Margin="40"
+                                        CharacterSpacing="3"
+                                        FontSize="Medium"
+                                        HorizontalOptions="Center"
+                                        Text="Select Cloth"
+                                        TextColor="White"
+                                        TextTransform="Uppercase"
+                                        VerticalOptions="Start" />
+                                </Grid>
+                            </Grid>
+                        </Grid>
+
+                        <BoxView
+                            HeightRequest="1"
+                            HorizontalOptions="FillAndExpand"
+                            Color="Silver" />
+
+                        <Grid Grid.Row="2">
+                            <Grid RowDefinitions="Auto, *, Auto">
+
+                                <Grid Grid.Row="2" IsVisible="False">
+                                    <VerticalStackLayout
+                                        x:Name="ChoiseForMaskMethod"
+                                        HorizontalOptions="Start"
+                                        Spacing="-10"
+                                        VerticalOptions="Center">
+                                        <RadioButton
+                                            x:Name="StandartMask"
+                                            CheckedChanged="RadioButton_CheckedChanged"
+                                            Content="Mask"
+                                            GroupName="MaskOption"
+                                            IsChecked="False"
+                                            TextColor="Black" />
+                                        <RadioButton
+                                            x:Name="AIv1"
+                                            CheckedChanged="RadioButton_CheckedChanged"
+                                            Content="AIv1"
+                                            GroupName="MaskOption"
+                                            IsChecked="False"
+                                            TextColor="Black" />
+                                        <RadioButton
+                                            x:Name="AIv2"
+                                            CheckedChanged="RadioButton_CheckedChanged"
+                                            Content="AIv2"
+                                            GroupName="MaskOption"
+                                            IsChecked="False"
+                                            TextColor="Black" />
+                                        <RadioButton
+                                            x:Name="AIv3"
+                                            CheckedChanged="RadioButton_CheckedChanged"
+                                            Content="AIv3"
+                                            GroupName="MaskOption"
+                                            IsChecked="False"
+                                            TextColor="Black" />
+                                    </VerticalStackLayout>
+
+                                    <VerticalStackLayout
+                                        Margin="10,0,0,0"
+                                        HorizontalOptions="End"
+                                        Spacing="20"
+                                        VerticalOptions="Center">
+                                        <ImageButton
+                                            x:Name="ClosedJacketImageButton"
+                                            BackgroundColor="White"
+                                            BorderColor="#444"
+                                            BorderWidth="2"
+                                            Clicked="ClosedJacketImageButton_Clicked"
+                                            CommandParameter="closed_jacket"
+                                            CornerRadius="8"
+                                            HeightRequest="50"
+                                            IsEnabled="False"
+                                            IsVisible="False"
+                                            Source="closed_jacket.png"
+                                            WidthRequest="50" />
+                                        <ImageButton
+                                            x:Name="OpenJacketImageButton"
+                                            BackgroundColor="White"
+                                            BorderColor="#444"
+                                            BorderWidth="2"
+                                            Clicked="OpenJacketImageButton_Clicked"
+                                            CornerRadius="8"
+                                            HeightRequest="50"
+                                            IsEnabled="False"
+                                            IsVisible="False"
+                                            Source="open_jacket.png"
+                                            WidthRequest="50" />
+
+                                        <ImageButton
+                                            x:Name="DressButton"
+                                            BackgroundColor="White"
+                                            BorderColor="#444"
+                                            BorderWidth="2"
+                                            Clicked="MacroButton_Clicked"
+                                            CommandParameter="dress"
+                                            CornerRadius="8"
+                                            HeightRequest="50"
+                                            IsEnabled="False"
+                                            IsVisible="False"
+                                            Source="Macros/icons_dress.png"
+                                            WidthRequest="50" />
+                                    </VerticalStackLayout>
+                                </Grid>
+
+                                <StackLayout x:Name="Carosel" Grid.Row="2">
+                                    <Frame
+                                        Padding="0"
+                                        BackgroundColor="Silver"
+                                        BorderColor="Black"
+                                        HasShadow="True"
+                                        HorizontalOptions="End"
+                                        VerticalOptions="CenterAndExpand">
+                                        <Frame.Shadow>
+                                            <Shadow
+                                                Brush="Black"
+                                                Opacity="0.99"
+                                                Radius="10"
+                                                Offset="3, 3" />
+                                        </Frame.Shadow>
+                                        <CarouselView
+                                            x:Name="JacketCarousel"
+                                            HeightRequest="300"
+                                            ItemsSource="{Binding Jackets}"
+                                            Loop="True"
+                                            PeekAreaInsets="90"
+                                            WidthRequest="60">
+                                            <CarouselView.ItemsLayout>
+                                                <LinearItemsLayout ItemSpacing="10" Orientation="Vertical" />
+                                            </CarouselView.ItemsLayout>
+                                            <CarouselView.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Grid>
+                                                        <ImageButton
+                                                            Aspect="AspectFit"
+                                                            Clicked="MacroButton_Clicked"
+                                                            CommandParameter="{Binding Data}"
+                                                            HeightRequest="70"
+                                                            HorizontalOptions="Center"
+                                                            Source="{Binding ImagePath}"
+                                                            VerticalOptions="Center"
+                                                            WidthRequest="60">
+                                                            <!--<Image.GestureRecognizers>
+                                                            <TapGestureRecognizer Command="{Binding BindingContext.SelectJacketCommand, Source={x:Reference JacketCarousel}}" CommandParameter="{Binding ImagePath}" />
+                                                            -->
+                                                            <!--<TapGestureRecognizer CommandParameter="{Binding Data}" Tapped="MacroButton_Clicked" />-->
+                                                            <!--
+                                                        </Image.GestureRecognizers>-->
+                                                        </ImageButton>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </CarouselView.ItemTemplate>
+                                        </CarouselView>
+                                    </Frame>
+                                </StackLayout>
+
+
+                                <Grid Grid.Row="3">
+                                    <Frame
+                                        x:Name="ImagePanelBody"
+                                        Margin="20"
+                                        BackgroundColor="#80000000"
+                                        BorderColor="Black"
+                                        CornerRadius="5"
+                                        HasShadow="True"
+                                        HeightRequest="340"
+                                        WidthRequest="230">
+                                        <Frame.Shadow>
+                                            <Shadow
+                                                Brush="Black"
+                                                Opacity="0.99"
+                                                Radius="10"
+                                                Offset="3, 3" />
+                                        </Frame.Shadow>
+                                        <Image
+                                            x:Name="SelectedBodyImage"
+                                            Aspect="AspectFit"
+                                            HeightRequest="340"
+                                            IsVisible="True"
+                                            Source="Icons/blank_image_photo.png"
+                                            WidthRequest="230">
+                                            <Image.GestureRecognizers>
+                                                <TapGestureRecognizer Tapped="OnSelectedBodyImageTapped" />
+                                            </Image.GestureRecognizers>
+                                        </Image>
+                                    </Frame>
+
+                                    <Grid Grid.Row="2">
+                                        <Label
+                                            Margin="40"
+                                            CharacterSpacing="3"
+                                            FontSize="Medium"
+                                            HorizontalOptions="Center"
+                                            Text="Select body"
+                                            TextColor="White"
+                                            TextTransform="Uppercase"
+                                            VerticalOptions="Start" />
+                                    </Grid>
+
+                                    <Frame
+                                        x:Name="PanelButtons2"
+                                        Padding="0"
+                                        BackgroundColor="LightGray"
+                                        BorderColor="Black"
+                                        HasShadow="True"
+                                        HeightRequest="120"
+                                        IsVisible="False"
+                                        WidthRequest="220">
+                                        <Frame.Shadow>
+                                            <Shadow
+                                                Brush="Black"
+                                                Opacity="0.99"
+                                                Radius="10"
+                                                Offset="3, 3" />
+                                        </Frame.Shadow>
+                                        <Grid ColumnDefinitions="*,*">
+                                            <ImageButton
+                                                x:Name="TestGalleryButton5"
+                                                Grid.Row="0"
+                                                Grid.Column="0"
+                                                Clicked="TestGalleryButton5_Clicked"
+                                                HeightRequest="70"
+                                                Source="Icons/images_regular_24.png"
+                                                WidthRequest="70" />
+                                            <!--<ImageButton
+                                            x:Name="TestGalleryButton6"
+                                            Grid.Row="0"
+                                            Grid.Column="1"
+                                            Clicked="PanelButton6_Clicked"
+                                            HeightRequest="70"
+                                            Source="Icons/camera_regular_24.png"
+                                            WidthRequest="70" />-->
+                                            <ImageButton
+                                                x:Name="TestGalleryButton7"
+                                                Grid.Row="0"
+                                                Grid.Column="1"
+                                                Clicked="OnSelectBodyImageClicked"
+                                                HeightRequest="70"
+                                                Source="Icons/folder_open_regular_24.png"
+                                                WidthRequest="70" />
+                                            <!--<ImageButton
+                                            x:Name="TestGalleryButton8"
+                                            Grid.Row="1"
+                                            Grid.Column="1"
+                                            Clicked="SelectBodyFromApp_Clicked"
+                                            HeightRequest="70"
+                                            Source="Icons/folder_open_solid_24.png"
+                                            WidthRequest="70" />-->
+                                        </Grid>
+                                    </Frame>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+
+                        <VerticalStackLayout
+                            x:Name="ButtonPanel"
+                            Padding="5"
+                            IsVisible="False"
+                            VerticalOptions="End">
+                            <Label
+                                Margin="10"
+                                FontSize="Large"
+                                HorizontalOptions="Center"
+                                Text="Choice normal body photo for FashionV1-AI mask and select zones for change."
+                                TextColor="Black" />
+                            <Frame Padding="2" BorderColor="Gray">
+                                <Grid
+                                    ColumnDefinitions="*,*,*,*"
+                                    ColumnSpacing="2"
+                                    RowDefinitions="*,*,*,*"
+                                    RowSpacing="4">
+                                    <Button
+                                        Grid.Row="0"
+                                        Grid.Column="0"
+                                        BackgroundColor="Black"
+                                        BorderColor="Red"
+                                        BorderWidth="2"
+                                        Clicked="OptionButton_Clicked"
+                                        CommandParameter="Hat"
+                                        Text="Hat"
+                                        TextColor="Red" />
+                                    <Button
+                                        Grid.Row="0"
+                                        Grid.Column="1"
+                                        BackgroundColor="Black"
+                                        BorderColor="Red"
+                                        BorderWidth="2"
+                                        Clicked="OptionButton_Clicked"
+                                        CommandParameter="Hair"
+                                        Text="Hair"
+                                        TextColor="Red" />
+                                    <Button
+                                        Grid.Row="0"
+                                        Grid.Column="2"
+                                        BackgroundColor="Black"
+                                        BorderColor="Red"
+                                        BorderWidth="2"
+                                        Clicked="OptionButton_Clicked"
+                                        CommandParameter="Face"
+                                        Text="Face"
+                                        TextColor="Red" />
+                                    <Button
+                                        Grid.Row="0"
+                                        Grid.Column="3"
+                                        BackgroundColor="Black"
+                                        BorderColor="Red"
+                                        BorderWidth="2"
+                                        Clicked="OptionButton_Clicked"
+                                        CommandParameter="Sunglasses"
+                                        Text="Sunglasses"
+                                        TextColor="Red" />
+                                    <Button
+                                        Grid.Row="1"
+                                        Grid.Column="0"
+                                        BackgroundColor="Black"
+                                        BorderColor="Red"
+                                        BorderWidth="2"
+                                        Clicked="OptionButton_Clicked"
+                                        CommandParameter="Upper-clothes"
+                                        Text="Upper-clothes"
+                                        TextColor="Red" />
+                                    <Button
+                                        Grid.Row="1"
+                                        Grid.Column="1"
+                                        BackgroundColor="Black"
+                                        BorderColor="Red"
+                                        BorderWidth="2"
+                                        Clicked="OptionButton_Clicked"
+                                        CommandParameter="Skirt"
+                                        Text="Skirt"
+                                        TextColor="Red" />
+                                    <Button
+                                        Grid.Row="1"
+                                        Grid.Column="2"
+                                        BackgroundColor="Black"
+                                        BorderColor="Red"
+                                        BorderWidth="2"
+                                        Clicked="OptionButton_Clicked"
+                                        CommandParameter="Dress"
+                                        Text="Dress"
+                                        TextColor="Red" />
+                                    <Button
+                                        Grid.Row="1"
+                                        Grid.Column="3"
+                                        BackgroundColor="Black"
+                                        BorderColor="Red"
+                                        BorderWidth="2"
+                                        Clicked="OptionButton_Clicked"
+                                        CommandParameter="Belt"
+                                        Text="Belt"
+                                        TextColor="Red" />
+                                    <Button
+                                        Grid.Row="2"
+                                        Grid.Column="0"
+                                        BackgroundColor="Black"
+                                        BorderColor="Red"
+                                        BorderWidth="2"
+                                        Clicked="OptionButton_Clicked"
+                                        CommandParameter="Pants"
+                                        Text="Pants"
+                                        TextColor="Red" />
+                                    <Button
+                                        Grid.Row="2"
+                                        Grid.Column="1"
+                                        BackgroundColor="Black"
+                                        BorderColor="Red"
+                                        BorderWidth="2"
+                                        Clicked="OptionButton_Clicked"
+                                        CommandParameter="Left-arm"
+                                        Text="L-arm"
+                                        TextColor="Red" />
+                                    <Button
+                                        Grid.Row="2"
+                                        Grid.Column="2"
+                                        BackgroundColor="Black"
+                                        BorderColor="Red"
+                                        BorderWidth="2"
+                                        Clicked="OptionButton_Clicked"
+                                        CommandParameter="Right-arm"
+                                        Text="R-arm"
+                                        TextColor="Red" />
+                                    <Button
+                                        Grid.Row="2"
+                                        Grid.Column="3"
+                                        BackgroundColor="Black"
+                                        BorderColor="Red"
+                                        BorderWidth="2"
+                                        Clicked="OptionButton_Clicked"
+                                        CommandParameter="Left-leg"
+                                        Text="L-leg"
+                                        TextColor="Red" />
+                                    <Button
+                                        Grid.Row="3"
+                                        Grid.Column="0"
+                                        BackgroundColor="Black"
+                                        BorderColor="Red"
+                                        BorderWidth="2"
+                                        Clicked="OptionButton_Clicked"
+                                        CommandParameter="Right-leg"
+                                        Text="R-leg"
+                                        TextColor="Red" />
+                                    <Button
+                                        Grid.Row="3"
+                                        Grid.Column="1"
+                                        BackgroundColor="Black"
+                                        BorderColor="Red"
+                                        BorderWidth="2"
+                                        Clicked="OptionButton_Clicked"
+                                        CommandParameter="Scarf"
+                                        Text="Scarf"
+                                        TextColor="Red" />
+                                    <Button
+                                        Grid.Row="3"
+                                        Grid.Column="2"
+                                        BackgroundColor="Black"
+                                        BorderColor="Red"
+                                        BorderWidth="2"
+                                        Clicked="OptionButton_Clicked"
+                                        CommandParameter="Left-shoe"
+                                        Text="L-shoe"
+                                        TextColor="Red" />
+                                    <Button
+                                        Grid.Row="3"
+                                        Grid.Column="3"
+                                        BackgroundColor="Black"
+                                        BorderColor="Red"
+                                        BorderWidth="2"
+                                        Clicked="OptionButton_Clicked"
+                                        CommandParameter="Right-shoe"
+                                        Text="R-shoe"
+                                        TextColor="Red" />
+                                </Grid>
+                            </Frame>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout
+                            x:Name="ButtonPanel2"
+                            Padding="5"
+                            IsVisible="False"
+                            VerticalOptions="End">
+                            <Label
+                                Margin="10"
+                                FontSize="Large"
+                                HorizontalOptions="Center"
+                                Text="Choice normal body photo for FashionV2-AI mask and select zones for change."
+                                TextColor="Black" />
+                            <Frame Padding="2" BorderColor="Gray">
+                                <Grid
+                                    ColumnDefinitions="*,*,*,*"
+                                    ColumnSpacing="2"
+                                    RowDefinitions="*,*,*,*,*"
+                                    RowSpacing="4">
+                                    <Button
+                                        Grid.Row="0"
+                                        Grid.Column="0"
+                                        BackgroundColor="LightBlue"
+                                        BorderColor="Red"
+                                        BorderWidth="2"
+                                        Clicked="OptionButton_Clicked"
+                                        CommandParameter="coat"
+                                        Text="Coat"
+                                        TextColor="Red" />
+                                    <Button
+                                        Grid.Row="0"
+                                        Grid.Column="1"
+                                        BackgroundColor="LightBlue"
+                                        BorderColor="Red"
+                                        BorderWidth="2"
+                                        Clicked="OptionButton_Clicked"
+                                        CommandParameter="jacket"
+                                        Text="Jacket"
+                                        TextColor="Red" />
+                                    <Button
+                                        Grid.Row="0"
+                                        Grid.Column="2"
+                                        BackgroundColor="LightBlue"
+                                        BorderColor="Red"
+                                        BorderWidth="2"
+                                        Clicked="OptionButton_Clicked"
+                                        CommandParameter="cardigan"
+                                        Text="Cardigan"
+                                        TextColor="Red" />
+                                    <Button
+                                        Grid.Row="0"
+                                        Grid.Column="3"
+                                        BackgroundColor="LightBlue"
+                                        BorderColor="Red"
+                                        BorderWidth="2"
+                                        Clicked="OptionButton_Clicked"
+                                        CommandParameter="vest"
+                                        Text="Vest"
+                                        TextColor="Red" />
+                                    <Button
+                                        Grid.Row="1"
+                                        Grid.Column="0"
+                                        BackgroundColor="LightBlue"
+                                        BorderColor="Red"
+                                        BorderWidth="2"
+                                        Clicked="OptionButton_Clicked"
+                                        CommandParameter="sweater"
+                                        Text="Sweater"
+                                        TextColor="Red" />
+                                    <Button
+                                        Grid.Row="1"
+                                        Grid.Column="1"
+                                        BackgroundColor="LightBlue"
+                                        BorderColor="Red"
+                                        BorderWidth="2"
+                                        Clicked="OptionButton_Clicked"
+                                        CommandParameter="hood"
+                                        Text="Hood"
+                                        TextColor="Red" />
+                                    <Button
+                                        Grid.Row="1"
+                                        Grid.Column="2"
+                                        BackgroundColor="LightBlue"
+                                        BorderColor="Red"
+                                        BorderWidth="2"
+                                        Clicked="OptionButton_Clicked"
+                                        CommandParameter="shirt, blouse"
+                                        Text="Shirt, blouse"
+                                        TextColor="Red" />
+                                    <Button
+                                        Grid.Row="1"
+                                        Grid.Column="3"
+                                        BackgroundColor="LightBlue"
+                                        BorderColor="Red"
+                                        BorderWidth="2"
+                                        Clicked="OptionButton_Clicked"
+                                        CommandParameter="top, t-shirt, sweatshirt"
+                                        Text="Top, t-shirt, sweatshirt"
+                                        TextColor="Red" />
+                                    <Button
+                                        Grid.Row="2"
+                                        Grid.Column="0"
+                                        BackgroundColor="LightBlue"
+                                        BorderColor="Red"
+                                        BorderWidth="2"
+                                        Clicked="OptionButton_Clicked"
+                                        CommandParameter="sleeve"
+                                        Text="Sleeve"
+                                        TextColor="Red" />
+                                    <Button
+                                        Grid.Row="2"
+                                        Grid.Column="1"
+                                        BackgroundColor="LightBlue"
+                                        BorderColor="Red"
+                                        BorderWidth="2"
+                                        Clicked="OptionButton_Clicked"
+                                        CommandParameter="dress"
+                                        Text="Dress"
+                                        TextColor="Red" />
+                                    <Button
+                                        Grid.Row="2"
+                                        Grid.Column="2"
+                                        BackgroundColor="LightBlue"
+                                        BorderColor="Red"
+                                        BorderWidth="2"
+                                        Clicked="OptionButton_Clicked"
+                                        CommandParameter="jumpsuit"
+                                        Text="Jumpsuit"
+                                        TextColor="Red" />
+                                    <Button
+                                        Grid.Row="2"
+                                        Grid.Column="3"
+                                        BackgroundColor="LightBlue"
+                                        BorderColor="Red"
+                                        BorderWidth="2"
+                                        Clicked="OptionButton_Clicked"
+                                        CommandParameter="cape"
+                                        Text="Cape"
+                                        TextColor="Red" />
+                                    <Button
+                                        Grid.Row="3"
+                                        Grid.Column="0"
+                                        BackgroundColor="LightBlue"
+                                        BorderColor="Red"
+                                        BorderWidth="2"
+                                        Clicked="OptionButton_Clicked"
+                                        CommandParameter="pants"
+                                        Text="Pants"
+                                        TextColor="Red" />
+                                    <Button
+                                        Grid.Row="3"
+                                        Grid.Column="1"
+                                        BackgroundColor="LightBlue"
+                                        BorderColor="Red"
+                                        BorderWidth="2"
+                                        Clicked="OptionButton_Clicked"
+                                        CommandParameter="shorts"
+                                        Text="Shorts"
+                                        TextColor="Red" />
+                                    <Button
+                                        Grid.Row="3"
+                                        Grid.Column="2"
+                                        BackgroundColor="LightBlue"
+                                        BorderColor="Red"
+                                        BorderWidth="2"
+                                        Clicked="OptionButton_Clicked"
+                                        CommandParameter="skirt"
+                                        Text="Skirt"
+                                        TextColor="Red" />
+                                    <Button
+                                        Grid.Row="3"
+                                        Grid.Column="3"
+                                        BackgroundColor="LightBlue"
+                                        BorderColor="Red"
+                                        BorderWidth="2"
+                                        Clicked="OptionButton_Clicked"
+                                        CommandParameter="tights, stockings"
+                                        Text="Tights, stockings"
+                                        TextColor="Red" />
+                                    <Button
+                                        Grid.Row="4"
+                                        Grid.Column="0"
+                                        BackgroundColor="LightBlue"
+                                        BorderColor="Red"
+                                        BorderWidth="2"
+                                        Clicked="OptionButton_Clicked"
+                                        CommandParameter="sock"
+                                        Text="Sock"
+                                        TextColor="Red" />
+                                    <Button
+                                        Grid.Row="4"
+                                        Grid.Column="1"
+                                        BackgroundColor="LightBlue"
+                                        BorderColor="Red"
+                                        BorderWidth="2"
+                                        Clicked="OptionButton_Clicked"
+                                        CommandParameter="shoe"
+                                        Text="Shoe"
+                                        TextColor="Red" />
+                                </Grid>
+                            </Frame>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout
+                            x:Name="ButtonPanel3"
+                            Padding="5"
+                            IsVisible="False"
+                            VerticalOptions="End">
+                            <Label
+                                Margin="10"
+                                FontSize="Large"
+                                HorizontalOptions="Center"
+                                Text="Choice normal body photo for Segformer B2-AI mask and select zones for change."
+                                TextColor="Black" />
+                            <Frame Padding="2" BorderColor="Gray">
+                                <Grid
+                                    ColumnDefinitions="*,*,*,*"
+                                    ColumnSpacing="2"
+                                    RowDefinitions="*,*,*,*"
+                                    RowSpacing="4">
+                                    <Button
+                                        Grid.Row="0"
+                                        Grid.Column="0"
+                                        BackgroundColor="Orange"
+                                        BorderColor="Red"
+                                        BorderWidth="2"
+                                        Clicked="OptionButton_Clicked"
+                                        CommandParameter="Face"
+                                        Text="Face"
+                                        TextColor="Red" />
+                                    <Button
+                                        Grid.Row="0"
+                                        Grid.Column="1"
+                                        BackgroundColor="Orange"
+                                        BorderColor="Red"
+                                        BorderWidth="2"
+                                        Clicked="OptionButton_Clicked"
+                                        CommandParameter="Hat"
+                                        Text="Hat"
+                                        TextColor="Red" />
+                                    <Button
+                                        Grid.Row="0"
+                                        Grid.Column="2"
+                                        BackgroundColor="Orange"
+                                        BorderColor="Red"
+                                        BorderWidth="2"
+                                        Clicked="OptionButton_Clicked"
+                                        CommandParameter="Hair"
+                                        Text="Hair"
+                                        TextColor="Red" />
+                                    <Button
+                                        Grid.Row="0"
+                                        Grid.Column="3"
+                                        BackgroundColor="Orange"
+                                        BorderColor="Red"
+                                        BorderWidth="2"
+                                        Clicked="OptionButton_Clicked"
+                                        CommandParameter="Upper_clothes"
+                                        Text="Upper_clothes"
+                                        TextColor="Red" />
+                                    <Button
+                                        Grid.Row="1"
+                                        Grid.Column="0"
+                                        BackgroundColor="Orange"
+                                        BorderColor="Red"
+                                        BorderWidth="2"
+                                        Clicked="OptionButton_Clicked"
+                                        CommandParameter="Skirt"
+                                        Text="Skirt"
+                                        TextColor="Red" />
+                                    <Button
+                                        Grid.Row="1"
+                                        Grid.Column="1"
+                                        BackgroundColor="Orange"
+                                        BorderColor="Red"
+                                        BorderWidth="2"
+                                        Clicked="OptionButton_Clicked"
+                                        CommandParameter="Pants"
+                                        Text="Pants"
+                                        TextColor="Red" />
+                                    <Button
+                                        Grid.Row="1"
+                                        Grid.Column="2"
+                                        BackgroundColor="Orange"
+                                        BorderColor="Red"
+                                        BorderWidth="2"
+                                        Clicked="OptionButton_Clicked"
+                                        CommandParameter="Dress"
+                                        Text="Dress"
+                                        TextColor="Red" />
+                                    <Button
+                                        Grid.Row="1"
+                                        Grid.Column="3"
+                                        BackgroundColor="Orange"
+                                        BorderColor="Red"
+                                        BorderWidth="2"
+                                        Clicked="OptionButton_Clicked"
+                                        CommandParameter="Belt"
+                                        Text="Belt"
+                                        TextColor="Red" />
+                                    <Button
+                                        Grid.Row="2"
+                                        Grid.Column="0"
+                                        BackgroundColor="Orange"
+                                        BorderColor="Red"
+                                        BorderWidth="2"
+                                        Clicked="OptionButton_Clicked"
+                                        CommandParameter="shoe"
+                                        Text="Shoe"
+                                        TextColor="Red" />
+                                    <Button
+                                        Grid.Row="2"
+                                        Grid.Column="1"
+                                        BackgroundColor="Orange"
+                                        BorderColor="Red"
+                                        BorderWidth="2"
+                                        Clicked="OptionButton_Clicked"
+                                        CommandParameter="leg"
+                                        Text="Leg"
+                                        TextColor="Red" />
+                                    <Button
+                                        Grid.Row="2"
+                                        Grid.Column="2"
+                                        BackgroundColor="Orange"
+                                        BorderColor="Red"
+                                        BorderWidth="2"
+                                        Clicked="OptionButton_Clicked"
+                                        CommandParameter="arm"
+                                        Text="Arm"
+                                        TextColor="Red" />
+                                    <Button
+                                        Grid.Row="2"
+                                        Grid.Column="3"
+                                        BackgroundColor="Orange"
+                                        BorderColor="Red"
+                                        BorderWidth="2"
+                                        Clicked="OptionButton_Clicked"
+                                        CommandParameter="Bag"
+                                        Text="Bag"
+                                        TextColor="Red" />
+                                    <Button
+                                        Grid.Row="3"
+                                        Grid.Column="0"
+                                        BackgroundColor="Orange"
+                                        BorderColor="Red"
+                                        BorderWidth="2"
+                                        Clicked="OptionButton_Clicked"
+                                        CommandParameter="Scarf"
+                                        Text="Scarf"
+                                        TextColor="Red" />
+                                </Grid>
+                            </Frame>
+                        </VerticalStackLayout>
+
+                        <BoxView
+                            HeightRequest="1"
+                            HorizontalOptions="FillAndExpand"
+                            Color="Silver" />
+
+                        <Frame
+                            Margin="0,20"
+                            BackgroundColor="#80000000"
+                            HasShadow="True"
+                            HeightRequest="50"
+                            HorizontalOptions="Center"
+                            WidthRequest="220">
+                            <Frame.Shadow>
+                                <Shadow
+                                    Brush="Black"
+                                    Opacity="0.60"
+                                    Radius="5"
+                                    Offset="4, 4" />
+                            </Frame.Shadow>
+
+                            <Button
+                                x:Name="CombineImagesButton"
+                                BackgroundColor="Transparent"
                                 BorderColor="White"
+                                BorderWidth="1"
+                                Clicked="OnCombineImages_Clicked"
+                                FontSize="16"
+                                HeightRequest="50"
+                                HorizontalOptions="Center"
+                                Text="CREATE NEW IMAGE"
+                                TextColor="White"
+                                WidthRequest="220" />
+                        </Frame>
+
+                    </VerticalStackLayout>
+
+
+
+
+                    <VerticalStackLayout
+                        x:Name="ResultStack"
+                        Margin="40"
+                        IsVisible="False">
+                        <Grid
+                            ColumnDefinitions="auto"
+                            HorizontalOptions="Center"
+                            RowDefinitions="Auto"
+                            VerticalOptions="Center">
+                            <Frame
+                                x:Name="ResponseImageFrame"
+                                BackgroundColor="#80000000"
+                                BorderColor="Black"
+                                CornerRadius="5"
                                 HasShadow="True"
-                                HeightRequest="60"
-                                HorizontalOptions="End"
-                                VerticalOptions="Start"
-                                WidthRequest="60">
+                                HeightRequest="550"
+                                HorizontalOptions="Center"
+                                VerticalOptions="Center"
+                                WidthRequest="350">
+                                <Frame.Shadow>
+                                    <Shadow
+                                        Brush="Black"
+                                        Opacity="0.99"
+                                        Radius="10"
+                                        Offset="3, 3" />
+                                </Frame.Shadow>
+                                <Image
+                                    x:Name="ResponseImage"
+                                    Aspect="AspectFill"
+                                    HeightRequest="550"
+                                    Source="Icons/blank_image_photo_2.png"
+                                    WidthRequest="350">
+                                    <!--<Image.GestureRecognizers>
+                                             <TapGestureRecognizer Tapped="OnSelectedBodyImageTapped" />
+                                    </Image.GestureRecognizers>-->
+                                </Image>
+                            </Frame>
+
+                            <ActivityIndicator
+                                x:Name="LoadingIndicator"
+                                Margin="0,20"
+                                HeightRequest="120"
+                                HorizontalOptions="Center"
+                                IsRunning="False"
+                                IsVisible="False"
+                                WidthRequest="120"
+                                Color="Azure" />
+                        </Grid>
+
+
+                        <!--<Image
+                            x:Name="ResponseImage"
+                            Margin="0,20"
+                            Aspect="AspectFit"
+                            HeightRequest="300"
+                            IsVisible="False" />-->
+
+                        <Label
+                            x:Name="ResponseText"
+                            Margin="0,10"
+                            FontSize="18"
+                            HorizontalOptions="Center"
+                            IsVisible="False" />
+
+
+                        <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
+                            <Frame
+                                x:Name="SaveButton"
+                                Grid.Column="0"
+                                BackgroundColor="#80000000"
+                                HasShadow="True"
+                                HeightRequest="50"
+                                HorizontalOptions="Start"
+                                IsEnabled="True"
+                                IsVisible="True"
+                                WidthRequest="220">
                                 <Frame.Shadow>
                                     <Shadow
                                         Brush="Black"
@@ -94,948 +1097,54 @@
                                         Radius="5"
                                         Offset="4, 4" />
                                 </Frame.Shadow>
-                                <ImageButton BackgroundColor="Transparent" Clicked="OnNavigateClicked" Source="Icons/icons_close.png" />
+
+                                <Button
+                                    BackgroundColor="Transparent"
+                                    BorderColor="White"
+                                    BorderWidth="1"
+                                    Clicked="OnSaveClicked"
+                                    FontAttributes="Bold"
+                                    FontSize="Body"
+                                    HeightRequest="50"
+                                    Text="SAVE IMAGE"
+                                    TextColor="White"
+                                    WidthRequest="220" />
                             </Frame>
 
-                            <Grid Grid.Row="3">
-                                <Frame
-                                    x:Name="ImagePanelCloth"
-                                    Margin="20"
-                                    BackgroundColor="#80000000"
-                                    BorderColor="Black"
-                                    CornerRadius="5"
-                                    HasShadow="True"
-                                    HeightRequest="340"
-                                    WidthRequest="230">
-                                    <Frame.Shadow>
-                                        <Shadow
-                                            Brush="Black"
-                                            Opacity="0.99"
-                                            Radius="10"
-                                            Offset="3, 3" />
-                                    </Frame.Shadow>
-                                    <Image
-                                        x:Name="SelectedClothImage"
-                                        Margin="0,20"
-                                        Aspect="AspectFill"
-                                        HeightRequest="340"
-                                        IsVisible="True"
-                                        Source="Icons/blank_image_photo.png"
-                                        WidthRequest="230">
-                                        <Image.GestureRecognizers>
-                                            <TapGestureRecognizer Tapped="OnSelectedClothImageTapped" />
-                                        </Image.GestureRecognizers>
-                                    </Image>
-                                </Frame>
+                            <Frame
+                                x:Name="BackButton"
+                                Grid.Column="0"
+                                Margin="0,20"
+                                BackgroundColor="#80000000"
+                                HasShadow="True"
+                                HeightRequest="50"
+                                HorizontalOptions="End"
+                                IsEnabled="True"
+                                IsVisible="True"
+                                WidthRequest="100">
+                                <Frame.Shadow>
+                                    <Shadow
+                                        Brush="Black"
+                                        Opacity="0.60"
+                                        Radius="5"
+                                        Offset="4, 4" />
+                                </Frame.Shadow>
 
-                                <Frame
-                                    x:Name="PanelButtons"
-                                    Padding="0"
-                                    BackgroundColor="LightGray"
-                                    BorderColor="Black"
-                                    HasShadow="True"
-                                    HeightRequest="220"
-                                    IsVisible="False"
-                                    WidthRequest="220">
-                                    <Frame.Shadow>
-                                        <Shadow
-                                            Brush="Black"
-                                            Opacity="0.99"
-                                            Radius="10"
-                                            Offset="3, 3" />
-                                    </Frame.Shadow>
-                                    <Grid ColumnDefinitions="*,*" RowDefinitions="*,*">
-                                        <ImageButton
-                                            x:Name="TestGalleryButton"
-                                            Grid.Row="0"
-                                            Grid.Column="0"
-                                            Clicked="TestGalleryButton_Clicked"
-                                            HeightRequest="70"
-                                            Source="Icons/images_regular_24.png"
-                                            WidthRequest="70" />
-                                        <ImageButton
-                                            x:Name="TestGalleryButton2"
-                                            Grid.Row="0"
-                                            Grid.Column="1"
-                                            Clicked="PanelButton_Clicked"
-                                            HeightRequest="70"
-                                            Source="Icons/camera_regular_24.png"
-                                            WidthRequest="70" />
-                                        <ImageButton
-                                            x:Name="TestGalleryButton3"
-                                            Grid.Row="1"
-                                            Grid.Column="0"
-                                            Clicked="OnSelectClothImageClicked"
-                                            HeightRequest="70"
-                                            Source="Icons/folder_open_regular_24.png"
-                                            WidthRequest="70" />
-                                        <ImageButton
-                                            x:Name="TestGalleryButton4"
-                                            Grid.Row="1"
-                                            Grid.Column="1"
-                                            Clicked="SelectClothFromApp_Clicked"
-                                            HeightRequest="70"
-                                            Source="Icons/folder_open_solid_24.png"
-                                            WidthRequest="70" />
-                                    </Grid>
-                                </Frame>
-                            </Grid>
-
-                            <Grid x:Name="Label" Grid.Row="2">
-                                <Label
-                                    x:Name="LabelSelectBody"
-                                    Margin="40"
-                                    CharacterSpacing="3"
-                                    FontSize="Medium"
-                                    HorizontalOptions="Center"
-                                    Text="Select Cloth"
+                                <Button
+                                    BackgroundColor="Transparent"
+                                    BorderColor="White"
+                                    BorderWidth="1"
+                                    Clicked="OnBackButtonClicked"
+                                    FontAttributes="Bold"
+                                    FontSize="Body"
+                                    HeightRequest="50"
+                                    Text="BACK"
                                     TextColor="White"
-                                    TextTransform="Uppercase"
-                                    VerticalOptions="Start" />
-                            </Grid>
-
-
-                        </Grid>
-                    </Grid>
-
-                    <BoxView
-                        HeightRequest="1"
-                        HorizontalOptions="FillAndExpand"
-                        Color="Silver" />
-
-                    <Grid Grid.Row="2">
-                        <Grid RowDefinitions="Auto, *, Auto">
-
-                            <Grid Grid.Row="2" IsVisible="False">
-                                <VerticalStackLayout
-                                    x:Name="ChoiseForMaskMethod"
-                                    HorizontalOptions="Start"
-                                    Spacing="-10"
-                                    VerticalOptions="Center">
-                                    <RadioButton
-                                        x:Name="StandartMask"
-                                        CheckedChanged="RadioButton_CheckedChanged"
-                                        Content="Mask"
-                                        GroupName="MaskOption"
-                                        IsChecked="False"
-                                        TextColor="Black" />
-                                    <RadioButton
-                                        x:Name="AIv1"
-                                        CheckedChanged="RadioButton_CheckedChanged"
-                                        Content="AIv1"
-                                        GroupName="MaskOption"
-                                        IsChecked="False"
-                                        TextColor="Black" />
-                                    <RadioButton
-                                        x:Name="AIv2"
-                                        CheckedChanged="RadioButton_CheckedChanged"
-                                        Content="AIv2"
-                                        GroupName="MaskOption"
-                                        IsChecked="False"
-                                        TextColor="Black" />
-                                    <RadioButton
-                                        x:Name="AIv3"
-                                        CheckedChanged="RadioButton_CheckedChanged"
-                                        Content="AIv3"
-                                        GroupName="MaskOption"
-                                        IsChecked="False"
-                                        TextColor="Black" />
-                                </VerticalStackLayout>
-
-                                <VerticalStackLayout
-                                    Margin="10,0,0,0"
-                                    HorizontalOptions="End"
-                                    Spacing="20"
-                                    VerticalOptions="Center">
-                                    <ImageButton
-                                        x:Name="ClosedJacketImageButton"
-                                        BackgroundColor="White"
-                                        BorderColor="#444"
-                                        BorderWidth="2"
-                                        Clicked="ClosedJacketImageButton_Clicked"
-                                        CommandParameter="closed_jacket"
-                                        CornerRadius="8"
-                                        HeightRequest="50"
-                                        IsEnabled="False"
-                                        IsVisible="False"
-                                        Source="closed_jacket.png"
-                                        WidthRequest="50" />
-                                    <ImageButton
-                                        x:Name="OpenJacketImageButton"
-                                        BackgroundColor="White"
-                                        BorderColor="#444"
-                                        BorderWidth="2"
-                                        Clicked="OpenJacketImageButton_Clicked"
-                                        CornerRadius="8"
-                                        HeightRequest="50"
-                                        IsEnabled="False"
-                                        IsVisible="False"
-                                        Source="open_jacket.png"
-                                        WidthRequest="50" />
-
-                                    <ImageButton
-                                        x:Name="DressButton"
-                                        BackgroundColor="White"
-                                        BorderColor="#444"
-                                        BorderWidth="2"
-                                        Clicked="MacroButton_Clicked"
-                                        CommandParameter="dress"
-                                        CornerRadius="8"
-                                        HeightRequest="50"
-                                        IsEnabled="False"
-                                        IsVisible="False"
-                                        Source="Macros/icons_dress.png"
-                                        WidthRequest="50" />
-                                </VerticalStackLayout>
-                            </Grid>
-
-                            <StackLayout x:Name="Carosel" Grid.Row="2">
-                                <Frame
-                                    Padding="0"
-                                    BackgroundColor="Silver"
-                                    BorderColor="Black"
-                                    HasShadow="True"
-                                    HorizontalOptions="End"
-                                    VerticalOptions="CenterAndExpand">
-                                    <Frame.Shadow>
-                                        <Shadow
-                                            Brush="Black"
-                                            Opacity="0.99"
-                                            Radius="10"
-                                            Offset="3, 3" />
-                                    </Frame.Shadow>
-                                    <CarouselView
-                                        x:Name="JacketCarousel"
-                                        HeightRequest="300"
-                                        ItemsSource="{Binding Jackets}"
-                                        Loop="True"
-                                        PeekAreaInsets="90"
-                                        WidthRequest="60">
-                                        <CarouselView.ItemsLayout>
-                                            <LinearItemsLayout ItemSpacing="10" Orientation="Vertical" />
-                                        </CarouselView.ItemsLayout>
-                                        <CarouselView.ItemTemplate>
-                                            <DataTemplate>
-                                                <Grid>
-                                                    <ImageButton
-                                                        Aspect="AspectFit"
-                                                        Clicked="MacroButton_Clicked"
-                                                        CommandParameter="{Binding Data}"
-                                                        HeightRequest="70"
-                                                        HorizontalOptions="Center"
-                                                        Source="{Binding ImagePath}"
-                                                        VerticalOptions="Center"
-                                                        WidthRequest="60">
-                                                        <!--<Image.GestureRecognizers>
-                                                            <TapGestureRecognizer Command="{Binding BindingContext.SelectJacketCommand, Source={x:Reference JacketCarousel}}" CommandParameter="{Binding ImagePath}" />
-                                                        -->
-                                                        <!--<TapGestureRecognizer CommandParameter="{Binding Data}" Tapped="MacroButton_Clicked" />-->
-                                                        <!--
-                                                        </Image.GestureRecognizers>-->
-                                                    </ImageButton>
-                                                </Grid>
-                                            </DataTemplate>
-                                        </CarouselView.ItemTemplate>
-                                    </CarouselView>
-                                </Frame>
-                            </StackLayout>
-
-
-                            <Grid Grid.Row="3">
-                                <Frame
-                                    x:Name="ImagePanelBody"
-                                    Margin="20"
-                                    BackgroundColor="#80000000"
-                                    BorderColor="Black"
-                                    CornerRadius="5"
-                                    HasShadow="True"
-                                    HeightRequest="340"
-                                    WidthRequest="230">
-                                    <Frame.Shadow>
-                                        <Shadow
-                                            Brush="Black"
-                                            Opacity="0.99"
-                                            Radius="10"
-                                            Offset="3, 3" />
-                                    </Frame.Shadow>
-                                    <Image
-                                        x:Name="SelectedBodyImage"
-                                        Aspect="AspectFill"
-                                        HeightRequest="340"
-                                        IsVisible="True"
-                                        Source="Icons/blank_image_photo.png"
-                                        WidthRequest="230">
-                                        <Image.GestureRecognizers>
-                                            <TapGestureRecognizer Tapped="OnSelectedBodyImageTapped" />
-                                        </Image.GestureRecognizers>
-                                    </Image>
-                                </Frame>
-
-                                <Grid Grid.Row="2">
-                                    <Label
-                                        Margin="40"
-                                        CharacterSpacing="3"
-                                        FontSize="Medium"
-                                        HorizontalOptions="Center"
-                                        Text="Select body"
-                                        TextColor="White"
-                                        TextTransform="Uppercase"
-                                        VerticalOptions="Start" />
-                                </Grid>
-
-                                <Frame
-                                    x:Name="PanelButtons2"
-                                    Padding="0"
-                                    BackgroundColor="LightGray"
-                                    BorderColor="Black"
-                                    HasShadow="True"
-                                    HeightRequest="220"
-                                    IsVisible="False"
-                                    WidthRequest="220">
-                                    <Frame.Shadow>
-                                        <Shadow
-                                            Brush="Black"
-                                            Opacity="0.99"
-                                            Radius="10"
-                                            Offset="3, 3" />
-                                    </Frame.Shadow>
-                                    <Grid ColumnDefinitions="*,*" RowDefinitions="*,*">
-                                        <ImageButton
-                                            x:Name="TestGalleryButton5"
-                                            Grid.Row="0"
-                                            Grid.Column="0"
-                                            Clicked="TestGalleryButton5_Clicked"
-                                            HeightRequest="70"
-                                            Source="Icons/images_regular_24.png"
-                                            WidthRequest="70" />
-                                        <ImageButton
-                                            x:Name="TestGalleryButton6"
-                                            Grid.Row="0"
-                                            Grid.Column="1"
-                                            Clicked="PanelButton6_Clicked"
-                                            HeightRequest="70"
-                                            Source="Icons/camera_regular_24.png"
-                                            WidthRequest="70" />
-                                        <ImageButton
-                                            x:Name="TestGalleryButton7"
-                                            Grid.Row="1"
-                                            Grid.Column="0"
-                                            Clicked="OnSelectBodyImageClicked"
-                                            HeightRequest="70"
-                                            Source="Icons/folder_open_regular_24.png"
-                                            WidthRequest="70" />
-                                        <ImageButton
-                                            x:Name="TestGalleryButton8"
-                                            Grid.Row="1"
-                                            Grid.Column="1"
-                                            Clicked="SelectBodyFromApp_Clicked"
-                                            HeightRequest="70"
-                                            Source="Icons/folder_open_solid_24.png"
-                                            WidthRequest="70" />
-                                    </Grid>
-                                </Frame>
-                            </Grid>
-                        </Grid>
-                    </Grid>
-
-                    <VerticalStackLayout
-                        x:Name="ButtonPanel"
-                        Padding="5"
-                        IsVisible="False"
-                        VerticalOptions="End">
-                        <Label
-                            Margin="10"
-                            FontSize="Large"
-                            HorizontalOptions="Center"
-                            Text="Choice normal body photo for FashionV1-AI mask and select zones for change."
-                            TextColor="Black" />
-                        <Frame Padding="2" BorderColor="Gray">
-                            <Grid
-                                ColumnDefinitions="*,*,*,*"
-                                ColumnSpacing="2"
-                                RowDefinitions="*,*,*,*"
-                                RowSpacing="4">
-                                <Button
-                                    Grid.Row="0"
-                                    Grid.Column="0"
-                                    BackgroundColor="Black"
-                                    BorderColor="Red"
-                                    BorderWidth="2"
-                                    Clicked="OptionButton_Clicked"
-                                    CommandParameter="Hat"
-                                    Text="Hat"
-                                    TextColor="Red" />
-                                <Button
-                                    Grid.Row="0"
-                                    Grid.Column="1"
-                                    BackgroundColor="Black"
-                                    BorderColor="Red"
-                                    BorderWidth="2"
-                                    Clicked="OptionButton_Clicked"
-                                    CommandParameter="Hair"
-                                    Text="Hair"
-                                    TextColor="Red" />
-                                <Button
-                                    Grid.Row="0"
-                                    Grid.Column="2"
-                                    BackgroundColor="Black"
-                                    BorderColor="Red"
-                                    BorderWidth="2"
-                                    Clicked="OptionButton_Clicked"
-                                    CommandParameter="Face"
-                                    Text="Face"
-                                    TextColor="Red" />
-                                <Button
-                                    Grid.Row="0"
-                                    Grid.Column="3"
-                                    BackgroundColor="Black"
-                                    BorderColor="Red"
-                                    BorderWidth="2"
-                                    Clicked="OptionButton_Clicked"
-                                    CommandParameter="Sunglasses"
-                                    Text="Sunglasses"
-                                    TextColor="Red" />
-                                <Button
-                                    Grid.Row="1"
-                                    Grid.Column="0"
-                                    BackgroundColor="Black"
-                                    BorderColor="Red"
-                                    BorderWidth="2"
-                                    Clicked="OptionButton_Clicked"
-                                    CommandParameter="Upper-clothes"
-                                    Text="Upper-clothes"
-                                    TextColor="Red" />
-                                <Button
-                                    Grid.Row="1"
-                                    Grid.Column="1"
-                                    BackgroundColor="Black"
-                                    BorderColor="Red"
-                                    BorderWidth="2"
-                                    Clicked="OptionButton_Clicked"
-                                    CommandParameter="Skirt"
-                                    Text="Skirt"
-                                    TextColor="Red" />
-                                <Button
-                                    Grid.Row="1"
-                                    Grid.Column="2"
-                                    BackgroundColor="Black"
-                                    BorderColor="Red"
-                                    BorderWidth="2"
-                                    Clicked="OptionButton_Clicked"
-                                    CommandParameter="Dress"
-                                    Text="Dress"
-                                    TextColor="Red" />
-                                <Button
-                                    Grid.Row="1"
-                                    Grid.Column="3"
-                                    BackgroundColor="Black"
-                                    BorderColor="Red"
-                                    BorderWidth="2"
-                                    Clicked="OptionButton_Clicked"
-                                    CommandParameter="Belt"
-                                    Text="Belt"
-                                    TextColor="Red" />
-                                <Button
-                                    Grid.Row="2"
-                                    Grid.Column="0"
-                                    BackgroundColor="Black"
-                                    BorderColor="Red"
-                                    BorderWidth="2"
-                                    Clicked="OptionButton_Clicked"
-                                    CommandParameter="Pants"
-                                    Text="Pants"
-                                    TextColor="Red" />
-                                <Button
-                                    Grid.Row="2"
-                                    Grid.Column="1"
-                                    BackgroundColor="Black"
-                                    BorderColor="Red"
-                                    BorderWidth="2"
-                                    Clicked="OptionButton_Clicked"
-                                    CommandParameter="Left-arm"
-                                    Text="L-arm"
-                                    TextColor="Red" />
-                                <Button
-                                    Grid.Row="2"
-                                    Grid.Column="2"
-                                    BackgroundColor="Black"
-                                    BorderColor="Red"
-                                    BorderWidth="2"
-                                    Clicked="OptionButton_Clicked"
-                                    CommandParameter="Right-arm"
-                                    Text="R-arm"
-                                    TextColor="Red" />
-                                <Button
-                                    Grid.Row="2"
-                                    Grid.Column="3"
-                                    BackgroundColor="Black"
-                                    BorderColor="Red"
-                                    BorderWidth="2"
-                                    Clicked="OptionButton_Clicked"
-                                    CommandParameter="Left-leg"
-                                    Text="L-leg"
-                                    TextColor="Red" />
-                                <Button
-                                    Grid.Row="3"
-                                    Grid.Column="0"
-                                    BackgroundColor="Black"
-                                    BorderColor="Red"
-                                    BorderWidth="2"
-                                    Clicked="OptionButton_Clicked"
-                                    CommandParameter="Right-leg"
-                                    Text="R-leg"
-                                    TextColor="Red" />
-                                <Button
-                                    Grid.Row="3"
-                                    Grid.Column="1"
-                                    BackgroundColor="Black"
-                                    BorderColor="Red"
-                                    BorderWidth="2"
-                                    Clicked="OptionButton_Clicked"
-                                    CommandParameter="Scarf"
-                                    Text="Scarf"
-                                    TextColor="Red" />
-                                <Button
-                                    Grid.Row="3"
-                                    Grid.Column="2"
-                                    BackgroundColor="Black"
-                                    BorderColor="Red"
-                                    BorderWidth="2"
-                                    Clicked="OptionButton_Clicked"
-                                    CommandParameter="Left-shoe"
-                                    Text="L-shoe"
-                                    TextColor="Red" />
-                                <Button
-                                    Grid.Row="3"
-                                    Grid.Column="3"
-                                    BackgroundColor="Black"
-                                    BorderColor="Red"
-                                    BorderWidth="2"
-                                    Clicked="OptionButton_Clicked"
-                                    CommandParameter="Right-shoe"
-                                    Text="R-shoe"
-                                    TextColor="Red" />
-                            </Grid>
-                        </Frame>
+                                    WidthRequest="100" />
+                            </Frame>
+                        </HorizontalStackLayout>
                     </VerticalStackLayout>
 
-                    <VerticalStackLayout
-                        x:Name="ButtonPanel2"
-                        Padding="5"
-                        IsVisible="False"
-                        VerticalOptions="End">
-                        <Label
-                            Margin="10"
-                            FontSize="Large"
-                            HorizontalOptions="Center"
-                            Text="Choice normal body photo for FashionV2-AI mask and select zones for change."
-                            TextColor="Black" />
-                        <Frame Padding="2" BorderColor="Gray">
-                            <Grid
-                                ColumnDefinitions="*,*,*,*"
-                                ColumnSpacing="2"
-                                RowDefinitions="*,*,*,*,*"
-                                RowSpacing="4">
-                                <Button
-                                    Grid.Row="0"
-                                    Grid.Column="0"
-                                    BackgroundColor="LightBlue"
-                                    BorderColor="Red"
-                                    BorderWidth="2"
-                                    Clicked="OptionButton_Clicked"
-                                    CommandParameter="coat"
-                                    Text="Coat"
-                                    TextColor="Red" />
-                                <Button
-                                    Grid.Row="0"
-                                    Grid.Column="1"
-                                    BackgroundColor="LightBlue"
-                                    BorderColor="Red"
-                                    BorderWidth="2"
-                                    Clicked="OptionButton_Clicked"
-                                    CommandParameter="jacket"
-                                    Text="Jacket"
-                                    TextColor="Red" />
-                                <Button
-                                    Grid.Row="0"
-                                    Grid.Column="2"
-                                    BackgroundColor="LightBlue"
-                                    BorderColor="Red"
-                                    BorderWidth="2"
-                                    Clicked="OptionButton_Clicked"
-                                    CommandParameter="cardigan"
-                                    Text="Cardigan"
-                                    TextColor="Red" />
-                                <Button
-                                    Grid.Row="0"
-                                    Grid.Column="3"
-                                    BackgroundColor="LightBlue"
-                                    BorderColor="Red"
-                                    BorderWidth="2"
-                                    Clicked="OptionButton_Clicked"
-                                    CommandParameter="vest"
-                                    Text="Vest"
-                                    TextColor="Red" />
-                                <Button
-                                    Grid.Row="1"
-                                    Grid.Column="0"
-                                    BackgroundColor="LightBlue"
-                                    BorderColor="Red"
-                                    BorderWidth="2"
-                                    Clicked="OptionButton_Clicked"
-                                    CommandParameter="sweater"
-                                    Text="Sweater"
-                                    TextColor="Red" />
-                                <Button
-                                    Grid.Row="1"
-                                    Grid.Column="1"
-                                    BackgroundColor="LightBlue"
-                                    BorderColor="Red"
-                                    BorderWidth="2"
-                                    Clicked="OptionButton_Clicked"
-                                    CommandParameter="hood"
-                                    Text="Hood"
-                                    TextColor="Red" />
-                                <Button
-                                    Grid.Row="1"
-                                    Grid.Column="2"
-                                    BackgroundColor="LightBlue"
-                                    BorderColor="Red"
-                                    BorderWidth="2"
-                                    Clicked="OptionButton_Clicked"
-                                    CommandParameter="shirt, blouse"
-                                    Text="Shirt, blouse"
-                                    TextColor="Red" />
-                                <Button
-                                    Grid.Row="1"
-                                    Grid.Column="3"
-                                    BackgroundColor="LightBlue"
-                                    BorderColor="Red"
-                                    BorderWidth="2"
-                                    Clicked="OptionButton_Clicked"
-                                    CommandParameter="top, t-shirt, sweatshirt"
-                                    Text="Top, t-shirt, sweatshirt"
-                                    TextColor="Red" />
-                                <Button
-                                    Grid.Row="2"
-                                    Grid.Column="0"
-                                    BackgroundColor="LightBlue"
-                                    BorderColor="Red"
-                                    BorderWidth="2"
-                                    Clicked="OptionButton_Clicked"
-                                    CommandParameter="sleeve"
-                                    Text="Sleeve"
-                                    TextColor="Red" />
-                                <Button
-                                    Grid.Row="2"
-                                    Grid.Column="1"
-                                    BackgroundColor="LightBlue"
-                                    BorderColor="Red"
-                                    BorderWidth="2"
-                                    Clicked="OptionButton_Clicked"
-                                    CommandParameter="dress"
-                                    Text="Dress"
-                                    TextColor="Red" />
-                                <Button
-                                    Grid.Row="2"
-                                    Grid.Column="2"
-                                    BackgroundColor="LightBlue"
-                                    BorderColor="Red"
-                                    BorderWidth="2"
-                                    Clicked="OptionButton_Clicked"
-                                    CommandParameter="jumpsuit"
-                                    Text="Jumpsuit"
-                                    TextColor="Red" />
-                                <Button
-                                    Grid.Row="2"
-                                    Grid.Column="3"
-                                    BackgroundColor="LightBlue"
-                                    BorderColor="Red"
-                                    BorderWidth="2"
-                                    Clicked="OptionButton_Clicked"
-                                    CommandParameter="cape"
-                                    Text="Cape"
-                                    TextColor="Red" />
-                                <Button
-                                    Grid.Row="3"
-                                    Grid.Column="0"
-                                    BackgroundColor="LightBlue"
-                                    BorderColor="Red"
-                                    BorderWidth="2"
-                                    Clicked="OptionButton_Clicked"
-                                    CommandParameter="pants"
-                                    Text="Pants"
-                                    TextColor="Red" />
-                                <Button
-                                    Grid.Row="3"
-                                    Grid.Column="1"
-                                    BackgroundColor="LightBlue"
-                                    BorderColor="Red"
-                                    BorderWidth="2"
-                                    Clicked="OptionButton_Clicked"
-                                    CommandParameter="shorts"
-                                    Text="Shorts"
-                                    TextColor="Red" />
-                                <Button
-                                    Grid.Row="3"
-                                    Grid.Column="2"
-                                    BackgroundColor="LightBlue"
-                                    BorderColor="Red"
-                                    BorderWidth="2"
-                                    Clicked="OptionButton_Clicked"
-                                    CommandParameter="skirt"
-                                    Text="Skirt"
-                                    TextColor="Red" />
-                                <Button
-                                    Grid.Row="3"
-                                    Grid.Column="3"
-                                    BackgroundColor="LightBlue"
-                                    BorderColor="Red"
-                                    BorderWidth="2"
-                                    Clicked="OptionButton_Clicked"
-                                    CommandParameter="tights, stockings"
-                                    Text="Tights, stockings"
-                                    TextColor="Red" />
-                                <Button
-                                    Grid.Row="4"
-                                    Grid.Column="0"
-                                    BackgroundColor="LightBlue"
-                                    BorderColor="Red"
-                                    BorderWidth="2"
-                                    Clicked="OptionButton_Clicked"
-                                    CommandParameter="sock"
-                                    Text="Sock"
-                                    TextColor="Red" />
-                                <Button
-                                    Grid.Row="4"
-                                    Grid.Column="1"
-                                    BackgroundColor="LightBlue"
-                                    BorderColor="Red"
-                                    BorderWidth="2"
-                                    Clicked="OptionButton_Clicked"
-                                    CommandParameter="shoe"
-                                    Text="Shoe"
-                                    TextColor="Red" />
-                            </Grid>
-                        </Frame>
-                    </VerticalStackLayout>
-
-                    <VerticalStackLayout
-                        x:Name="ButtonPanel3"
-                        Padding="5"
-                        IsVisible="False"
-                        VerticalOptions="End">
-                        <Label
-                            Margin="10"
-                            FontSize="Large"
-                            HorizontalOptions="Center"
-                            Text="Choice normal body photo for Segformer B2-AI mask and select zones for change."
-                            TextColor="Black" />
-                        <Frame Padding="2" BorderColor="Gray">
-                            <Grid
-                                ColumnDefinitions="*,*,*,*"
-                                ColumnSpacing="2"
-                                RowDefinitions="*,*,*,*"
-                                RowSpacing="4">
-                                <Button
-                                    Grid.Row="0"
-                                    Grid.Column="0"
-                                    BackgroundColor="Orange"
-                                    BorderColor="Red"
-                                    BorderWidth="2"
-                                    Clicked="OptionButton_Clicked"
-                                    CommandParameter="Face"
-                                    Text="Face"
-                                    TextColor="Red" />
-                                <Button
-                                    Grid.Row="0"
-                                    Grid.Column="1"
-                                    BackgroundColor="Orange"
-                                    BorderColor="Red"
-                                    BorderWidth="2"
-                                    Clicked="OptionButton_Clicked"
-                                    CommandParameter="Hat"
-                                    Text="Hat"
-                                    TextColor="Red" />
-                                <Button
-                                    Grid.Row="0"
-                                    Grid.Column="2"
-                                    BackgroundColor="Orange"
-                                    BorderColor="Red"
-                                    BorderWidth="2"
-                                    Clicked="OptionButton_Clicked"
-                                    CommandParameter="Hair"
-                                    Text="Hair"
-                                    TextColor="Red" />
-                                <Button
-                                    Grid.Row="0"
-                                    Grid.Column="3"
-                                    BackgroundColor="Orange"
-                                    BorderColor="Red"
-                                    BorderWidth="2"
-                                    Clicked="OptionButton_Clicked"
-                                    CommandParameter="Upper_clothes"
-                                    Text="Upper_clothes"
-                                    TextColor="Red" />
-                                <Button
-                                    Grid.Row="1"
-                                    Grid.Column="0"
-                                    BackgroundColor="Orange"
-                                    BorderColor="Red"
-                                    BorderWidth="2"
-                                    Clicked="OptionButton_Clicked"
-                                    CommandParameter="Skirt"
-                                    Text="Skirt"
-                                    TextColor="Red" />
-                                <Button
-                                    Grid.Row="1"
-                                    Grid.Column="1"
-                                    BackgroundColor="Orange"
-                                    BorderColor="Red"
-                                    BorderWidth="2"
-                                    Clicked="OptionButton_Clicked"
-                                    CommandParameter="Pants"
-                                    Text="Pants"
-                                    TextColor="Red" />
-                                <Button
-                                    Grid.Row="1"
-                                    Grid.Column="2"
-                                    BackgroundColor="Orange"
-                                    BorderColor="Red"
-                                    BorderWidth="2"
-                                    Clicked="OptionButton_Clicked"
-                                    CommandParameter="Dress"
-                                    Text="Dress"
-                                    TextColor="Red" />
-                                <Button
-                                    Grid.Row="1"
-                                    Grid.Column="3"
-                                    BackgroundColor="Orange"
-                                    BorderColor="Red"
-                                    BorderWidth="2"
-                                    Clicked="OptionButton_Clicked"
-                                    CommandParameter="Belt"
-                                    Text="Belt"
-                                    TextColor="Red" />
-                                <Button
-                                    Grid.Row="2"
-                                    Grid.Column="0"
-                                    BackgroundColor="Orange"
-                                    BorderColor="Red"
-                                    BorderWidth="2"
-                                    Clicked="OptionButton_Clicked"
-                                    CommandParameter="shoe"
-                                    Text="Shoe"
-                                    TextColor="Red" />
-                                <Button
-                                    Grid.Row="2"
-                                    Grid.Column="1"
-                                    BackgroundColor="Orange"
-                                    BorderColor="Red"
-                                    BorderWidth="2"
-                                    Clicked="OptionButton_Clicked"
-                                    CommandParameter="leg"
-                                    Text="Leg"
-                                    TextColor="Red" />
-                                <Button
-                                    Grid.Row="2"
-                                    Grid.Column="2"
-                                    BackgroundColor="Orange"
-                                    BorderColor="Red"
-                                    BorderWidth="2"
-                                    Clicked="OptionButton_Clicked"
-                                    CommandParameter="arm"
-                                    Text="Arm"
-                                    TextColor="Red" />
-                                <Button
-                                    Grid.Row="2"
-                                    Grid.Column="3"
-                                    BackgroundColor="Orange"
-                                    BorderColor="Red"
-                                    BorderWidth="2"
-                                    Clicked="OptionButton_Clicked"
-                                    CommandParameter="Bag"
-                                    Text="Bag"
-                                    TextColor="Red" />
-                                <Button
-                                    Grid.Row="3"
-                                    Grid.Column="0"
-                                    BackgroundColor="Orange"
-                                    BorderColor="Red"
-                                    BorderWidth="2"
-                                    Clicked="OptionButton_Clicked"
-                                    CommandParameter="Scarf"
-                                    Text="Scarf"
-                                    TextColor="Red" />
-                            </Grid>
-                        </Frame>
-                    </VerticalStackLayout>
-
-                    <BoxView
-                        HeightRequest="1"
-                        HorizontalOptions="FillAndExpand"
-                        Color="Silver" />
-
-                    <Frame
-                        Margin="0,20"
-                        BackgroundColor="#80000000"                                          
-                        HasShadow="True"
-                        HorizontalOptions="Center"
-                        HeightRequest="50"
-                        WidthRequest="220">
-                        <Frame.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.60"
-                                Radius="5"
-                                Offset="4, 4" />
-                        </Frame.Shadow>
-
-                        <Button
-                            x:Name="CombineImagesButton"                           
-                            BackgroundColor="Transparent"
-                            BorderColor="White"
-                            BorderWidth="1"
-                            Clicked="OnCombineImages_Clicked"
-                            FontSize="16"
-                            HorizontalOptions="Center"
-                            Text="Create New Image"
-                            TextColor="White"
-                            HeightRequest="50"
-                            WidthRequest="220" />
-                    </Frame>
-
-                    <ActivityIndicator
-                        x:Name="LoadingIndicator"
-                        Margin="0,20"
-                        HorizontalOptions="Center"
-                        IsRunning="False"
-                        IsVisible="False"
-                        Color="Azure" />
-
-                    <Image
-                        x:Name="ResponseImage"
-                        Margin="0,20"
-                        Aspect="AspectFit"
-                        HeightRequest="300"
-                        IsVisible="False" />
-
-                    <Label
-                        x:Name="ResponseText"
-                        Margin="0,10"
-                        FontSize="18"
-                        HorizontalOptions="Center"
-                        IsVisible="False" />
-
-                    <Button
-                        x:Name="SaveButton"
-                        Margin="0,20"
-                        Clicked="OnSaveClicked"
-                        HorizontalOptions="Center"
-                        IsEnabled="False"
-                        IsVisible="False"
-                        Text="Save Image"
-                        WidthRequest="160" />
 
                     <Label
                         x:Name="CounterLabel"

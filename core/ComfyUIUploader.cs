@@ -12,9 +12,11 @@ public class ComfyUIUploader
         _httpClient = new HttpClient();
     }
 
-    public async Task<string> UploadImageAsync(string filePath, bool isFromInAppGallery = false, string uploadType = "input")
+    //public async Task<string> UploadImageAsync(string filePath, bool isFromInAppGallery = false, string uploadType = "input")
+    public async Task<string> UploadImageAsync(string filePath)
     {
-        // Проверка дали файлът съществува
+        bool isFromInAppGallery = filePath.Contains("Gallery");
+
         if (!isFromInAppGallery && !File.Exists(filePath))
         {
             return $"{AppConstants.Errors.ERROR}: {AppConstants.Errors.FILE_NOT_FOUND}: {filePath}";
@@ -36,7 +38,7 @@ public class ComfyUIUploader
             form.Add(streamContent, "image", Path.GetFileName(filePath));
 
             // Добавяме и текстовото поле "type" (например "input" или "temp")
-            form.Add(new StringContent(uploadType), "type");
+            form.Add(new StringContent("input"), "type");
 
             // Изпращаме POST заявката
             var response = await _httpClient.PostAsync(url, form);

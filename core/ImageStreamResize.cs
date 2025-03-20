@@ -10,7 +10,7 @@ namespace FashionApp.core
             imageStream.Position = 0; // Нулиране на позицията
             using var original = SKBitmap.Decode(imageStream);
 
-            // Проверка дали е необходимо преоразмеряване
+            // Винаги връщам оригиналните размери за момента
             if (original.Width <= maxWidth && original.Height <= maxHeight)
             {
                 //imageStream.Position = 0;

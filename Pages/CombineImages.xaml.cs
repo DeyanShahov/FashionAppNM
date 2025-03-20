@@ -22,7 +22,7 @@ public partial class CombineImages : ContentPage
     private byte[] _imageData = [];
     private string _clothImagePath = String.Empty;
     private string _bodyImagePath = String.Empty;
-    private readonly bool _isAdmin = false;
+    public bool IsAdmin { get; set; } = false;
 
     private readonly SingleImageLoader singleImageLoader;
     private CameraService _cameraService;
@@ -40,16 +40,13 @@ public partial class CombineImages : ContentPage
 
     private bool isFromClothImage = true;
 
-    public CombineImages(bool isAdmin)
+    public CombineImages()
     {
         InitializeComponent();
 
-        BindingContext = this;
+        BindingContext = this;    
 
-        _isAdmin = isAdmin;
-        
-
-        ChoiseForMaskMethod.IsVisible = isAdmin;
+       
 
         _cameraService = new CameraService(MyCameraView, CameraPanel);
         _cameraService.ImageCaptured += OnImageCaptured;
@@ -75,6 +72,8 @@ public partial class CombineImages : ContentPage
     protected override void OnAppearing()
     {
         base.OnAppearing();
+
+        ChoiseForMaskMethod.IsVisible = IsAdmin;
 
         PanelButtons.IsVisible = false;
         PanelButtons2.IsVisible = false;
@@ -176,8 +175,18 @@ public partial class CombineImages : ContentPage
 
         try
         {
+            InputStack.IsVisible = false;
+            ResultStack.IsVisible = true;
+
+            //await Task.Delay(1000);
+
             ToggleLoading(true);
-            SetVisibilityForResult(false);
+            //SetVisibilityForResult(false);
+
+            //ResponseImage.IsVisible = toSet;
+            SaveButton.IsVisible = false;
+            SaveButton.IsEnabled = false;
+
             ResponseText.IsVisible = false;
 
             if (!await UploadImages()) return; // Качваме двата файла
@@ -215,7 +224,9 @@ public partial class CombineImages : ContentPage
             if (contentType != null && contentType.StartsWith("image/"))
             {
                 ResponseImage.Source = ImageSource.FromStream(() => new MemoryStream(_imageData));
-                SetVisibilityForResult(true);
+                //SetVisibilityForResult(true);
+                SaveButton.IsVisible = true;
+                SaveButton.IsEnabled = true;
             }
             else
             {
@@ -231,6 +242,17 @@ public partial class CombineImages : ContentPage
         finally
         {
             ToggleLoading(false);
+
+            //InputStack.IsVisible = true;
+            //ResultStack.IsVisible = false;
+
+            //_clothImagePath = String.Empty;
+            //_bodyImagePath = String.Empty;
+
+            //SelectedClothImage.Source = null;
+            //SelectedClothImage.Source = "Icons/blank_image_photo.png";
+            //SelectedBodyImage.Source = null;
+            //SelectedBodyImage.Source = "Icons/blank_image_photo.png";
         }
     }
 
@@ -265,6 +287,14 @@ public partial class CombineImages : ContentPage
         PanelButtons2.IsVisible = false;
         _cameraService.StopCamera();
     }
+
+    private void OnBackButtonClicked(object sender, EventArgs e)
+    {
+        ReturnToCombinePageAfterBackOrSave();
+    }
+
+   
+
     private async void OnSaveClicked(object sender, EventArgs e)
     {
         if (_imageData == null) return;
@@ -282,6 +312,7 @@ public partial class CombineImages : ContentPage
 #elif ANDROID
             FashionApp.core.services.SaveImageToAndroid.Save(fileName, stream,  AppConstants.ImagesConstants.IMAGES_CREATED_IMAGES);
 #endif
+            ReturnToCombinePageAfterBackOrSave();
         }
         catch (Exception ex)
         {
@@ -320,11 +351,6 @@ public partial class CombineImages : ContentPage
         //SetActiveButton((ImageButton)sender);
 
         string? futureImageName = new MacroIconToPhoto(value).Value;
-
-        //bool res1 = futureImageName == null;
-        //bool res2 = futureImageName == "Default";
-
-        //if (res1 || res2) return;
 
         if (futureImageName == null || futureImageName == "Default") return;
 
@@ -398,18 +424,11 @@ public partial class CombineImages : ContentPage
         var uploader = new ComfyUIUploader(ApiUrl);
         if (!string.IsNullOrEmpty(_clothImagePath) && !string.IsNullOrEmpty(_bodyImagePath))
         {
-            //if (_clothImagePath.Contains("testgallery"))
-            //{
-            //    await UploadEmbeddedImageAsync(_clothImagePath);
-            //    return true;
-            //}
-            //else
-            //{
-                
-            //}
+            //await uploader.UploadImageAsync(_clothImagePath, !_clothImagePath.Contains("storage"), "input"); // Качваме първата картинка            
+            //await uploader.UploadImageAsync(_bodyImagePath, !_bodyImagePath.Contains("storage"), "input"); // Качваме втората картинка
 
-            await uploader.UploadImageAsync(_clothImagePath, !_clothImagePath.Contains("storage"), "input"); // Качваме първата картинка            
-            await uploader.UploadImageAsync(_bodyImagePath, !_bodyImagePath.Contains("storage"), "input"); // Качваме втората картинка
+            await uploader.UploadImageAsync(_clothImagePath); // Качваме първата картинка            
+            await uploader.UploadImageAsync(_bodyImagePath); // Качваме втората картинка
 
 
             DeleteTemporaryImage();
@@ -544,7 +563,8 @@ public partial class CombineImages : ContentPage
             _clothImagePath = resultPath;
 
             // Задаване на източника на изображението
-            SelectedClothImage.Source = ImageSource.FromFile(resultPath);
+            //SelectedClothImage.Source = ImageSource.FromFile(resultPath);
+            SelectedClothImage.Source = ImageSource.FromFile(_clothImagePath);
 
             // Настройка на ширината и височината на изображението
             //SelectedClothImage.WidthRequest = Application.Current.MainPage.Width;
@@ -800,12 +820,36 @@ public partial class CombineImages : ContentPage
         LoadingIndicator.IsRunning = isLoading;
         LoadingIndicator.IsVisible = isLoading;
     }
-    private void SetVisibilityForResult(bool toSet)
+    //private void SetVisibilityForResult(bool toSet)
+    //{
+
+    //    ResponseImage.IsVisible = toSet;
+    //    SaveButton.IsVisible = toSet;
+    //    SaveButton.IsEnabled = toSet;
+    //}
+
+    private void ReturnToCombinePageAfterBackOrSave()
     {
-        ResponseImage.IsVisible = toSet;
-        SaveButton.IsVisible = toSet;
-        SaveButton.IsEnabled = toSet;
+        ToggleLoading(false);
+        //SetVisibilityForResult(true);
+
+        SaveButton.IsVisible = false;
+        SaveButton.IsEnabled = false;
+
+        InputStack.IsVisible = true;
+        ResultStack.IsVisible = false;
+
+        _clothImagePath = String.Empty;
+        _bodyImagePath = String.Empty;
+
+        SelectedClothImage.Source = null;
+        SelectedClothImage.Source = "Icons/blank_image_photo.png";
+        SelectedBodyImage.Source = null;
+        SelectedBodyImage.Source = "Icons/blank_image_photo.png";
+        ResponseImage.Source = null;
+        ResponseImage.Source = "Icons/blank_image_photo_2.png";
     }
+
     private void SetActiveButton(ImageButton activeButton)
     {
         // Списък с всички бутони, които трябва да се управляват

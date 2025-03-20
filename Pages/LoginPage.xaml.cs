@@ -27,7 +27,8 @@ public partial class LoginPage : ContentPage
         if (isAuthenticated)
         {
             // Navigate to MainPage upon successful login
-            await Navigation.PushAsync(new MainPage());
+            var page = MauiProgram.ServiceProvider.GetRequiredService<MainPage>();
+            await Navigation.PushAsync(page);
         }
         else
         {
@@ -43,6 +44,7 @@ public partial class LoginPage : ContentPage
 
     private async void LoginAsGuestButton_Clicked(object sender, EventArgs e)
     {
-        await Navigation.PushAsync(new MainPage());
+        var page = MauiProgram.ServiceProvider.GetRequiredService<MainPage>();
+        await Navigation.PushAsync(page);
     }
 }

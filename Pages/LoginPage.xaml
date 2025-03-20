@@ -1,122 +1,127 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="FashionApp.Pages.LoginPage"
-             Title="Login"
-             BackgroundImageSource="loading_page_image.png">
+<ContentPage
+    x:Class="FashionApp.Pages.LoginPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Login"
+    BackgroundImageSource="loading_page_image.png">
 
     <Grid>
         <VerticalStackLayout
             Padding="30,0"
-            Spacing="25"
+            HorizontalOptions="CenterAndExpand"
             IsVisible="False"
-            VerticalOptions="CenterAndExpand"
-            HorizontalOptions="CenterAndExpand">
+            Spacing="25"
+            VerticalOptions="CenterAndExpand">
 
             <Label
-                Text="Login"
                 FontSize="24"
-                HorizontalOptions="Center" />
+                HorizontalOptions="Center"
+                Text="Login" />
 
             <Entry
                 x:Name="UsernameEntry"
+                Margin="0,10,0,0"
+                BackgroundColor="White"
+                HeightRequest="40"
+                HorizontalOptions="FillAndExpand"
                 Placeholder="Username"
                 PlaceholderColor="Gray"
                 TextColor="Black"
-                BackgroundColor="White"
-                Margin="0,10,0,0"
-                HeightRequest="40"
-                HorizontalOptions="FillAndExpand"
                 VerticalOptions="Center" />
 
             <Entry
                 x:Name="PasswordEntry"
+                Margin="0,10,0,0"
+                BackgroundColor="White"
+                HeightRequest="40"
+                HorizontalOptions="FillAndExpand"
+                IsPassword="True"
                 Placeholder="Password"
                 PlaceholderColor="Gray"
                 TextColor="Black"
-                BackgroundColor="White"
-                IsPassword="True"
-                Margin="0,10,0,0"
-                HeightRequest="40"
-                HorizontalOptions="FillAndExpand"
                 VerticalOptions="Center" />
 
             <Button
-                Text="Login"
                 Clicked="OnLoginClicked"
-                HorizontalOptions="Center" />
+                HorizontalOptions="Center"
+                Text="Login" />
 
             <Label
                 x:Name="LoginStatusLabel"
+                HorizontalOptions="Center"
                 Text=""
-                TextColor="Red"
-                HorizontalOptions="Center" />
+                TextColor="Red" />
         </VerticalStackLayout>
 
         <VerticalStackLayout
+            Margin="0,0,10,0"
             HorizontalOptions="End"
-            VerticalOptions="Center"
             Spacing="20"
-            Margin="0,0,10,0">
-            
-            <Button
-                Text="Sign In"
-                WidthRequest="150"
-                HeightRequest="50"
-                BackgroundColor="#512BD4"
-                TextColor="White"
-                CornerRadius="25"/>
+            VerticalOptions="Center">
 
             <Button
-                Text="Register"
-                WidthRequest="150"
-                HeightRequest="50"
                 BackgroundColor="#512BD4"
+                CornerRadius="25"
+                HeightRequest="50"
+                Text="Sign In"
                 TextColor="White"
-                CornerRadius="25"/>
+                WidthRequest="150" />
+
+            <Button
+                BackgroundColor="#512BD4"
+                CornerRadius="25"
+                HeightRequest="50"
+                Text="Register"
+                TextColor="White"
+                WidthRequest="150" />
 
             <Grid Margin="0,10">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                
-                <Line 
+
+                <Line
                     Grid.Column="0"
-                    X1="0" Y1="10"
-                    X2="50" Y2="10"
+                    HorizontalOptions="Fill"
                     Stroke="#512BD4"
                     StrokeThickness="2"
-                    HorizontalOptions="Fill"/>
-                
-                <Label 
+                    X1="0"
+                    X2="50"
+                    Y1="10"
+                    Y2="10" />
+
+                <Label
                     Grid.Column="1"
+                    Margin="10,0"
+                    FontSize="16"
                     Text=" OR "
                     TextColor="#512BD4"
-                    FontSize="16"
-                    VerticalOptions="Center"
-                    Margin="10,0"/>
-                
-                <Line 
+                    VerticalOptions="Center" />
+
+                <Line
                     Grid.Column="2"
-                    X1="0" Y1="10"
-                    X2="50" Y2="10"
+                    HorizontalOptions="Fill"
                     Stroke="#512BD4"
                     StrokeThickness="2"
-                    HorizontalOptions="Fill"/>
+                    X1="0"
+                    X2="50"
+                    Y1="10"
+                    Y2="10" />
             </Grid>
 
             <Button
                 x:Name="LoginAsGuestButton"
-                Text="Login as GUEST"
-                WidthRequest="150"
-                HeightRequest="50"
                 BackgroundColor="#512BD4"
-                TextColor="White"
+                Clicked="LoginAsGuestButton_Clicked"
                 CornerRadius="25"
-                Clicked="LoginAsGuestButton_Clicked"/>
-                
+                HeightRequest="50"
+                Text="Login as GUEST"
+                TextColor="White"
+                WidthRequest="150" />
+
         </VerticalStackLayout>
     </Grid>
 

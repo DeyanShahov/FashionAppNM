@@ -106,5 +106,16 @@
             public const string INPUT_IMAGE_CLOTH = "input_image_cloth.png";
             public const string INPUT_IMAGE_BODY = "input_image_body.png";
         }
+
+        public static class Pages
+        {
+            public const string EDITOR = "EditorPage";
+            public const string PARTNERS = "PartnersPage";
+            public const string WEB_VIEW = "WebPage";
+            public const string RESULTS_GALLERY = "ResultsGallery";
+            public const string MASKS_GALLERY = "MasksGallery";
+            public const string WEB_GALLERY = "WebGallery";
+            public const string COMBINE_IMAGES = "CombinePage";
+        }
     }
 }
