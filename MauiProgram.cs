@@ -31,11 +31,14 @@ namespace FashionApp
             //builder.Services.AddTransient<App>();
             //builder.Services.AddTransient<LoginPage>();
             builder.Services.AddSingleton<MainPage>();
-            builder.Services.AddSingleton<MaskEditor>();
-            builder.Services.AddSingleton<PartnersPage>();
-            builder.Services.AddSingleton<WebViewPage>();
+            builder.Services.AddTransient<MaskEditor>();
+            builder.Services.AddTransient<PartnersPage>();
+            builder.Services.AddTransient<WebViewPage>();
             builder.Services.AddTransient<BaseGallery>();
-            builder.Services.AddSingleton<CombineImages>();
+            builder.Services.AddTransient<CombineImages>();
+
+            builder.Services.AddTransient<ImageEditPage>();
+            builder.Services.AddSingleton<TemporaryGallery>();
 
 #if DEBUG
             builder.Logging.AddDebug();

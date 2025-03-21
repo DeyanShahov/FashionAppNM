@@ -55,6 +55,7 @@ public class ComfyUIUploader
         }
         catch (Exception ex)
         {
+            var error = ex.ToString();
             return $"{AppConstants.Errors.UPLOAD_EXCEPTION}: {ex.Message}";
         }
     }

@@ -1,11 +1,7 @@
 ﻿using CommunityToolkit.Maui.Core.Platform;
 using FashionApp.core.services;
 using FashionApp.Data.Constants;
-using FashionApp.Pages;
-using Newtonsoft.Json;
-using System.Collections.ObjectModel;
 using System.Text;
-using System.Text.Json;
 
 namespace FashionApp.Pages
 {
@@ -64,8 +60,8 @@ namespace FashionApp.Pages
             //Monkeys.Clear();
             //monkeys.ToList().ForEach( monkey => Monkeys.Add(monkey));
 
-            double screenWidth = DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density;
-            StartGaleery.WidthRequest = screenWidth;
+            //double screenWidth = DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density;
+            //StartGaleery.WidthRequest = screenWidth;
         }
 
         private void SetContentLabel()
@@ -179,6 +175,10 @@ namespace FashionApp.Pages
 
         private async void OnEditorButtonClicked(object sender, EventArgs e)
         {
+            bool pageAlreadyExists = Navigation.NavigationStack.Any(p => p is MaskEditor);
+            if (pageAlreadyExists) return;
+
+
             string taskKey = AppConstants.Pages.EDITOR;
             if (!_executionGuardService.TryStartTask(taskKey)) return;
 
@@ -196,7 +196,10 @@ namespace FashionApp.Pages
         }
 
         private async void PartnersPageButton_Clicked(object sender, EventArgs e)
-        {         
+        {
+            bool pageAlreadyExists = Navigation.NavigationStack.Any(p => p is PartnersPage);
+            if (pageAlreadyExists) return;
+
             string taskKey = AppConstants.Pages.PARTNERS;
             if (!_executionGuardService.TryStartTask(taskKey)) return;
             try
@@ -212,7 +215,10 @@ namespace FashionApp.Pages
         }
 
         private async void OnNavigateClickedToWeb(object sender, EventArgs e)
-        {      
+        {
+            bool pageAlreadyExists = Navigation.NavigationStack.Any(p => p is WebViewPage);
+            if (pageAlreadyExists) return;
+
             string taskKey = AppConstants.Pages.WEB_VIEW;
             if (!_executionGuardService.TryStartTask(taskKey)) return;
             try
@@ -228,7 +234,10 @@ namespace FashionApp.Pages
         }
 
         private async void GalleryButton_Clicked(object sender, EventArgs e)
-        {        
+        {
+            bool pageAlreadyExists = Navigation.NavigationStack.Any(p => p is BaseGallery);
+            if (pageAlreadyExists) return;
+
             string taskKey = AppConstants.Pages.RESULTS_GALLERY;
             if (!_executionGuardService.TryStartTask(taskKey)) return;
             try
@@ -249,7 +258,9 @@ namespace FashionApp.Pages
 
         private async void MaskGalleryButton_Clicked(object sender, EventArgs e)
         {
-            
+            bool pageAlreadyExists = Navigation.NavigationStack.Any(p => p is BaseGallery);
+            if (pageAlreadyExists) return;
+
             string taskKey = AppConstants.Pages.MASKS_GALLERY;
             if (!_executionGuardService.TryStartTask(taskKey)) return;
             try
@@ -270,7 +281,9 @@ namespace FashionApp.Pages
 
         private async void WebGalleryButton_Clicked(object sender, EventArgs e)
         {
-           
+            bool pageAlreadyExists = Navigation.NavigationStack.Any(p => p is BaseGallery);
+            if (pageAlreadyExists) return;
+
             string taskKey = AppConstants.Pages.WEB_GALLERY;
             if (!_executionGuardService.TryStartTask(taskKey)) return;
             try
@@ -292,7 +305,9 @@ namespace FashionApp.Pages
 
         private async void CombineImagesButton_Clicked(object sender, EventArgs e)
         {
-            
+            bool pageAlreadyExists = Navigation.NavigationStack.Any(p => p is CombineImages);
+            if (pageAlreadyExists) return;
+
             string taskKey = AppConstants.Pages.COMBINE_IMAGES;
             if (!_executionGuardService.TryStartTask(taskKey)) return;
 

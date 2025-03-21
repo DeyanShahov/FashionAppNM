@@ -4,6 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:views="clr-namespace:FashionApp.Pages.PartialView"
     Title="Editor Page"
     BackgroundImageSource="loading_page_image_2.png">
 
@@ -48,6 +49,7 @@
 
             <!--  Bottom Controls  -->
             <Grid
+                x:Name="CameraButtonsPanel"
                 Grid.Row="1"
                 Padding="10"
                 ColumnDefinitions="*,*,*"
@@ -85,7 +87,7 @@
                         TextColor="White" />
                 </Frame>
 
-                <Frame
+                <!--<Frame
                     Grid.Column="2"
                     Padding="5"
                     BackgroundColor="Black"
@@ -101,10 +103,11 @@
                         Text="MASK"
                         TextColor="White"
                         VerticalOptions="Center" />
-                </Frame>
+                </Frame>-->
             </Grid>
         </Grid>
 
+        <!--<views:CameraView/>-->
 
         <VerticalStackLayout
             x:Name="Menu1"
@@ -320,10 +323,10 @@
                     Text="Save" />
             </HorizontalStackLayout>
 
-            <Button
+            <!--<Button
                 Clicked="OnBackButtonClicked"
                 HorizontalOptions="Center"
-                Text="Back to Main Page" />
+                Text="Back to Main Page" />-->
         </VerticalStackLayout>
     </Grid>
 </ContentPage>

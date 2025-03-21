@@ -39,27 +39,19 @@
         <StackLayout x:Name="SavePanelOptions" IsVisible="False">
             <Frame
                 Margin="20"
-                BackgroundColor="#80000000"
+                BackgroundColor="Silver"
                 BorderColor="Black"
                 CornerRadius="5"
-                HasShadow="False"
                 HorizontalOptions="FillAndExpand"
                 VerticalOptions="CenterAndExpand"
                 WidthRequest="350">
-                <Frame.Shadow>
-                    <Shadow
-                        Brush="Red"
-                        Opacity="0.99"
-                        Radius="10"
-                        Offset="3, 3" />
-                </Frame.Shadow>
                 <StackLayout Spacing="10">
                     <Label
                         FontAttributes="Bold"
                         FontSize="Large"
                         HorizontalOptions="Center"
-                        Text="Choise how to save"
-                        TextColor="White"
+                        Text="CHOISE TYPE TO SAVE"
+                        TextColor="Black"
                         VerticalOptions="Center" />
 
                     <CarouselView HeightRequest="100" PeekAreaInsets="100">
@@ -86,7 +78,7 @@
                                 <Grid>
                                     <Image
                                         Aspect="AspectFit"
-                                        BackgroundColor="White"
+                                        BackgroundColor="Transparent"
                                         HeightRequest="80"
                                         Source="{Binding .}"
                                         WidthRequest="80">

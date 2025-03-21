@@ -116,6 +116,9 @@
             public const string MASKS_GALLERY = "MasksGallery";
             public const string WEB_GALLERY = "WebGallery";
             public const string COMBINE_IMAGES = "CombinePage";
+
+            public const string IMAGE_EDIT = "ImageEditPage";
+            public const string TEMP_GALLERY = "TemporaryGallery";
         }
     }
 }

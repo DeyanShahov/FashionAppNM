@@ -71,6 +71,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Platforms\Android\Resources\xml\network_security_config.xml" />
 	  <None Remove="Resources\Images\Icons\blank_image_photo.png" />
 	  <None Remove="Resources\Images\Icons\icons8_zoom_mode_60.png" />
 	  <None Remove="Resources\Images\Icons\icons_close.png" />
@@ -78,17 +79,12 @@
 	  <None Remove="Resources\Images\Icons\icons_save.png" />
 	  <None Remove="Resources\Images\Icons\icons_tools.png" />
 	  <None Remove="Resources\Images\Icons\icons_undo.png" />
+	  <None Remove="Resources\Images\Macros\icons_pants_short.png" />
 	  <None Remove="Resources\Images\Macros\icons_skirt_long.png" />
 	  <None Remove="Resources\Raw\Camera\top_body.png" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Content Include="Platforms\Android\Resources\a2.jpg">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </Content>
-	  <Content Include="Platforms\Android\Resources\a3.jpg">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </Content>
 	  <MauiImage Include="Resources\Images\Icons\blank_image_photo_2.png" />
 	  <MauiImage Include="Resources\Images\Icons\camera_regular_24.png" />
 	  <MauiImage Include="Resources\Images\Icons\folder_open_regular_24.png" />
@@ -108,10 +104,10 @@
 	  <MauiImage Include="Resources\Images\Macros\icons_jacket_open.png" />
 	  <MauiImage Include="Resources\Images\Macros\icons_jacket_closed.png" />
 	  <MauiImage Include="Resources\Images\Macros\icons_jacket.png" />
+	  <MauiImage Include="Resources\Images\Macros\icons_pants_short.png" />
 	  <MauiImage Include="Resources\Images\Macros\icons_raincoat.png" />
 	  <MauiImage Include="Resources\Images\Macros\icons_pants.png" />
 	  <MauiImage Include="Resources\Images\Macros\icons_shirt.png" />
-	  <MauiImage Include="Resources\Images\Macros\icons_pants_short.png" />
 	  <MauiImage Include="Resources\Images\Macros\icons_skirt.png" />
 	  <MauiImage Include="Resources\Images\Macros\icons_skirt_long.png" />
 	  <MauiImage Include="Resources\Images\Macros\icons_tank_top.png" />
@@ -190,6 +186,9 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Pages\ImageEditPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\PartialView\CameraView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Pages\PartnersPage.xaml">
@@ -293,6 +292,10 @@
 
 	<ItemGroup>
 	  <MauiImage Include="Resources\Images\Icons\blank_image_photo.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Resource Include="Platforms\Android\Resources\xml\network_security_config.xml" />
 	</ItemGroup>
 
 	<ItemGroup>

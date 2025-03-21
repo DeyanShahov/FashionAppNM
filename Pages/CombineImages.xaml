@@ -12,8 +12,6 @@
         <VerticalStackLayout>
 
             <Grid RowDefinitions="Auto, *, Auto">
-
-
                 <Grid
                     x:Name="CameraPanel"
                     IsEnabled="False"
@@ -34,6 +32,7 @@
                     </Frame>
 
                     <Grid
+                        x:Name="CameraButtonsPanel"
                         Grid.Row="2"
                         Padding="10"
                         ColumnDefinitions="*,Auto,*"
@@ -79,7 +78,7 @@
 
                         <Grid Grid.Row="1">
                             <Grid RowDefinitions="Auto,*,Auto">
-                                <Frame
+                                <!--<Frame
                                     x:Name="ButtonClose"
                                     Grid.Row="2"
                                     Padding="0"
@@ -101,7 +100,7 @@
                                         BackgroundColor="Transparent"
                                         Clicked="OnNavigateClicked"
                                         Source="Icons/icons_close.png" />
-                                </Frame>
+                                </Frame>-->
 
                                 <Grid Grid.Row="3">
                                     <Frame
@@ -1008,11 +1007,7 @@
                                 TextColor="White"
                                 WidthRequest="220" />
                         </Frame>
-
                     </VerticalStackLayout>
-
-
-
 
                     <VerticalStackLayout
                         x:Name="ResultStack"

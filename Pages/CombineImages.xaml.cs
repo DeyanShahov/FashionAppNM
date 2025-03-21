@@ -1,22 +1,18 @@
-using System.Text.Json;
-using System.Text;
+using FashionApp.core;
 using FashionApp.core.services;
 using FashionApp.Data.Constants;
-using FashionApp.core;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using CommunityToolkit.Maui.Views;
-using System.Reflection;
 using System.Collections.ObjectModel;
-using System.Windows.Input;
-//using static Android.Provider.MediaStore.Audio;
+using System.Reflection;
+using System.Text;
+using System.Text.Json;
 
 namespace FashionApp.Pages;
 
 public partial class CombineImages : ContentPage
 {
     private readonly HttpClient _client = new HttpClient { Timeout = TimeSpan.FromSeconds(300) };
-    private const string ApiUrl = "https://eminently-verified-walleye.ngrok-free.app";
+    private const string ApiUrl = "http://77.77.134.134:82";
+    //private const string ApiUrl = "https://eminently-verified-walleye.ngrok-free.app";
     //private const string ApiUrl = "http://192.168.0.101:80";
     //private const string ApiUrl = "http://127.0.0.1:80";
     private byte[] _imageData = [];
@@ -79,29 +75,15 @@ public partial class CombineImages : ContentPage
         PanelButtons2.IsVisible = false;
     }
 
-//    private async void OnJacketSelected(string jacket)
-//    {
-//        // Изпълнете желаното действие при избиране на яке
-//        //await Application.Current.MainPage.DisplayAlert("Избрано яке", $"Вие избрахте: {jacket}", "OK");
-
-//        string value = jacket.Remove(jacket.Length - 4).Remove(0, 13);
-
-//        if (string.IsNullOrEmpty(value)) return;
-
-//        string? futureImageName = new MacroIconToPhoto(value).Value;
-
-//        if (futureImageName == null || futureImageName == "Default") return;
-
-//#if ANDROID
-//        LoadLargeImage(futureImageName);
-//#endif
-//    }
-
     //---------------------------------------- BUTONS ACTIONS --------------------------------------------------------------
     private async void OnNavigateClicked(object sender, EventArgs e) => await Navigation.PopAsync();
     private void OnSelectClothImageClicked(object sender, EventArgs e) => SetAnImageAsSourceAsync(SelectedClothImage, nameof(_clothImagePath));
     private void OnSelectBodyImageClicked(object sender, EventArgs e) => SetAnImageAsSourceAsync(SelectedBodyImage, nameof(_bodyImagePath));
-    private void OnCaptureClicked(object sender, EventArgs e) => _cameraService.CaptureClicked();
+    private void OnCaptureClicked(object sender, EventArgs e)
+    {
+        CameraButtonsPanel.IsEnabled = false;
+        _cameraService.CaptureClicked();
+    }
     private void OnSelectedClothImageTapped(object sender, TappedEventArgs e) => PanelButtons.IsVisible = !PanelButtons.IsVisible;
     private void OnSelectedBodyImageTapped(object sender, TappedEventArgs e) => PanelButtons2.IsVisible = !PanelButtons2.IsVisible;
 
@@ -167,7 +149,9 @@ public partial class CombineImages : ContentPage
 
     private async void OnCombineImages_Clicked(object sender, EventArgs e)
     {
-        if (SelectedClothImage.Source == null || SelectedBodyImage.Source == null)
+        var result1 = SelectedClothImage.Source.ToString()?.Remove(0,6);
+        var result2 = SelectedBodyImage.Source.ToString()?.Remove(0, 6);
+        if (result1 == "Icons/blank_image_photo.png" || result2 == "Icons/blank_image_photo.png")
         {
             await DisplayAlert(AppConstants.Errors.ERROR, AppConstants.Errors.SELECT_BOTH_IMAGES, AppConstants.Messages.OK);
             return;
@@ -178,10 +162,7 @@ public partial class CombineImages : ContentPage
             InputStack.IsVisible = false;
             ResultStack.IsVisible = true;
 
-            //await Task.Delay(1000);
-
             ToggleLoading(true);
-            //SetVisibilityForResult(false);
 
             //ResponseImage.IsVisible = toSet;
             SaveButton.IsVisible = false;
@@ -192,47 +173,45 @@ public partial class CombineImages : ContentPage
             if (!await UploadImages()) return; // Качваме двата файла
 
             // Изпращаме POST заявка към API
-            await Task.Delay(5000); // Изчакване от 5 секунди
+            //await Task.Delay(5000); // Изчакване от 5 секунди
 
-            var requestUrl = $"{ApiUrl}/{AppConstants.Parameters.CONFY_FUNCTION_COMBINE_ENDPOINT}";
-            var requestBody = new
-            {
-                function_name = AppConstants.Parameters.CONFY_FUNCTION_GENERATE_NAME,
-                cloth_image = AppConstants.Parameters.INPUT_IMAGE_CLOTH,
-                body_image = AppConstants.Parameters.INPUT_IMAGE_BODY,
-                mask_detection_method = maskDetectionMethod, // Задаване типа на маската: ръчна ( true ) / АI ( false )
-                //args = selectedOptionsForZoneToMarcFromAI2 // Списъка с евентуалните зони за маркиране от АЙ-то
-                args = GetNeededCollectionOfButtons(maskDetectionMethod) // Списъка с евентуалните зони за маркиране от АЙ-то
-            };
+            //var requestUrl = $"{ApiUrl}/{AppConstants.Parameters.CONFY_FUNCTION_COMBINE_ENDPOINT}";
+            //var requestBody = new
+            //{
+            //    function_name = AppConstants.Parameters.CONFY_FUNCTION_GENERATE_NAME,
+            //    cloth_image = AppConstants.Parameters.INPUT_IMAGE_CLOTH,
+            //    body_image = AppConstants.Parameters.INPUT_IMAGE_BODY,
+            //    mask_detection_method = maskDetectionMethod, // Задаване типа на маската: ръчна ( true ) / АI ( false )
+            //    args = GetNeededCollectionOfButtons(maskDetectionMethod) // Списъка с евентуалните зони за маркиране от АЙ-то
+            //};
 
-            var jsonContent = new StringContent(
-                JsonSerializer.Serialize(requestBody),
-                Encoding.UTF8,
-                "application/json"
-            );
+            //var jsonContent = new StringContent(
+            //    JsonSerializer.Serialize(requestBody),
+            //    Encoding.UTF8,
+            //    "application/json"
+            //);
 
-            var response = await _client.PostAsync(requestUrl, jsonContent);
+            //var response = await _client.PostAsync(requestUrl, jsonContent);
 
-            if (!response.IsSuccessStatusCode)
-            {
-                throw new HttpRequestException($"HTTP {AppConstants.Errors.ERROR}: {response.StatusCode}");
-            }
+            //if (!response.IsSuccessStatusCode)
+            //{
+            //    throw new HttpRequestException($"HTTP {AppConstants.Errors.ERROR}: {response.StatusCode}");
+            //}
 
-            var contentType = response.Content.Headers.ContentType?.MediaType;
-            _imageData = await response.Content.ReadAsByteArrayAsync();
+            //var contentType = response.Content.Headers.ContentType?.MediaType;
+            //_imageData = await response.Content.ReadAsByteArrayAsync();
 
-            if (contentType != null && contentType.StartsWith("image/"))
-            {
-                ResponseImage.Source = ImageSource.FromStream(() => new MemoryStream(_imageData));
-                //SetVisibilityForResult(true);
-                SaveButton.IsVisible = true;
-                SaveButton.IsEnabled = true;
-            }
-            else
-            {
-                ResponseText.Text = Encoding.UTF8.GetString(_imageData);
-                ResponseText.IsVisible = true;
-            }
+            //if (contentType != null && contentType.StartsWith("image/"))
+            //{
+            //    ResponseImage.Source = ImageSource.FromStream(() => new MemoryStream(_imageData));
+            //    SaveButton.IsVisible = true;
+            //    SaveButton.IsEnabled = true;
+            //}
+            //else
+            //{
+            //    ResponseText.Text = Encoding.UTF8.GetString(_imageData);
+            //    ResponseText.IsVisible = true;
+            //}
         }
         catch (Exception ex)
         {
@@ -242,17 +221,6 @@ public partial class CombineImages : ContentPage
         finally
         {
             ToggleLoading(false);
-
-            //InputStack.IsVisible = true;
-            //ResultStack.IsVisible = false;
-
-            //_clothImagePath = String.Empty;
-            //_bodyImagePath = String.Empty;
-
-            //SelectedClothImage.Source = null;
-            //SelectedClothImage.Source = "Icons/blank_image_photo.png";
-            //SelectedBodyImage.Source = null;
-            //SelectedBodyImage.Source = "Icons/blank_image_photo.png";
         }
     }
 
@@ -292,8 +260,6 @@ public partial class CombineImages : ContentPage
     {
         ReturnToCombinePageAfterBackOrSave();
     }
-
-   
 
     private async void OnSaveClicked(object sender, EventArgs e)
     {
@@ -355,9 +321,7 @@ public partial class CombineImages : ContentPage
         if (futureImageName == null || futureImageName == "Default") return;
 
 #if ANDROID
-        //LoadLargeImage(AppConstants.ImagesConstants.CLOSED_JACKET_MASK);
         LoadLargeImage(futureImageName);
-
 #endif
     }
 
@@ -424,12 +388,8 @@ public partial class CombineImages : ContentPage
         var uploader = new ComfyUIUploader(ApiUrl);
         if (!string.IsNullOrEmpty(_clothImagePath) && !string.IsNullOrEmpty(_bodyImagePath))
         {
-            //await uploader.UploadImageAsync(_clothImagePath, !_clothImagePath.Contains("storage"), "input"); // Качваме първата картинка            
-            //await uploader.UploadImageAsync(_bodyImagePath, !_bodyImagePath.Contains("storage"), "input"); // Качваме втората картинка
-
             await uploader.UploadImageAsync(_clothImagePath); // Качваме първата картинка            
             await uploader.UploadImageAsync(_bodyImagePath); // Качваме втората картинка
-
 
             DeleteTemporaryImage();
             return true;
@@ -459,14 +419,6 @@ public partial class CombineImages : ContentPage
     {
         try
         {
-            //using var stream2 = await FileSystem.OpenAppPackageFileAsync(fileName);
-            //using var stream = await FileSystem.OpenAppPackageFileAsync(fileName);
-            //using var memoryStream = new MemoryStream();
-            //await stream.CopyToAsync(memoryStream);
-            //byte[] imageData = memoryStream.ToArray();
-
-            //var filePath = Path.Combine(FileSystem.AppDataDirectory, Path.GetFileName(fileName));
-            //using var stream = File.OpenRead(filePath);
             var result = Path.Combine("EmbeddedResource", Path.GetFileName(fileName));
             using var stream = File.OpenRead(result);
             using var memoryStream = new MemoryStream();
@@ -479,14 +431,8 @@ public partial class CombineImages : ContentPage
             using var client = new HttpClient();
             var response = await client.PostAsync("http://127.0.0.1:8188/upload_image", content);
 
-            if (response.IsSuccessStatusCode)
-            {
-                Console.WriteLine("Image uploaded successfully!");
-            }
-            else
-            {
-                Console.WriteLine($"Upload failed: {response.StatusCode}");
-            }
+            if (response.IsSuccessStatusCode) Console.WriteLine("Image uploaded successfully!");
+            else Console.WriteLine($"Upload failed: {response.StatusCode}");
         }
         catch (Exception ex)
         {
@@ -532,9 +478,8 @@ public partial class CombineImages : ContentPage
         PanelButtons2.IsVisible = false;
         _cameraService.StopCamera();
         HideMenus();
+        CameraButtonsPanel.IsEnabled = true;
     }
-
-
 
     private async void TestGalleryButton_Clicked(object sender, EventArgs e)
     {
@@ -561,36 +506,13 @@ public partial class CombineImages : ContentPage
         if(isFromClothImage)
         {
             _clothImagePath = resultPath;
-
-            // Задаване на източника на изображението
-            //SelectedClothImage.Source = ImageSource.FromFile(resultPath);
-            SelectedClothImage.Source = ImageSource.FromFile(_clothImagePath);
-
-            // Настройка на ширината и височината на изображението
-            //SelectedClothImage.WidthRequest = Application.Current.MainPage.Width;
-            //SelectedClothImage.HeightRequest = Application.Current.MainPage.Height;
-
-            // Центриране на изображението
-            //SelectedClothImage.HorizontalOptions = LayoutOptions.Center;
-            //SelectedClothImage.VerticalOptions = LayoutOptions.Center;
-            // Показване на елементите
+            SelectedClothImage.Source = ImageSource.FromFile(resultPath);
             SelectedClothImage.IsVisible = true;
         }
         else
         {
             _bodyImagePath = resultPath;
-
-            // Задаване на източника на изображението
             SelectedBodyImage.Source = ImageSource.FromFile(resultPath);
-
-            // Настройка на ширината и височината на изображението
-            //SelectedClothImage.WidthRequest = Application.Current.MainPage.Width;
-            //SelectedClothImage.HeightRequest = Application.Current.MainPage.Height;
-
-            // Центриране на изображението
-            //SelectedClothImage.HorizontalOptions = LayoutOptions.Center;
-            //SelectedClothImage.VerticalOptions = LayoutOptions.Center;
-            // Показване на елементите
             SelectedBodyImage.IsVisible = true;
         }
        
@@ -646,8 +568,7 @@ public partial class CombineImages : ContentPage
         }
     }
     private async void SetAnImageAsSourceAsync(Image image, string imageToSave)
-    {
-        
+    {      
         try
         {
             var result = await FilePicker.PickAsync(new PickOptions
@@ -682,7 +603,6 @@ public partial class CombineImages : ContentPage
 
         PanelButtons.IsVisible = false;
         PanelButtons2.IsVisible = false;
-
     }
 
 #if WINDOWS
@@ -728,33 +648,6 @@ public partial class CombineImages : ContentPage
         {
             var fileChecker = App.Current?.Handler.MauiContext?.Services.GetService<IFileChecker>();
 
-            //var fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.CLOSED_JACKET_MASK);
-            //if (fileExists)
-            //{
-            //    ClosedJacketImageButton.IsEnabled = toSet;
-            //    ClosedJacketImageButton.IsVisible = toSet;
-
-            //    Jackets.Add( new JacketModel { ImagePath = "Macros/icons_jacket_closed.png", Data = "jacket_closed"  });
-            //}
-
-            //fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.OPEN_JACKET_MASK);
-            //if (fileExists)
-            //{
-            //    OpenJacketImageButton.IsEnabled = toSet;
-            //    OpenJacketImageButton.IsVisible = toSet;
-
-            //    Jackets.Add( new JacketModel { ImagePath = "Macros/icons_jacket_open.png", Data = "jacket_open" });
-            //}
-
-            //fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.DRESS_MASK);
-            //if (fileExists)
-            //{
-            //    DressButton.IsEnabled = toSet;
-            //    DressButton.IsVisible = toSet;
-
-            //    Jackets.Add( new JacketModel { ImagePath = "Macros/icons_dress.png", Data = "dress" });
-            //}
-
             var fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.DRESS_MASK);
             if (fileExists) Jackets.Add( new JacketModel { ImagePath = "Macros/icons_dress.png", Data = "dress" });
 
@@ -793,14 +686,12 @@ public partial class CombineImages : ContentPage
 
             fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.TANK_TOP_MASK );
             if (fileExists) Jackets.Add( new JacketModel { ImagePath = "Macros/icons_tank_top.png", Data = "tank_top" });
-
         }
         catch (Exception ex)
         {
             Console.WriteLine($"{AppConstants.Errors.ERROR_CKECK_MASKS}: {ex.Message}");
         }
     }
-
 
     private async void LoadLargeImage(string imageUri)
     {
@@ -820,18 +711,10 @@ public partial class CombineImages : ContentPage
         LoadingIndicator.IsRunning = isLoading;
         LoadingIndicator.IsVisible = isLoading;
     }
-    //private void SetVisibilityForResult(bool toSet)
-    //{
-
-    //    ResponseImage.IsVisible = toSet;
-    //    SaveButton.IsVisible = toSet;
-    //    SaveButton.IsEnabled = toSet;
-    //}
 
     private void ReturnToCombinePageAfterBackOrSave()
     {
         ToggleLoading(false);
-        //SetVisibilityForResult(true);
 
         SaveButton.IsVisible = false;
         SaveButton.IsEnabled = false;
@@ -878,7 +761,5 @@ public partial class CombineImages : ContentPage
             activeButton.Scale = 1.1;
         }
     }
-    private void HideMenus() => Menu1.IsVisible = !Menu1.IsVisible;
-
-    
+    private void HideMenus() => Menu1.IsVisible = !Menu1.IsVisible; 
 }

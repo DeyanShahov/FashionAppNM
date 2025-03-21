@@ -3,6 +3,7 @@ using FashionApp.core.draw;
 using FashionApp.core.services;
 using FashionApp.Data.Constants;
 using SkiaSharp;
+using System.Text.RegularExpressions;
 
 namespace FashionApp.Pages;
 
@@ -10,6 +11,7 @@ public partial class MaskEditor : ContentPage
 {
     //public string DynamicParameter { get; set; }
     public bool _isAdmin { get; set; } = false;
+    private readonly ExecutionGuardService _executionGuardService;
 
     private List<DrawingLine> _lines = new();
     private DrawingLine _currentLine = new();
@@ -17,10 +19,10 @@ public partial class MaskEditor : ContentPage
     private string imageFileName = $"masked_image_{DateTime.Now:yyyyMMdd_HHmmss}.png";
     private readonly CameraService _cameraService;
 
-    public MaskEditor()//(bool isAdmin)
+    public MaskEditor(ExecutionGuardService executionGuard)
     {
         InitializeComponent();
-        //_isAdmin = isAdmin;
+        _executionGuardService = executionGuard;
 
         SetParameters(_isAdmin);
 
@@ -42,7 +44,7 @@ public partial class MaskEditor : ContentPage
         }
     }
 
-    private async void OnBackButtonClicked(object sender, EventArgs e) => await Navigation.PopAsync();
+    //private async void OnBackButtonClicked(object sender, EventArgs e) => await Navigation.PopAsync();
     private async void OnSelectImageClicked(object sender, EventArgs e)
     {
         try
@@ -53,7 +55,26 @@ public partial class MaskEditor : ContentPage
                 PickerTitle = AppConstants.Messages.PICK_AN_IMAGE
             });
 
-            if (result != null) await Navigation.PushModalAsync(new ImageEditPage(result.FullPath));
+            if (result != null)
+            {           
+                bool pageAlreadyExists = Navigation.ModalStack.Any(p => p is ImageEditPage);
+                if (pageAlreadyExists) return;
+
+                string taskKey = AppConstants.Pages.IMAGE_EDIT;
+                if (!_executionGuardService.TryStartTask(taskKey)) return;
+
+                try
+                {
+                    //await Navigation.PushModalAsync(new ImageEditPage(result.FullPath));
+                    var page = MauiProgram.ServiceProvider.GetRequiredService<ImageEditPage>();
+                    page.ImageUri = result.FullPath;
+                    await Navigation.PushModalAsync(page);
+                }
+                finally
+                {
+                    _executionGuardService.FinishTask(taskKey);
+                }
+            }
             else
                 await DisplayAlert(AppConstants.Errors.ERROR, AppConstants.Errors.SELECT_A_VALID_IMAGE, AppConstants.Messages.OK);
 
@@ -74,47 +95,73 @@ public partial class MaskEditor : ContentPage
             await DisplayAlert(AppConstants.Errors.ERROR, $"{AppConstants.Errors.ERROR}: {ex.Message}", AppConstants.Messages.OK);
         }
     }
-    private async void OpenImageEditor_Clicked(object sender, EventArgs e)
-    {
-        var file = await FilePicker.PickAsync(new PickOptions
-        {
-            FileTypes = FilePickerFileType.Images,
-            PickerTitle = AppConstants.Messages.PICK_AN_IMAGE
-        });
+    //private async void OpenImageEditor_Clicked(object sender, EventArgs e)
+    //{
+    //    var file = await FilePicker.PickAsync(new PickOptions
+    //    {
+    //        FileTypes = FilePickerFileType.Images,
+    //        PickerTitle = AppConstants.Messages.PICK_AN_IMAGE
+    //    });
 
-        // Отваряне на модалния прозорец с пътя на изображението
-        if (file != null) await Navigation.PushModalAsync(new ImageEditPage(file.FullPath));
-    }
+    //    // Отваряне на модалния прозорец с пътя на изображението
+    //    if (file != null) await Navigation.PushModalAsync(new ImageEditPage(file.FullPath));
+    //}
 
     private async void TestGalleryButton_Clicked(object sender, EventArgs e)
     {
+        bool pageAlreadyExists1 = Navigation.ModalStack.Any(p => p is TemporaryGallery);
+        if (pageAlreadyExists1) return;
+
         var tempGallery = new TemporaryGallery();
         await Navigation.PushModalAsync(tempGallery);
         string selectedImageName = await tempGallery.ImageSelectedTask.Task;
-        //SelectedImage.Source = selectedImageName;
-        //await ProcessAndCleanupImageAsync($"TestGallery/{selectedImageName}.jpg");
 
-        //Stream stream = await FileSystem.OpenAppPackageFileAsync($"TestGallery/{selectedImageName}.jpg");
 
-        //var assembly = Assembly.GetExecutingAssembly();
-        //string resourceId = $"FashionApp.Resources.Images.TestGallery.{selectedImageName}.jpg";
-        //Stream stream = assembly.GetManifestResourceStream(resourceId);
 
-        //if (stream == null)
+
+        //string taskKey2 = AppConstants.Pages.TEMP_GALLERY;
+        //if (!_executionGuardService.TryStartTask(taskKey2)) return;
+
+        //try
         //{
-        //    throw new FileNotFoundException($"Resource '{resourceId}' не е намерен.");
+        //    //var tempGallery = new TemporaryGallery();
+        //    //await Navigation.PushModalAsync(tempGallery);
+        //    //string selectedImageName = await tempGallery.ImageSelectedTask.Task;
+        //    var page = MauiProgram.ServiceProvider.GetRequiredService<TemporaryGallery>();
+        //    await Navigation.PushModalAsync(page);
+        //    string selectedImageName = await page.ImageSelectedTask.Task;
+        //}
+        //finally
+        //{
+        //    _executionGuardService.FinishTask(taskKey2);
         //}
 
-        
 
-        //await Navigation.PopModalAsync();
 
         await Task.Delay(1);
 
         // Ако има избрано изображение, отваряме ImageEditPage
         if (!string.IsNullOrEmpty(selectedImageName))
         {
-            await Navigation.PushModalAsync(new ImageEditPage(selectedImageName));
+            // await Navigation.PushModalAsync(new ImageEditPage(selectedImageName));
+
+            bool pageAlreadyExists = Navigation.ModalStack.Any(p => p is ImageEditPage);
+            if (pageAlreadyExists) return;
+
+            string taskKey = AppConstants.Pages.IMAGE_EDIT;
+            if (!_executionGuardService.TryStartTask(taskKey)) return;
+
+            try
+            {
+                // await Navigation.PushModalAsync(new ImageEditPage(selectedImageName));
+                var page = MauiProgram.ServiceProvider.GetRequiredService<ImageEditPage>();
+                page.ImageUri = selectedImageName;
+                await Navigation.PushModalAsync(page);
+            }
+            finally
+            {
+                _executionGuardService.FinishTask(taskKey);
+            }
         }
         else
         {
@@ -165,9 +212,12 @@ public partial class MaskEditor : ContentPage
             imageStream = await MergeOverlayWithImage(imageStream);
         }
 
+
         await ProcessSelectedImage(imageStream);
         _cameraService.StopCamera();
         HideMenus();
+
+        CameraButtonsPanel.IsEnabled = true;
     }
 
     private async Task<Stream> MergeOverlayWithImage(Stream imageStream)
@@ -256,9 +306,14 @@ public partial class MaskEditor : ContentPage
     private void HidePanelCommand(object sender, EventArgs e)
     {     
         _cameraService.StopCamera();
+
         HideMenus();
     }
-    private void OnCaptureClicked(object sender, EventArgs e) => _cameraService.CaptureClicked();
+    private void OnCaptureClicked(object sender, EventArgs e)
+    {
+        CameraButtonsPanel.IsEnabled = false;
+        _cameraService.CaptureClicked();
+    }
 
     private void ContourSwitch_Clicked(object sender, EventArgs e)
     {
@@ -373,57 +428,54 @@ public partial class MaskEditor : ContentPage
         DrawingBottons.IsVisible = isSet;
     }
     private async Task ProcessSelectedImage(Stream? stream)
-    {
-        
-        // Преоразмеряване на изображението
-        var resizedImageResult = await ImageStreamResize.ResizeImageStream(stream, 500, 700); // Преоразмеряване на изображението
+    {             
+        bool pageAlreadyExists = Navigation.ModalStack.Any(p => p is ImageEditPage);
+        if (pageAlreadyExists) return;
 
-        // Конвертиране на изображението, за да включва алфа канал
-        var imageWithAlpha = await AddAlphaChanel(resizedImageResult.ResizedStream);
-        //var resultPath = await SetCameraImageRealPathForSelectedClothImage(imageWithAlpha);
+        string taskKey = AppConstants.Pages.IMAGE_EDIT;
+        if (!_executionGuardService.TryStartTask(taskKey)) return;
 
-        await Navigation.PushModalAsync(new ImageEditPage(imageWithAlpha));
+        try
+        {
+            // Преоразмеряване на изображението
+            var resizedImageResult = await ImageStreamResize.ResizeImageStream(stream, 500, 700); // Преоразмеряване на изображението
 
-        //// Задаване на източника на изображението
-        //SelectedImage.Source = ImageSource.FromStream(() => imageWithAlpha);
+            // Конвертиране на изображението, за да включва алфа канал
+            var imageWithAlpha = await AddAlphaChanel(resizedImageResult.ResizedStream);
 
-        //// Настройка на ширината и височината на изображението
-        //SelectedImage.WidthRequest = Application.Current.MainPage.Width;
-        //SelectedImage.HeightRequest = Application.Current.MainPage.Height;
-
-        //// Центриране на изображението
-        //SelectedImage.HorizontalOptions = LayoutOptions.Center;
-        //SelectedImage.VerticalOptions = LayoutOptions.Center;
-
-        //// Показване на елементите
-        //SelectedImage.IsVisible = true;
-        //DrawingView.IsVisible = true;
-        //DrawingTools.IsVisible = true;
-        //DrawingBottons.IsVisible = true;
+            //  await Navigation.PushModalAsync(new ImageEditPage(imageWithAlpha));
+            var page = MauiProgram.ServiceProvider.GetRequiredService<ImageEditPage>();
+            page.ImageStream = imageWithAlpha;
+            await Navigation.PushModalAsync(page);
+        }
+        finally
+        {
+            _executionGuardService.FinishTask(taskKey);
+        }
     }
 
-    private async Task ProcessSelectedImage(string fileName)
-    {
-        //Stream stream = new MemoryStream();
-        //var imageWithAlpha = await AddAlphaChanel(stream);
-        // Задаване на източника на изображението
-        //SelectedImage.Source = ImageSource.FromStream(() => imageWithAlpha);
-        SelectedImage.Source = fileName;
+    //private async Task ProcessSelectedImage(string fileName)
+    //{
+    //    //Stream stream = new MemoryStream();
+    //    //var imageWithAlpha = await AddAlphaChanel(stream);
+    //    // Задаване на източника на изображението
+    //    //SelectedImage.Source = ImageSource.FromStream(() => imageWithAlpha);
+    //    SelectedImage.Source = fileName;
 
-        // Настройка на ширината и височината на изображението
-        SelectedImage.WidthRequest = Application.Current.MainPage.Width;
-        SelectedImage.HeightRequest = Application.Current.MainPage.Height;
+    //    // Настройка на ширината и височината на изображението
+    //    SelectedImage.WidthRequest = Application.Current.MainPage.Width;
+    //    SelectedImage.HeightRequest = Application.Current.MainPage.Height;
 
-        // Центриране на изображението
-        SelectedImage.HorizontalOptions = LayoutOptions.Center;
-        SelectedImage.VerticalOptions = LayoutOptions.Center;
+    //    // Центриране на изображението
+    //    SelectedImage.HorizontalOptions = LayoutOptions.Center;
+    //    SelectedImage.VerticalOptions = LayoutOptions.Center;
 
-        // Показване на елементите
-        SelectedImage.IsVisible = true;
-        DrawingView.IsVisible = true;
-        DrawingTools.IsVisible = true;
-        DrawingBottons.IsVisible = true;
-    }
+    //    // Показване на елементите
+    //    SelectedImage.IsVisible = true;
+    //    DrawingView.IsVisible = true;
+    //    DrawingTools.IsVisible = true;
+    //    DrawingBottons.IsVisible = true;
+    //}
     private async Task<Stream> AddAlphaChanel(Stream imageStream)
     {
         using var originalBitmap = SKBitmap.Decode(imageStream);

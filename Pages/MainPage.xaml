@@ -10,8 +10,8 @@
         <VerticalStackLayout Padding="10,0" Spacing="20">
             <Label
                 CharacterSpacing="3"
-                FontSize="Large"
                 FontAttributes="Bold"
+                FontSize="Large"
                 HorizontalOptions="Center"
                 Text="TOOLS"
                 TextColor="White"
@@ -119,8 +119,8 @@
 
             <Label
                 CharacterSpacing="3"
-                FontSize="Large"
                 FontAttributes="Bold"
+                FontSize="Large"
                 HorizontalOptions="Center"
                 Text="GALLERYS"
                 TextColor="White"
@@ -287,6 +287,7 @@
                 <CarouselView
                     x:Name="StartGaleery"
                     HeightRequest="300"
+                    HorizontalOptions="FillAndExpand"
                     Loop="True"
                     PeekAreaInsets="200">
                     <CarouselView.ItemsSource>

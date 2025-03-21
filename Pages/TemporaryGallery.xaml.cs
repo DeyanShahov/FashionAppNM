@@ -20,6 +20,9 @@ public partial class TemporaryGallery : ContentPage
     private string ErrorMessage;
     private bool IsBusy = false;
 
+    private bool IsReadyToSet = true;
+
+
 
     public TemporaryGallery(bool isInAppGallery = true, string galleryPath = "TestGallery")
 	{
@@ -28,9 +31,13 @@ public partial class TemporaryGallery : ContentPage
         BindingContext = this;
 
         if (isInAppGallery) ImagesList = new Gallery(galleryPath).Images;
-        else SetSpecificGallery(galleryPath);
+        else SetSpecificGallery(galleryPath);       
+    }
 
-       
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        IsReadyToSet = true;
     }
 
     private void SetSpecificGallery(string galleryPath)
@@ -51,6 +58,10 @@ public partial class TemporaryGallery : ContentPage
 
     private async void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
     {
+        if(!IsReadyToSet) return;
+
+        IsReadyToSet = false;
+
         // Предполагаме, че BindingContext-а на всяко изображение е неговият път (string).
         if (sender is Image image && image.Source is FileImageSource fileImage)
         {

@@ -35,34 +35,49 @@ public partial class ImageEditPage : ContentPage
 
     private string imageFileName = $"masked_image_{DateTime.Now:yyyyMMdd_HHmmss}.png";
 
+    public string ImageUri { get; set; } = String.Empty;
+    public Stream ImageStream { get; set; }
+
     //private Image _basicImage;
     //private GraphicsView _graphicsView;
 
     public ImageEditPage()
-	{
-		InitializeComponent();
+    {
+        InitializeComponent();
         //_basicImage = image;
         //_graphicsView = graphicsView;
-        
+
         this.SizeChanged += OnSizeChanged;
-     
+
         _drawable = new DrawingViewDrawable(_lines);
         DrawingView.Drawable = _drawable;
     }
 
-    // Конструктор, който приема imageUri (string)
-    public ImageEditPage(string imageUri)
-        : this()
+    protected override void OnAppearing()
     {
-        LoadImageFromUrl(imageUri);
+        base.OnAppearing();
+
+        _lines.Clear();
+        DrawingView.Invalidate();
+
+        if (ImageUri != String.Empty) LoadImageFromUrl(ImageUri);
+        else LoadImageFromStream(ImageStream);
     }
 
+
+    // Конструктор, който приема imageUri (string)
+    //public ImageEditPage(string imageUri)
+    //    : this()
+    //{
+    //    LoadImageFromUrl(imageUri);
+    //}
+
     // Конструктор, който приема Stream
-    public ImageEditPage(Stream imageStream)
-        : this()
-    {
-        LoadImageFromStream(imageStream);
-    }
+    //public ImageEditPage(Stream imageStream)
+    //    : this()
+    //{
+    //    LoadImageFromStream(imageStream);
+    //}
 
     private void LoadImageFromStream(Stream imageStream)
     {
