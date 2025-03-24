@@ -173,45 +173,45 @@ public partial class CombineImages : ContentPage
             if (!await UploadImages()) return; // Качваме двата файла
 
             // Изпращаме POST заявка към API
-            //await Task.Delay(5000); // Изчакване от 5 секунди
+            await Task.Delay(5000); // Изчакване от 5 секунди
 
-            //var requestUrl = $"{ApiUrl}/{AppConstants.Parameters.CONFY_FUNCTION_COMBINE_ENDPOINT}";
-            //var requestBody = new
-            //{
-            //    function_name = AppConstants.Parameters.CONFY_FUNCTION_GENERATE_NAME,
-            //    cloth_image = AppConstants.Parameters.INPUT_IMAGE_CLOTH,
-            //    body_image = AppConstants.Parameters.INPUT_IMAGE_BODY,
-            //    mask_detection_method = maskDetectionMethod, // Задаване типа на маската: ръчна ( true ) / АI ( false )
-            //    args = GetNeededCollectionOfButtons(maskDetectionMethod) // Списъка с евентуалните зони за маркиране от АЙ-то
-            //};
+            var requestUrl = $"{ApiUrl}/{AppConstants.Parameters.CONFY_FUNCTION_COMBINE_ENDPOINT}";
+            var requestBody = new
+            {
+                function_name = AppConstants.Parameters.CONFY_FUNCTION_GENERATE_NAME,
+                cloth_image = AppConstants.Parameters.INPUT_IMAGE_CLOTH,
+                body_image = AppConstants.Parameters.INPUT_IMAGE_BODY,
+                mask_detection_method = maskDetectionMethod, // Задаване типа на маската: ръчна ( true ) / АI ( false )
+                args = GetNeededCollectionOfButtons(maskDetectionMethod) // Списъка с евентуалните зони за маркиране от АЙ-то
+            };
 
-            //var jsonContent = new StringContent(
-            //    JsonSerializer.Serialize(requestBody),
-            //    Encoding.UTF8,
-            //    "application/json"
-            //);
+            var jsonContent = new StringContent(
+                JsonSerializer.Serialize(requestBody),
+                Encoding.UTF8,
+                "application/json"
+            );
 
-            //var response = await _client.PostAsync(requestUrl, jsonContent);
+            var response = await _client.PostAsync(requestUrl, jsonContent);
 
-            //if (!response.IsSuccessStatusCode)
-            //{
-            //    throw new HttpRequestException($"HTTP {AppConstants.Errors.ERROR}: {response.StatusCode}");
-            //}
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new HttpRequestException($"HTTP {AppConstants.Errors.ERROR}: {response.StatusCode}");
+            }
 
-            //var contentType = response.Content.Headers.ContentType?.MediaType;
-            //_imageData = await response.Content.ReadAsByteArrayAsync();
+            var contentType = response.Content.Headers.ContentType?.MediaType;
+            _imageData = await response.Content.ReadAsByteArrayAsync();
 
-            //if (contentType != null && contentType.StartsWith("image/"))
-            //{
-            //    ResponseImage.Source = ImageSource.FromStream(() => new MemoryStream(_imageData));
-            //    SaveButton.IsVisible = true;
-            //    SaveButton.IsEnabled = true;
-            //}
-            //else
-            //{
-            //    ResponseText.Text = Encoding.UTF8.GetString(_imageData);
-            //    ResponseText.IsVisible = true;
-            //}
+            if (contentType != null && contentType.StartsWith("image/"))
+            {
+                ResponseImage.Source = ImageSource.FromStream(() => new MemoryStream(_imageData));
+                SaveButton.IsVisible = true;
+                SaveButton.IsEnabled = true;
+            }
+            else
+            {
+                ResponseText.Text = Encoding.UTF8.GetString(_imageData);
+                ResponseText.IsVisible = true;
+            }
         }
         catch (Exception ex)
         {
