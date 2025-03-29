@@ -25,6 +25,7 @@ namespace FashionApp.Pages
         public MainPage(ExecutionGuardService executionGuard)
         {
             InitializeComponent();
+            SetBannerId();
             _executionGuardService = executionGuard;
 
             BindingContext = this;
@@ -50,6 +51,15 @@ namespace FashionApp.Pages
             }
             
             SetContentLabel();
+        }
+
+        private void SetBannerId()
+        {
+#if ANDROID
+            //AdmobBanner.AdsId = "ca-app-pub-3940256099942544/6300978111";
+            //AdmobBanner.LoadAd();
+
+#endif
         }
 
         protected override async void OnAppearing()
@@ -330,13 +340,13 @@ namespace FashionApp.Pages
             await Navigation.PushAsync(new TestGallery("Test Gallery", "TestGallery"));
         }
 
-       
+
 
         //private async void OnNavigateClickedToMaskJS(object sender, EventArgs e)
         //    => await Navigation.PushAsync(new MaskJS());  
 
 
-        
+
 
 
         // ------------------------------------------------------------------------------------------------------

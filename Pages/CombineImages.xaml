@@ -2,9 +2,9 @@
 <ContentPage
     x:Class="FashionApp.Pages.CombineImages"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-             Title="Combine Images"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    Title="Combine Images"
     BackgroundImageSource="loading_page_image_2.png">
 
     <ScrollView>
@@ -22,12 +22,12 @@
                         BackgroundColor="Gray"
                         BorderColor="Black"
                         CornerRadius="0">
-                    <toolkit:CameraView
-                    x:Name="MyCameraView"       
+                        <toolkit:CameraView
+                            x:Name="MyCameraView"
                             CameraFlashMode="{Binding FlashMode}"
                             HeightRequest="600"
-                    HorizontalOptions="CenterAndExpand"
-                    SelectedCamera="{Binding SelectedCamera}"
+                            HorizontalOptions="CenterAndExpand"
+                            SelectedCamera="{Binding SelectedCamera}"
                             ZoomFactor="{Binding CurrentZoom}" />
                     </Frame>
 
@@ -68,9 +68,9 @@
                                 Text="CLOSE"
                                 TextColor="White"
                                 VerticalOptions="Center" />
-                    </Frame>
+                        </Frame>
+                    </Grid>
                 </Grid>
-            </Grid>
 
                 <VerticalStackLayout x:Name="Menu1" Margin="5">
 
@@ -192,7 +192,7 @@
                                         Margin="40"
                                         CharacterSpacing="3"
                                         FontSize="Medium"
-                    HorizontalOptions="Center"
+                                        HorizontalOptions="Center"
                                         Text="Select Cloth"
                                         TextColor="White"
                                         TextTransform="Uppercase"
@@ -309,7 +309,7 @@
                                         </Frame.Shadow>
                                         <CarouselView
                                             x:Name="JacketCarousel"
-                    HeightRequest="300"
+                                            HeightRequest="300"
                                             ItemsSource="{Binding Jackets}"
                                             Loop="True"
                                             PeekAreaInsets="90"
@@ -321,7 +321,7 @@
                                                 <DataTemplate>
                                                     <Grid>
                                                         <ImageButton
-                    Aspect="AspectFit"
+                                                            Aspect="AspectFit"
                                                             Clicked="MacroButton_Clicked"
                                                             CommandParameter="{Binding Data}"
                                                             HeightRequest="70"
@@ -423,7 +423,7 @@
                                                 x:Name="TestGalleryButton7"
                                                 Grid.Row="0"
                                                 Grid.Column="1"
-                                Clicked="OnSelectBodyImageClicked"
+                                                Clicked="OnSelectBodyImageClicked"
                                                 HeightRequest="70"
                                                 Source="Icons/folder_open_regular_24.png"
                                                 WidthRequest="70" />
@@ -630,7 +630,7 @@
                             <Label
                                 Margin="10"
                                 FontSize="Large"
-                    HorizontalOptions="Center"
+                                HorizontalOptions="Center"
                                 Text="Choice normal body photo for FashionV2-AI mask and select zones for change."
                                 TextColor="Black" />
                             <Frame Padding="2" BorderColor="Gray">
@@ -804,7 +804,7 @@
                                         Grid.Column="0"
                                         BackgroundColor="LightBlue"
                                         BorderColor="Red"
-                        BorderWidth="2"
+                                        BorderWidth="2"
                                         Clicked="OptionButton_Clicked"
                                         CommandParameter="sock"
                                         Text="Sock"
@@ -814,7 +814,7 @@
                                         Grid.Column="1"
                                         BackgroundColor="LightBlue"
                                         BorderColor="Red"
-                        BorderWidth="2"
+                                        BorderWidth="2"
                                         Clicked="OptionButton_Clicked"
                                         CommandParameter="shoe"
                                         Text="Shoe"
@@ -826,12 +826,12 @@
                         <VerticalStackLayout
                             x:Name="ButtonPanel3"
                             Padding="5"
-                    IsVisible="False"
+                            IsVisible="False"
                             VerticalOptions="End">
                             <Label
                                 Margin="10"
                                 FontSize="Large"
-                    HorizontalOptions="Center"
+                                HorizontalOptions="Center"
                                 Text="Choice normal body photo for Segformer B2-AI mask and select zones for change."
                                 TextColor="Black" />
                             <Frame Padding="2" BorderColor="Gray">
@@ -983,7 +983,7 @@
                             Margin="0,20"
                             BackgroundColor="#80000000"
                             HasShadow="True"
-                    HeightRequest="50"
+                            HeightRequest="50"
                             HorizontalOptions="Center"
                             WidthRequest="220">
                             <Frame.Shadow>
@@ -1000,7 +1000,7 @@
                                 BorderColor="White"
                                 BorderWidth="1"
                                 Clicked="OnCombineImages_Clicked"
-                    FontSize="16"
+                                FontSize="16"
                                 HeightRequest="50"
                                 HorizontalOptions="Center"
                                 Text="CREATE NEW IMAGE"
@@ -1052,8 +1052,8 @@
                                 Margin="0,20"
                                 HeightRequest="120"
                                 HorizontalOptions="Center"
-                    IsRunning="False"
-                    IsVisible="False"
+                                IsRunning="False"
+                                IsVisible="False"
                                 WidthRequest="120"
                                 Color="Azure" />
                         </Grid>
@@ -1069,8 +1069,8 @@
                         <Label
                             x:Name="ResponseText"
                             Margin="0,10"
-                    FontSize="18"
-                    HorizontalOptions="Center"
+                            FontSize="18"
+                            HorizontalOptions="Center"
                             IsVisible="False" />
 
 
@@ -1097,7 +1097,7 @@
                                     BackgroundColor="Transparent"
                                     BorderColor="White"
                                     BorderWidth="1"
-                    Clicked="OnSaveClicked"
+                                    Clicked="OnSaveClicked"
                                     FontAttributes="Bold"
                                     FontSize="Body"
                                     HeightRequest="50"
@@ -1144,12 +1144,12 @@
                     <Label
                         x:Name="CounterLabel"
                         Margin="0,30"
-                    FontSize="18"
-                    HorizontalOptions="Center"
+                        FontSize="18"
+                        HorizontalOptions="Center"
                         Style="{StaticResource Headline}"
                         Text="Created by RedFox - AI Айляк"
                         TextColor="Black" />
-            </VerticalStackLayout>
+                </VerticalStackLayout>
             </Grid>
         </VerticalStackLayout>
     </ScrollView>

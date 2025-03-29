@@ -6,8 +6,10 @@
     Title="Fashion App"
     BackgroundImageSource="loading_page_image_2.png">
 
+
     <ScrollView>
         <VerticalStackLayout Padding="10,0" Spacing="20">
+
             <Label
                 CharacterSpacing="3"
                 FontAttributes="Bold"
@@ -400,6 +402,7 @@
 
             <StackLayout />
 
+
             <StackLayout
                 x:Name="AdminTestFields"
                 IsVisible="False"
@@ -473,8 +476,6 @@
             </StackLayout>
 
 
-
-
             <Label
                 x:Name="ContentLabel"
                 FontSize="18"
@@ -483,5 +484,4 @@
                 TextColor="Black" />
         </VerticalStackLayout>
     </ScrollView>
-
 </ContentPage>

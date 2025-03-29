@@ -3,6 +3,8 @@ using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui;
 using FashionApp.core.services;
 using FashionApp.Pages;
+using Plugin.AdMob;
+using Plugin.AdMob.Configuration;
 
 namespace FashionApp
 {
@@ -14,6 +16,7 @@ namespace FashionApp
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .UseAdMob()
                 .UseMauiCommunityToolkitCamera()
                 .UseMauiCommunityToolkit()
                 .ConfigureFonts(fonts =>
@@ -42,6 +45,7 @@ namespace FashionApp
 
 #if DEBUG
             builder.Logging.AddDebug();
+            AdConfig.UseTestAdUnitIds = true; // Use test ad unit IDs. Setwa testowi reklami
 #endif
 
             //return builder.Build();
