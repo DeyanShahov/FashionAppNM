@@ -1,112 +1,74 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="FashionApp.Pages.PartnersPage"
-             Title="Fashion Partners"
-             BackgroundColor="Black">
-    
-    <ContentPage.Resources>
+<ContentPage
+    x:Class="FashionApp.Pages.PartnersPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:admob="clr-namespace:Plugin.AdMob;assembly=Plugin.AdMob"
+    Title="Fashion Partners"
+    BackgroundColor="Black">
+
+    <!--<ContentPage.Resources>
         <ResourceDictionary>
-            <OnPlatform x:Key="BrandIcon"
-                        x:TypeArguments="ImageSource">
-                <On Platform="iOS, MacCatalyst" Value="res:mauiimage:ashionApp.icon"/>
+            <OnPlatform x:Key="BrandIcon" x:TypeArguments="ImageSource">
+                <On Platform="iOS, MacCatalyst" Value="res:mauiimage:ashionApp.icon" />
                 <On Platform="Android">
-                    <FileImageSource File="drawable/ashionapp.png"/>
+                    <FileImageSource File="drawable/ashionapp.png" />
                 </On>
             </OnPlatform>
         </ResourceDictionary>
-    </ContentPage.Resources>
-
-    <Grid ColumnDefinitions="*,*"
-          RowDefinitions="Auto,Auto,Auto,Auto,Auto"
-          HorizontalOptions="Fill"
-          VerticalOptions="Fill"
-          Padding="10">
-
-        <!--<Grid>
-            <StackLayout Orientation="Vertical">
-                <Image Source="{StaticResource BrandIcon}"
-                       WidthRequest="60"
-                       HeightRequest="60"
-                       HorizontalOptions="Center"/>
-                <Label Text="Gucci"
-                       HorizontalTextAlignment="Center"
-                       FontSize="14"
-                       Margin="5,0"/>
-            </StackLayout>
-        </Grid>-->
-
-        <!--<Grid
-            Grid.Column="0"
-            Grid.Row="0">
-            <StackLayout 
-                Orientation="Vertical">
-                <ImageButton
-                    x:Name="GucciButton"
-                    Source="gucci.jpg"
-                    Clicked="OnGucciClicked"
-                    HorizontalOptions="Fill"
-                    VerticalOptions="Fill"
-                    Padding="10"
-                    BorderWidth="1"
-                    BorderColor="Red"
-                    CornerRadius="10">
-                </ImageButton>
-                --><!--<Label 
-                    Text="GUCCI"
-                    IsVisible="False"
-                    IsEnabled="False"
-                    TextColor="White"
-                    HorizontalTextAlignment="Center"
-                    FontSize="24"
-                    Margin="5,0"
-                    Padding="0,0,0,0"/>--><!--
-            </StackLayout>
-        </Grid>-->
-
-        <ImageButton
-            x:Name="GucciButton"
-            Source="gucci.jpg"
-            Grid.Column="0"
+    </ContentPage.Resources>-->
+   
+   <Grid RowDefinitions="*,Auto">
+        <Grid
             Grid.Row="0"
-            Clicked="OnGucciClicked"
-            HorizontalOptions="Fill"
-            VerticalOptions="Fill"
             Padding="10"
-            BorderWidth="1"
-            BorderColor="Red"
-            CornerRadius="10">
-        </ImageButton>
-
-        <ImageButton
-            x:Name="ZaraButton"
-            Source="zara.png"
-            Grid.Column="1"
-            Grid.Row="0"
-            Clicked="ZaraButton_Clicked"
+            ColumnDefinitions="*,*"
             HorizontalOptions="Fill"
-            VerticalOptions="Fill"
-            Padding="10"
-            BorderWidth="1"
-            BorderColor="Red"
-            CornerRadius="10">
-        </ImageButton>
-        
-        <ImageButton
-            x:Name="ArmaniButton"
-            Source="armani.png"
-            Grid.Column="0"
-            Grid.Row="1"
-            Clicked="ArmaniButton_Clicked"
-            HorizontalOptions="Fill"
-            VerticalOptions="Fill"
-            Padding="10"
-            BorderWidth="1"
-            BorderColor="Red"
-            CornerRadius="10">
-        </ImageButton>
+            RowDefinitions="Auto,Auto,Auto,Auto,Auto"
+            VerticalOptions="Start">
 
+            <ImageButton
+                x:Name="GucciButton"
+                Grid.Row="0"
+                Grid.Column="0"
+                Padding="10"
+                BorderColor="Red"
+                BorderWidth="1"
+                Clicked="OnGucciClicked"
+                CornerRadius="10"
+                HorizontalOptions="Fill"
+                Source="gucci.jpg"
+                VerticalOptions="Fill" />
 
-        <!-- Repeat for other brands -->
+            <ImageButton
+                x:Name="ZaraButton"
+                Grid.Row="0"
+                Grid.Column="1"
+                Padding="10"
+                BorderColor="Red"
+                BorderWidth="1"
+                Clicked="ZaraButton_Clicked"
+                CornerRadius="10"
+                HorizontalOptions="Fill"
+                Source="zara.png"
+                VerticalOptions="Fill" />
+
+            <ImageButton
+                x:Name="ArmaniButton"
+                Grid.Row="1"
+                Grid.Column="0"
+                Padding="10"
+                BorderColor="Red"
+                BorderWidth="1"
+                Clicked="ArmaniButton_Clicked"
+                CornerRadius="10"
+                HorizontalOptions="Fill"
+                Source="armani.png"
+                VerticalOptions="Fill" />
+
+        </Grid>
+
+        <admob:BannerAd Grid.Row="1" VerticalOptions="End" />
     </Grid>
+
 </ContentPage>

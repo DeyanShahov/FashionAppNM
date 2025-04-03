@@ -416,7 +416,14 @@
 	  </MauiAsset>
 	</ItemGroup>
 
-	<Target Name="LinkWithSwift" DependsOnTargets="_ParseBundlerArguments;_DetectSdkLocations" BeforeTargets="_LinkNativeExecutable">
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
+		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
+		<PackageReference Include="Plugin.AdMob" Version="2.3.1" />
+	</ItemGroup>
+
+	<!--<Target Name="LinkWithSwift" DependsOnTargets="_ParseBundlerArguments;_DetectSdkLocations" BeforeTargets="_LinkNativeExecutable">
 		<PropertyGroup>
 			<_SwiftPlatform Condition="$(RuntimeIdentifier.StartsWith('iossimulator-'))">iphonesimulator</_SwiftPlatform>
 			<_SwiftPlatform Condition="$(RuntimeIdentifier.StartsWith('ios-'))">iphoneos</_SwiftPlatform>
@@ -429,6 +436,6 @@
 			<_CustomLinkFlags Include="-Wl,-rpath" />
 			<_CustomLinkFlags Include="-Wl,/usr/lib/swift" />
 		</ItemGroup>
-	</Target>
+	</Target>-->
 
 </Project>

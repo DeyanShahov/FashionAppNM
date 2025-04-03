@@ -46,6 +46,7 @@ namespace FashionApp
 #if DEBUG
             builder.Logging.AddDebug();
             AdConfig.UseTestAdUnitIds = true; // Use test ad unit IDs. Setwa testowi reklami
+            AdConfig.DisableConsentCheck = true; // Disable consent check. 
 #endif
 
             //return builder.Build();

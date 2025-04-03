@@ -6,6 +6,7 @@
 		<meta-data
 			android:name="com.google.android.gms.ads.APPLICATION_ID"
 			android:value="ca-app-pub-4231613145079561~2440618048"/>
+			<!--android:value="ca-app-pub-3940256099942544~3347511713" />-->
 	</application>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.INTERNET" />

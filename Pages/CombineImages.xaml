@@ -980,6 +980,7 @@
                             Color="Silver" />
 
                         <Frame
+                            x:Name="GoogleAdsButton"
                             Margin="0,20"
                             BackgroundColor="#80000000"
                             HasShadow="True"
@@ -995,7 +996,37 @@
                             </Frame.Shadow>
 
                             <Button
-                                x:Name="CombineImagesButton"
+                                BackgroundColor="Transparent"
+                                BorderColor="White"
+                                BorderWidth="1"
+                                Clicked="OnCreateRewardedInterstitialClicked"
+                                FontSize="16"
+                                HeightRequest="50"
+                                HorizontalOptions="Center"
+                                Text="Google Ads"
+                                TextColor="White"
+                                WidthRequest="220" />
+                        </Frame>
+
+                        <Frame
+                            x:Name="CombineImagesButton"
+                            Margin="0,20"
+                            BackgroundColor="#80000000"
+                            HasShadow="True"
+                            HeightRequest="50"
+                            HorizontalOptions="Center"
+                            IsEnabled="False"
+                            IsVisible="False"
+                            WidthRequest="220">
+                            <Frame.Shadow>
+                                <Shadow
+                                    Brush="Black"
+                                    Opacity="0.60"
+                                    Radius="5"
+                                    Offset="4, 4" />
+                            </Frame.Shadow>
+
+                            <Button
                                 BackgroundColor="Transparent"
                                 BorderColor="White"
                                 BorderWidth="1"

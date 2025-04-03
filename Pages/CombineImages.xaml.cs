@@ -1,10 +1,13 @@
 using FashionApp.core;
 using FashionApp.core.services;
 using FashionApp.Data.Constants;
+using Plugin.AdMob.Services;
 using System.Collections.ObjectModel;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
+using System.Diagnostics;
+using Plugin.AdMob;
 
 namespace FashionApp.Pages;
 
@@ -36,13 +39,20 @@ public partial class CombineImages : ContentPage
 
     private bool isFromClothImage = true;
 
+    private readonly IRewardedInterstitialAdService _rewardedInterstitialAdService;
+    int tokens = 0;
+
     public CombineImages()
     {
         InitializeComponent();
 
-        BindingContext = this;    
+        BindingContext = this;
 
-       
+        _rewardedInterstitialAdService = FashionApp.core.services.ServiceProvider.GetRequiredService<IRewardedInterstitialAdService>();
+        _rewardedInterstitialAdService.OnAdLoaded += (_, __) => Debug.WriteLine("Rewarded interstitial ad prepared.");
+        _rewardedInterstitialAdService.PrepareAd(onUserEarnedReward: UserDidEarnReward);
+
+
 
         _cameraService = new CameraService(MyCameraView, CameraPanel);
         _cameraService.ImageCaptured += OnImageCaptured;
@@ -147,9 +157,49 @@ public partial class CombineImages : ContentPage
         }    
     }
 
+
+    private void OnCreateRewardedInterstitialClicked(object sender, EventArgs e)
+    {
+        var rewardedInterstitialAd = _rewardedInterstitialAdService.CreateAd();
+        rewardedInterstitialAd.OnUserEarnedReward += (_, reward) =>
+        {
+            UserDidEarnReward(reward);
+        };
+        rewardedInterstitialAd.OnAdLoaded += RewardedInterstitialAd_OnAdLoaded;
+        rewardedInterstitialAd.Load();
+    }
+
+    private void RewardedInterstitialAd_OnAdLoaded(object? sender, EventArgs e)
+    {
+        if (sender is IRewardedInterstitialAd rewardedInterstitialAd)
+        {
+            rewardedInterstitialAd.Show();
+        }
+    }
+
+    private async void UserDidEarnReward(RewardItem rewardItem)
+    {
+        Debug.WriteLine($"User earned {rewardItem.Amount} {rewardItem.Type}.");
+        tokens += rewardItem.Amount;
+
+        GoogleAdsButton.IsEnabled = false;
+        GoogleAdsButton.IsVisible = false;
+
+        CombineImagesButton.IsEnabled = true;
+        CombineImagesButton.IsVisible = true;
+        //await CombineImagesAction();
+    }
+
     private async void OnCombineImages_Clicked(object sender, EventArgs e)
     {
-        var result1 = SelectedClothImage.Source.ToString()?.Remove(0,6);
+        await CombineImagesAction();
+    }
+
+    private async Task CombineImagesAction()
+    {
+        if (tokens < 10) return;
+
+        var result1 = SelectedClothImage.Source.ToString()?.Remove(0, 6);
         var result2 = SelectedBodyImage.Source.ToString()?.Remove(0, 6);
         if (result1 == "Icons/blank_image_photo.png" || result2 == "Icons/blank_image_photo.png")
         {
@@ -221,6 +271,14 @@ public partial class CombineImages : ContentPage
         finally
         {
             ToggleLoading(false);
+
+            tokens -= 10;
+
+            GoogleAdsButton.IsEnabled = true;
+            GoogleAdsButton.IsVisible = true;
+
+            CombineImagesButton.IsEnabled = false;
+            CombineImagesButton.IsVisible = false;
         }
     }
 
@@ -701,9 +759,50 @@ public partial class CombineImages : ContentPage
                 AppConstants.Parameters.APP_FOLDER_MASK,
                 imageUri);
         _bodyImagePath = imagePath;
+
+        await CopyFileToCacheAsync(imagePath);
+
         await singleImageLoader.LoadSingleImageAsync(imagePath);  // Зареждане на изображението асинхронно
     }
 #endif
+
+    public async Task CopyFileToCacheAsync(string sourcePath)//string imagePath)
+    {
+        //try
+        //{
+        //    var cacheDir = FileSystem.CacheDirectory;
+        //    var fileName = Path.GetFileName(imagePath);
+        //    var newFilePath = Path.Combine(cacheDir, fileName);
+        //    if (!File.Exists(newFilePath))
+        //    {
+        //        using var sourceStream = File.OpenRead(imagePath);
+        //        using var destinationStream = File.Create(newFilePath);
+        //        await sourceStream.CopyToAsync(destinationStream);
+        //    }
+        //}
+        //catch (Exception ex)
+        //{
+        //    Console.WriteLine($"{AppConstants.Errors.ERROR_COPY_FILE}: {ex.Message}");
+        //}
+
+        // Извличаме името на файла
+        var fileName = Path.GetFileName(sourcePath);
+        // Директорията за кеш на приложението
+        var cacheDir = FileSystem.CacheDirectory;
+        // Композиране на пълния път за копието
+        var destPath = Path.Combine(cacheDir, fileName);
+
+        // Копиране на файла
+        using (var sourceStream = File.OpenRead(sourcePath))
+        using (var destStream = File.Create(destPath))
+        {
+            await sourceStream.CopyToAsync(destStream);
+        }
+
+        _bodyImagePath = destPath;
+    }
+
+
     //------------------------------------------ VISUAL EFECTS--------------------------------------------------------
     private void ToggleLoading(bool isLoading)
     {      
