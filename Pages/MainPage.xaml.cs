@@ -36,18 +36,18 @@ namespace FashionApp.Pages
                 LoginBtn.Text = AppConstants.Messages.LOGIN_AS_USER;
                 AdminTestFields.IsVisible = true;
 
-                TestGalleryButton.IsVisible = true;
-                Grid.SetRow(TestGalleryButton, 1);
-                Grid.SetColumn(TestGalleryButton, 0);
+                //TestGalleryButton.IsVisible = true;
+                //Grid.SetRow(TestGalleryButton, 1);
+                //Grid.SetColumn(TestGalleryButton, 0);
 
-                Grid.SetRow(WebGalleryButton, 1);
-                Grid.SetColumn(WebGalleryButton, 1);
+                //Grid.SetRow(WebGalleryButton, 1);
+                //Grid.SetColumn(WebGalleryButton, 1);
             }
             else
             {
                 //GridForGallerys.ColumnSpacing = 5;
-                Grid.SetRow(WebGalleryButton, 0);
-                Grid.SetColumn(WebGalleryButton, 2);
+                //Grid.SetRow(WebGalleryButton, 0);
+                //Grid.SetColumn(WebGalleryButton, 2);
             }
             
             SetContentLabel();

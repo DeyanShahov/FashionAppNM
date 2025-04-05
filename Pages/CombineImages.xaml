@@ -3,6 +3,7 @@
     x:Class="FashionApp.Pages.CombineImages"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:FashionApp.Pages.ElementsView"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     Title="Combine Images"
     BackgroundImageSource="loading_page_image_2.png">
@@ -979,65 +980,24 @@
                             HorizontalOptions="FillAndExpand"
                             Color="Silver" />
 
-                        <Frame
+                        <controls:CustomButton
                             x:Name="GoogleAdsButton"
                             Margin="0,20"
-                            BackgroundColor="#80000000"
-                            HasShadow="True"
-                            HeightRequest="50"
-                            HorizontalOptions="Center"
-                            WidthRequest="220">
-                            <Frame.Shadow>
-                                <Shadow
-                                    Brush="Black"
-                                    Opacity="0.60"
-                                    Radius="5"
-                                    Offset="4, 4" />
-                            </Frame.Shadow>
+                            ButtonText="Google Ads"
+                            ButtonWidth="220"
+                            Clicked="OnCreateRewardedInterstitialClicked"
+                            HorizontalOptions="Center" />
 
-                            <Button
-                                BackgroundColor="Transparent"
-                                BorderColor="White"
-                                BorderWidth="1"
-                                Clicked="OnCreateRewardedInterstitialClicked"
-                                FontSize="16"
-                                HeightRequest="50"
-                                HorizontalOptions="Center"
-                                Text="Google Ads"
-                                TextColor="White"
-                                WidthRequest="220" />
-                        </Frame>
-
-                        <Frame
+                        <controls:CustomButton
                             x:Name="CombineImagesButton"
                             Margin="0,20"
-                            BackgroundColor="#80000000"
-                            HasShadow="True"
-                            HeightRequest="50"
+                            ButtonText="CREATE NEW IMAGE"
+                            ButtonWidth="220"
+                            Clicked="OnCombineImages_Clicked"
                             HorizontalOptions="Center"
                             IsEnabled="False"
-                            IsVisible="False"
-                            WidthRequest="220">
-                            <Frame.Shadow>
-                                <Shadow
-                                    Brush="Black"
-                                    Opacity="0.60"
-                                    Radius="5"
-                                    Offset="4, 4" />
-                            </Frame.Shadow>
+                            IsVisible="False" />
 
-                            <Button
-                                BackgroundColor="Transparent"
-                                BorderColor="White"
-                                BorderWidth="1"
-                                Clicked="OnCombineImages_Clicked"
-                                FontSize="16"
-                                HeightRequest="50"
-                                HorizontalOptions="Center"
-                                Text="CREATE NEW IMAGE"
-                                TextColor="White"
-                                WidthRequest="220" />
-                        </Frame>
                     </VerticalStackLayout>
 
                     <VerticalStackLayout
@@ -1071,11 +1031,7 @@
                                     Aspect="AspectFill"
                                     HeightRequest="550"
                                     Source="Icons/blank_image_photo_2.png"
-                                    WidthRequest="350">
-                                    <!--<Image.GestureRecognizers>
-                                             <TapGestureRecognizer Tapped="OnSelectedBodyImageTapped" />
-                                    </Image.GestureRecognizers>-->
-                                </Image>
+                                    WidthRequest="350" />
                             </Frame>
 
                             <ActivityIndicator
@@ -1089,14 +1045,6 @@
                                 Color="Azure" />
                         </Grid>
 
-
-                        <!--<Image
-                            x:Name="ResponseImage"
-                            Margin="0,20"
-                    Aspect="AspectFit"
-                    HeightRequest="300"
-                            IsVisible="False" />-->
-
                         <Label
                             x:Name="ResponseText"
                             Margin="0,10"
@@ -1105,69 +1053,26 @@
                             IsVisible="False" />
 
 
-                        <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
-                            <Frame
+                        <HorizontalStackLayout
+                            Margin="0,20"
+                            HorizontalOptions="Center"
+                            Spacing="10">
+                            <controls:CustomButton
                                 x:Name="SaveButton"
-                                Grid.Column="0"
-                                BackgroundColor="#80000000"
-                                HasShadow="True"
-                                HeightRequest="50"
-                                HorizontalOptions="Start"
-                                IsEnabled="True"
-                                IsVisible="True"
-                                WidthRequest="220">
-                                <Frame.Shadow>
-                                    <Shadow
-                                        Brush="Black"
-                                        Opacity="0.60"
-                                        Radius="5"
-                                        Offset="4, 4" />
-                                </Frame.Shadow>
+                                ButtonText="SAVE IMAGE"
+                                ButtonWidth="220"
+                                Clicked="OnSaveClicked"
+                                HorizontalOptions="StartAndExpand"
+                                IsEnabled="False"
+                                IsVisible="False" />
 
-                                <Button
-                                    BackgroundColor="Transparent"
-                                    BorderColor="White"
-                                    BorderWidth="1"
-                                    Clicked="OnSaveClicked"
-                                    FontAttributes="Bold"
-                                    FontSize="Body"
-                                    HeightRequest="50"
-                                    Text="SAVE IMAGE"
-                                    TextColor="White"
-                                    WidthRequest="220" />
-                            </Frame>
-
-                            <Frame
+                            <controls:CustomButton
                                 x:Name="BackButton"
-                                Grid.Column="0"
-                                Margin="0,20"
-                                BackgroundColor="#80000000"
-                                HasShadow="True"
-                                HeightRequest="50"
+                                ButtonText="BACK"
+                                Clicked="OnBackButtonClicked"
                                 HorizontalOptions="End"
                                 IsEnabled="True"
-                                IsVisible="True"
-                                WidthRequest="100">
-                                <Frame.Shadow>
-                                    <Shadow
-                                        Brush="Black"
-                                        Opacity="0.60"
-                                        Radius="5"
-                                        Offset="4, 4" />
-                                </Frame.Shadow>
-
-                                <Button
-                                    BackgroundColor="Transparent"
-                                    BorderColor="White"
-                                    BorderWidth="1"
-                                    Clicked="OnBackButtonClicked"
-                                    FontAttributes="Bold"
-                                    FontSize="Body"
-                                    HeightRequest="50"
-                                    Text="BACK"
-                                    TextColor="White"
-                                    WidthRequest="100" />
-                            </Frame>
+                                IsVisible="True" />
                         </HorizontalStackLayout>
                     </VerticalStackLayout>
 

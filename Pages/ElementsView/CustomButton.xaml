@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+    x:Class="FashionApp.Pages.ElementsView.CustomButton"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Name="this">
+
+    <Frame
+        x:Name="InternalButton"
+        BackgroundColor="#80000000"
+        HasShadow="True"
+        HeightRequest="50"
+        HorizontalOptions="Center"
+        WidthRequest="{Binding Source={x:Reference this}, Path=ButtonWidth}">
+        <Frame.Shadow>
+            <Shadow
+                Brush="Black"
+                Opacity="0.60"
+                Radius="5"
+                Offset="4, 4" />
+        </Frame.Shadow>
+
+        <Button
+            BackgroundColor="Transparent"
+            BorderColor="White"
+            BorderWidth="1"
+            Clicked="InternalButton_Clicked"
+            FontAttributes="Bold"
+            FontSize="Body"
+            HeightRequest="50"
+            Text="{Binding Source={x:Reference this}, Path=ButtonText}"
+            TextColor="White"
+            WidthRequest="{Binding Source={x:Reference this}, Path=ButtonWidth}" />
+    </Frame>
+</ContentView>
+
+
+

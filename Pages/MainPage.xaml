@@ -3,6 +3,7 @@
     x:Class="FashionApp.Pages.MainPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:FashionApp.Pages.ElementsView"
     Title="Fashion App"
     BackgroundImageSource="loading_page_image_2.png">
 
@@ -26,92 +27,18 @@
                 RowDefinitions="Auto, *, Auto"
                 RowSpacing="5"
                 VerticalOptions="Center">
-                <Frame
+                <controls:CustomButton
                     Grid.Column="0"
-                    BackgroundColor="#80000000"
-                    HasShadow="True"
-                    HeightRequest="50"
-                    HorizontalOptions="Center"
-                    WidthRequest="100">
-                    <Frame.Shadow>
-                        <Shadow
-                            Brush="Black"
-                            Opacity="0.60"
-                            Radius="5"
-                            Offset="4, 4" />
-                    </Frame.Shadow>
-
-                    <Button
-                        x:Name="EditorButton"
-                        BackgroundColor="Transparent"
-                        BorderColor="White"
-                        BorderWidth="1"
-                        Clicked="OnEditorButtonClicked"
-                        FontAttributes="Bold"
-                        FontSize="Body"
-                        HeightRequest="50"
-                        Text="EDITOR"
-                        TextColor="White"
-                        WidthRequest="100" />
-                </Frame>
-
-                <Frame
+                    ButtonText="EDITOR"
+                    Clicked="OnEditorButtonClicked" />
+                <controls:CustomButton
                     Grid.Column="1"
-                    BackgroundColor="#80000000"
-                    HasShadow="True"
-                    HeightRequest="50"
-                    HorizontalOptions="Center"
-                    WidthRequest="110">
-                    <Frame.Shadow>
-                        <Shadow
-                            Brush="Black"
-                            Opacity="0.60"
-                            Radius="5"
-                            Offset="4, 4" />
-                    </Frame.Shadow>
-
-                    <Button
-                        x:Name="PartnersPageButton"
-                        BackgroundColor="Transparent"
-                        BorderColor="White"
-                        BorderWidth="1"
-                        Clicked="PartnersPageButton_Clicked"
-                        FontAttributes="Bold"
-                        FontSize="Body"
-                        HeightRequest="50"
-                        Text="PARTNERS"
-                        TextColor="White"
-                        WidthRequest="110" />
-                </Frame>
-
-                <Frame
+                    ButtonText="PARTNERS"
+                    Clicked="PartnersPageButton_Clicked" />
+                <controls:CustomButton
                     Grid.Column="2"
-                    BackgroundColor="#80000000"
-                    HasShadow="True"
-                    HeightRequest="50"
-                    HorizontalOptions="Center"
-                    WidthRequest="100">
-                    <Frame.Shadow>
-                        <Shadow
-                            Brush="Black"
-                            Opacity="0.60"
-                            Radius="5"
-                            Offset="4, 4" />
-                    </Frame.Shadow>
-
-                    <Button
-                        x:Name="NavigateButtonToWeb"
-                        BackgroundColor="Transparent"
-                        BorderColor="White"
-                        BorderWidth="1"
-                        Clicked="OnNavigateClickedToWeb"
-                        FontAttributes="Bold"
-                        FontSize="Body"
-                        HeightRequest="50"
-                        Text="WEB"
-                        TextColor="White"
-                        WidthRequest="100" />
-                </Frame>
+                    ButtonText="WEB"
+                    Clicked="OnNavigateClickedToWeb" />
             </Grid>
 
             <BoxView
@@ -137,67 +64,22 @@
                 RowDefinitions="Auto, *, Auto"
                 RowSpacing="5"
                 VerticalOptions="Center">
-                <Frame
+                <controls:CustomButton
                     Grid.Row="0"
                     Grid.Column="0"
-                    BackgroundColor="#80000000"
-                    HasShadow="True"
-                    HeightRequest="50"
-                    HorizontalOptions="Center"
-                    WidthRequest="100">
-                    <Frame.Shadow>
-                        <Shadow
-                            Brush="Black"
-                            Opacity="0.60"
-                            Radius="5"
-                            Offset="4, 4" />
-                    </Frame.Shadow>
-
-                    <Button
-                        x:Name="GalleryImagesButton"
-                        BackgroundColor="Transparent"
-                        BorderColor="White"
-                        BorderWidth="1"
-                        Clicked="GalleryButton_Clicked"
-                        FontAttributes="Bold"
-                        FontSize="Body"
-                        HeightRequest="50"
-                        Text="RESULT"
-                        TextColor="White"
-                        WidthRequest="100" />
-                </Frame>
-
-                <Frame
+                    ButtonText="RESULT"
+                    Clicked="GalleryButton_Clicked" />
+                <controls:CustomButton
                     Grid.Row="0"
                     Grid.Column="1"
-                    BackgroundColor="#80000000"
-                    HasShadow="True"
-                    HeightRequest="50"
-                    HorizontalOptions="Center"
-                    WidthRequest="100">
-                    <Frame.Shadow>
-                        <Shadow
-                            Brush="Black"
-                            Opacity="0.60"
-                            Radius="5"
-                            Offset="4, 4" />
-                    </Frame.Shadow>
-
-                    <Button
-                        x:Name="MaskGalleryButton"
-                        BackgroundColor="Transparent"
-                        BorderColor="White"
-                        BorderWidth="1"
-                        Clicked="MaskGalleryButton_Clicked"
-                        FontAttributes="Bold"
-                        FontSize="Body"
-                        HeightRequest="50"
-                        Text="MASK"
-                        TextColor="White"
-                        WidthRequest="100" />
-                </Frame>
-
-                <Button
+                    ButtonText="MASK"
+                    Clicked="MaskGalleryButton_Clicked" />
+                <controls:CustomButton
+                    Grid.Row="0"
+                    Grid.Column="2"
+                    ButtonText="WEB"
+                    Clicked="WebGalleryButton_Clicked" />
+                <!--<Button
                     x:Name="TestGalleryButton"
                     Grid.Row="1"
                     Grid.Column="0"
@@ -205,37 +87,7 @@
                     HorizontalOptions="Center"
                     IsVisible="False"
                     Text="Test"
-                    WidthRequest="100" />
-
-                <Frame
-                    Grid.Row="0"
-                    Grid.Column="2"
-                    BackgroundColor="#80000000"
-                    HasShadow="True"
-                    HeightRequest="50"
-                    HorizontalOptions="Center"
-                    WidthRequest="100">
-                    <Frame.Shadow>
-                        <Shadow
-                            Brush="Black"
-                            Opacity="0.60"
-                            Radius="5"
-                            Offset="4, 4" />
-                    </Frame.Shadow>
-
-                    <Button
-                        x:Name="WebGalleryButton"
-                        BackgroundColor="Transparent"
-                        BorderColor="White"
-                        BorderWidth="1"
-                        Clicked="WebGalleryButton_Clicked"
-                        FontAttributes="Bold"
-                        FontSize="Body"
-                        HeightRequest="50"
-                        Text="WEB"
-                        TextColor="White"
-                        WidthRequest="100" />
-                </Frame>
+                    WidthRequest="100" />-->
             </Grid>
 
             <!--<Button
@@ -250,35 +102,12 @@
                 HorizontalOptions="FillAndExpand"
                 Color="Silver" />
 
-            <Frame
-                Grid.Row="0"
-                Grid.Column="2"
-                BackgroundColor="#80000000"
-                HasShadow="True"
-                HeightRequest="50"
-                HorizontalOptions="Center"
-                WidthRequest="200">
-                <Frame.Shadow>
-                    <Shadow
-                        Brush="Black"
-                        Opacity="0.60"
-                        Radius="5"
-                        Offset="4, 4" />
-                </Frame.Shadow>
+            <controls:CustomButton
+                ButtonText="COMBINE IMAGES"
+                ButtonWidth="200"
+                Clicked="CombineImagesButton_Clicked"
+                HorizontalOptions="Center" />
 
-                <Button
-                    x:Name="CombineImagesButton"
-                    BackgroundColor="Transparent"
-                    BorderColor="White"
-                    BorderWidth="1"
-                    Clicked="CombineImagesButton_Clicked"
-                    FontAttributes="Bold"
-                    FontSize="Body"
-                    HeightRequest="50"
-                    Text="COMBINE IMAGES"
-                    TextColor="White"
-                    WidthRequest="200" />
-            </Frame>
 
             <BoxView
                 HeightRequest="1"
@@ -346,62 +175,11 @@
                 </CarouselView>
             </StackLayout>
 
-            <!--<CarouselView ItemsSource="{Binding Monkeys}" Loop="True">
-                <CarouselView.ItemTemplate>
-                    <DataTemplate>
-                        <StackLayout>
-                            <Frame
-                                Margin="20"
-                                BackgroundColor="White"
-                                BorderColor="Black"
-                                CornerRadius="5"
-                                HasShadow="True"
-                                HeightRequest="300"
-                                HorizontalOptions="Center"
-                                VerticalOptions="CenterAndExpand">
-                                <Frame.Shadow>
-                                    <Shadow
-                                        Brush="Black"
-                                        Opacity="0.99"
-                                        Radius="10"
-                                        Offset="5, 5" />
-                                </Frame.Shadow>
-                                <StackLayout>
-                                    <Label
-                                        FontAttributes="Bold"
-                                        FontSize="Large"
-                                        HorizontalOptions="Center"
-                                        Text="{Binding Name}"
-                                        TextColor="Black"
-                                        VerticalOptions="Center" />
-                                    <Image
-                                        Aspect="AspectFill"
-                                        HeightRequest="150"
-                                        HorizontalOptions="Center"
-                                        Source="{Binding Image}"
-                                        WidthRequest="150" />
-                                    <Label Text="{Binding Details}" TextColor="Black" />
-                                </StackLayout>
-                            </Frame>
-                        </StackLayout>
-                    </DataTemplate>
-                </CarouselView.ItemTemplate>
-            </CarouselView>-->
-
 
             <BoxView
                 HeightRequest="1"
                 HorizontalOptions="FillAndExpand"
                 Color="Silver" />
-
-            <!--<Image
-                Aspect="AspectFit"
-                HeightRequest="185"
-                SemanticProperties.Description="dot net bot in a race car number eight"
-                Source="dotnet_bot.png" />-->
-
-            <StackLayout />
-
 
             <StackLayout
                 x:Name="AdminTestFields"
