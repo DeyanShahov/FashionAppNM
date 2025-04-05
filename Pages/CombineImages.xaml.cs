@@ -25,16 +25,7 @@ public partial class CombineImages : ContentPage
     private readonly SingleImageLoader singleImageLoader;
     private CameraService _cameraService;
 
-    //private int maskDetectionMethod = 1;
-
-    private List<string> selectedItems = new List<string>();
-    private List<string> selectedOptionsForZoneToMarcFromAI2 = new List<string>(); // Колекция с избрани стойности
-    private List<string> selectedOptionsForZoneToMarcFromAI3 = new List<string>(); // Колекция с избрани стойности
-    private List<string> selectedOptionsForZoneToMarcFromAI4 = new List<string>(); // Колекция с избрани стойности
-
-
-    public ObservableCollection<JacketModel> Jackets { get; set; } = new ObservableCollection<JacketModel>();
-    //public ICommand SelectJacketCommand { get; set; }
+    public ObservableCollection<JacketModel> ListAvailableClothesForMacros { get; set; } = new ObservableCollection<JacketModel>();
 
     private bool isFromClothImage = true;
 
@@ -65,8 +56,6 @@ public partial class CombineImages : ContentPage
 #if ANDROID
         CheckAvailableMasksAndroid(true);
 #endif
-        //SelectJacketCommand = new Command<string>(OnJacketSelected);
-
     }
 
     protected override void OnAppearing()
@@ -275,8 +264,6 @@ public partial class CombineImages : ContentPage
 
         if (string.IsNullOrEmpty(value)) return;
 
-        //SetActiveButton((ImageButton)sender);
-
         string? futureImageName = new MacroIconToPhoto(value).Value;
 
         if (futureImageName == null || futureImageName == "Default") return;
@@ -449,38 +436,6 @@ public partial class CombineImages : ContentPage
         
     }
 
-    private async Task LoadCorrectImageMaskWindows(string maskName)
-    {
-        try
-        {
-            string filePath = Path.Combine("C:", "Users", "Public", "Pictures", maskName);
-
-            if (File.Exists(filePath))
-            {
-                var stream = File.OpenRead(filePath);
-                var memoryStream = new MemoryStream();
-                await stream.CopyToAsync(memoryStream);
-                memoryStream.Position = 0;
-                SelectedBodyImage.Source = ImageSource.FromStream(() => new MemoryStream(memoryStream.ToArray()));
-                //SelectedBodyImage.IsVisible = true;
-                _bodyImagePath = filePath; // Запазваме пътя на избрания файл
-            }
-            else
-            {
-                await DisplayAlert(
-                    AppConstants.Errors.ERROR,
-                    $"{AppConstants.Errors.FILE_NOT_FOUND}: {maskName}",
-                    AppConstants.Messages.OK);
-            }
-        }
-        catch (Exception ex)
-        {
-            await DisplayAlert(
-                AppConstants.Errors.ERROR, 
-                $"{AppConstants.Errors.ERROR_OCCURRED}: {ex.Message}",
-                AppConstants.Messages.OK);
-        }
-    }
     private async void SetAnImageAsSourceAsync(Image image, string imageToSave)
     {      
         try
@@ -523,7 +478,7 @@ public partial class CombineImages : ContentPage
     private async void CheckAvailableMasksAndroid(bool toSet)
     {
         //премахваме стари записи
-        Jackets.Clear();
+        ListAvailableClothesForMacros.Clear();
 
         // Проверка за разрешения
         App.Current?.Handler.MauiContext?.Services.GetService<CheckForAndroidPermissions>()?.CheckStorage();
@@ -533,43 +488,43 @@ public partial class CombineImages : ContentPage
             var fileChecker = App.Current?.Handler.MauiContext?.Services.GetService<IFileChecker>();
 
             var fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.DRESS_MASK);
-            if (fileExists) Jackets.Add( new JacketModel { ImagePath = "Macros/icons_dress.png", Data = "dress" });
+            if (fileExists) ListAvailableClothesForMacros.Add( new JacketModel { ImagePath = "Macros/icons_dress.png", Data = "dress" });
 
             fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.DRESS_FULL_MASK);
-            if (fileExists) Jackets.Add( new JacketModel { ImagePath = "Macros/icons_dress_full.png", Data = "dress_full" });
+            if (fileExists) ListAvailableClothesForMacros.Add( new JacketModel { ImagePath = "Macros/icons_dress_full.png", Data = "dress_full" });
 
             fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.JACKET_MASK);
-            if (fileExists) Jackets.Add( new JacketModel { ImagePath = "Macros/icons_jacket.png", Data = "jacket" });
+            if (fileExists) ListAvailableClothesForMacros.Add( new JacketModel { ImagePath = "Macros/icons_jacket.png", Data = "jacket" });
 
             fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.CLOSED_JACKET_MASK);
-            if (fileExists) Jackets.Add( new JacketModel { ImagePath = "Macros/icons_jacket_closed.png", Data = "jacket_closed"  });
+            if (fileExists) ListAvailableClothesForMacros.Add( new JacketModel { ImagePath = "Macros/icons_jacket_closed.png", Data = "jacket_closed"  });
 
             fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.OPEN_JACKET_MASK);
-            if (fileExists) Jackets.Add( new JacketModel { ImagePath = "Macros/icons_jacket_open.png", Data = "jacket_open" });
+            if (fileExists) ListAvailableClothesForMacros.Add( new JacketModel { ImagePath = "Macros/icons_jacket_open.png", Data = "jacket_open" });
 
             fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.NO_SET_MASK );
-            if (fileExists) Jackets.Add( new JacketModel { ImagePath = "Macros/icons_no_set.png", Data = "no_set" });
+            if (fileExists) ListAvailableClothesForMacros.Add( new JacketModel { ImagePath = "Macros/icons_no_set.png", Data = "no_set" });
 
             fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.PANTS_MASK );
-            if (fileExists) Jackets.Add( new JacketModel { ImagePath = "Macros/icons_pants.png", Data = "pants" });
+            if (fileExists) ListAvailableClothesForMacros.Add( new JacketModel { ImagePath = "Macros/icons_pants.png", Data = "pants" });
 
             fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.PANTS_SHORT_MASK );
-            if (fileExists) Jackets.Add( new JacketModel { ImagePath = "Macros/icons_pants_short.png", Data = "pants_short" });
+            if (fileExists) ListAvailableClothesForMacros.Add( new JacketModel { ImagePath = "Macros/icons_pants_short.png", Data = "pants_short" });
 
             fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.RAINCOAT_MASK );
-            if (fileExists) Jackets.Add( new JacketModel { ImagePath = "Macros/icons_raincoat.png", Data = "raincoat" });
+            if (fileExists) ListAvailableClothesForMacros.Add( new JacketModel { ImagePath = "Macros/icons_raincoat.png", Data = "raincoat" });
 
             fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.SHIRT_MASK );
-            if (fileExists) Jackets.Add( new JacketModel { ImagePath = "Macros/icons_shirt.png", Data = "shirt" });
+            if (fileExists) ListAvailableClothesForMacros.Add( new JacketModel { ImagePath = "Macros/icons_shirt.png", Data = "shirt" });
 
             fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.SKIRT_MASK );
-            if (fileExists) Jackets.Add( new JacketModel { ImagePath = "Macros/icons_skirt.png", Data = "skirt" });
+            if (fileExists) ListAvailableClothesForMacros.Add( new JacketModel { ImagePath = "Macros/icons_skirt.png", Data = "skirt" });
 
             fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.SKIRT_LONG_MASK );
-            if (fileExists) Jackets.Add( new JacketModel { ImagePath = "Macros/icons_skirt_long.png", Data = "skirt_long" });
+            if (fileExists) ListAvailableClothesForMacros.Add( new JacketModel { ImagePath = "Macros/icons_skirt_long.png", Data = "skirt_long" });
 
             fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.TANK_TOP_MASK );
-            if (fileExists) Jackets.Add( new JacketModel { ImagePath = "Macros/icons_tank_top.png", Data = "tank_top" });
+            if (fileExists) ListAvailableClothesForMacros.Add( new JacketModel { ImagePath = "Macros/icons_tank_top.png", Data = "tank_top" });
         }
         catch (Exception ex)
         {

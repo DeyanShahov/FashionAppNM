@@ -9,9 +9,7 @@
     BackgroundImageSource="loading_page_image_2.png">
 
     <ScrollView>
-
         <VerticalStackLayout>
-
             <Grid RowDefinitions="Auto, *, Auto">
                 <Grid
                     x:Name="CameraPanel"
@@ -194,7 +192,7 @@
                                         <CarouselView
                                             x:Name="JacketCarousel"
                                             HeightRequest="300"
-                                            ItemsSource="{Binding Jackets}"
+                                            ItemsSource="{Binding ListAvailableClothesForMacros}"
                                             Loop="True"
                                             PeekAreaInsets="90"
                                             WidthRequest="60">
