@@ -5,7 +5,6 @@ using System.Collections.ObjectModel;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
-using System.Diagnostics;
 //using Plugin.AdMob.Services;
 //using Plugin.AdMob;
 
@@ -26,7 +25,7 @@ public partial class CombineImages : ContentPage
     private readonly SingleImageLoader singleImageLoader;
     private CameraService _cameraService;
 
-    private int maskDetectionMethod = 1;
+    //private int maskDetectionMethod = 1;
 
     private List<string> selectedItems = new List<string>();
     private List<string> selectedOptionsForZoneToMarcFromAI2 = new List<string>(); // Колекция с избрани стойности
@@ -62,13 +61,8 @@ public partial class CombineImages : ContentPage
             setErrorMessage: (msg) => ResponseText.Text = msg,
             setImage: (uri) => SelectedBodyImage.Source = Microsoft.Maui.Controls.ImageSource.FromUri(new System.Uri(uri))
         );
-
-        StandartMask.IsChecked = true;
-
-
-#if WINDOWS
-        CheckAvailableMasksWindows();
-#elif ANDROID
+     
+#if ANDROID
         CheckAvailableMasksAndroid(true);
 #endif
         //SelectJacketCommand = new Command<string>(OnJacketSelected);
@@ -78,8 +72,6 @@ public partial class CombineImages : ContentPage
     protected override void OnAppearing()
     {
         base.OnAppearing();
-
-        ChoiseForMaskMethod.IsVisible = IsAdmin;
 
         PanelButtons.IsVisible = false;
         PanelButtons2.IsVisible = false;
@@ -96,68 +88,6 @@ public partial class CombineImages : ContentPage
     }
     private void OnSelectedClothImageTapped(object sender, TappedEventArgs e) => PanelButtons.IsVisible = !PanelButtons.IsVisible;
     private void OnSelectedBodyImageTapped(object sender, TappedEventArgs e) => PanelButtons2.IsVisible = !PanelButtons2.IsVisible;
-
-    private void OptionButton_Clicked(object sender, EventArgs e)
-    {
-        Button clickedButton = (Button)sender;
-        string value = clickedButton.CommandParameter as string;
-
-        if (string.IsNullOrEmpty(value)) return; // Предпазване от грешки
-
-        if(maskDetectionMethod == 2)
-        {
-            if (selectedOptionsForZoneToMarcFromAI2.Contains(value))
-            {
-                // Премахване от списъка
-                selectedOptionsForZoneToMarcFromAI2.Remove(value);
-                clickedButton.BackgroundColor = Colors.Black;
-                clickedButton.TextColor = Colors.Red;
-            }
-            else
-            {
-                // Добавяне в списъка
-                selectedOptionsForZoneToMarcFromAI2.Add(value);
-                clickedButton.BackgroundColor = Colors.White;
-                clickedButton.TextColor = Colors.Black;
-            }
-        }
-        else if (maskDetectionMethod == 3)
-        {
-            if (selectedOptionsForZoneToMarcFromAI3.Contains(value))
-            {
-                // Премахване от списъка
-                selectedOptionsForZoneToMarcFromAI3.Remove(value);
-                clickedButton.BackgroundColor = Colors.LightBlue;
-                clickedButton.TextColor = Colors.Red;
-            }
-            else
-            {
-                // Добавяне в списъка
-                selectedOptionsForZoneToMarcFromAI3.Add(value);
-                clickedButton.BackgroundColor = Colors.White;
-                clickedButton.TextColor = Colors.Black;
-            }
-        }
-        else if (maskDetectionMethod == 4)
-        {
-            if (selectedOptionsForZoneToMarcFromAI4.Contains(value))
-            {
-                // Премахване от списъка
-                selectedOptionsForZoneToMarcFromAI4.Remove(value);
-                clickedButton.BackgroundColor = Colors.Orange;
-                clickedButton.TextColor = Colors.Red;
-            }
-            else
-            {
-                // Добавяне в списъка
-                selectedOptionsForZoneToMarcFromAI4.Add(value);
-                clickedButton.BackgroundColor = Colors.White;
-                clickedButton.TextColor = Colors.Black;
-            }
-        }    
-    }
-
-
     private void OnCreateRewardedInterstitialClicked(object sender, EventArgs e)
     {
         //var rewardedInterstitialAd = _rewardedInterstitialAdService.CreateAd();
@@ -231,8 +161,8 @@ public partial class CombineImages : ContentPage
                 function_name = AppConstants.Parameters.CONFY_FUNCTION_GENERATE_NAME,
                 cloth_image = AppConstants.Parameters.INPUT_IMAGE_CLOTH,
                 body_image = AppConstants.Parameters.INPUT_IMAGE_BODY,
-                mask_detection_method = maskDetectionMethod, // Задаване типа на маската: ръчна ( true ) / АI ( false )
-                args = GetNeededCollectionOfButtons(maskDetectionMethod) // Списъка с евентуалните зони за маркиране от АЙ-то
+                mask_detection_method = true,  // Задаване типа на маската: ръчна ( true ) / АI ( false )
+                args = new List<string>() // Списъка с евентуалните зони за маркиране от АЙ-то
             };
 
             var jsonContent = new StringContent(
@@ -282,16 +212,6 @@ public partial class CombineImages : ContentPage
         }
     }
 
-    private List<string> GetNeededCollectionOfButtons(int maskDetectionMethod)
-    {
-        switch (maskDetectionMethod)
-        {
-            case 2: return selectedOptionsForZoneToMarcFromAI2;
-            case 3: return selectedOptionsForZoneToMarcFromAI3;
-            case 4: return selectedOptionsForZoneToMarcFromAI4;
-            default: return new List<string>();
-        }
-    }
 
     private void PanelButton_Clicked(object sender, EventArgs e)
     {
@@ -346,24 +266,7 @@ public partial class CombineImages : ContentPage
                 AppConstants.Messages.OK);
         }
     }
-    private async void OpenJacketImageButton_Clicked(object sender, EventArgs e)
-    {
-        SetActiveButton((ImageButton)sender);
-#if WINDOWS
-        await LoadCorrectImageMaskWindows(AppConstants.ImagesConstants.OPEN_JACKET_MASK);
-#elif ANDROID
-        LoadLargeImage(AppConstants.ImagesConstants.OPEN_JACKET_MASK);
-#endif
-    }
-    private async void ClosedJacketImageButton_Clicked(object sender, EventArgs e)
-    {      
-        SetActiveButton((ImageButton)sender);
-#if WINDOWS
-        await LoadCorrectImageMaskWindows(AppConstants.ImagesConstants.CLOSED_JACKET_MASK);
-#elif ANDROID
-        LoadLargeImage(AppConstants.ImagesConstants.CLOSED_JACKET_MASK);
-#endif
-    }
+
 
     private void MacroButton_Clicked(object sender, EventArgs e)
     {
@@ -391,53 +294,6 @@ public partial class CombineImages : ContentPage
     private void SelectBodyFromApp_Clicked(object sender, EventArgs e)
     {
 
-    }
-
-
-    // Общият метод за CheckedChanged за всички RadioButton-и
-    private void RadioButton_CheckedChanged(object sender, CheckedChangedEventArgs e)
-    {
-        // Изпълняваме кода само ако бутонът е избран (e.Value == true)
-        if (e.Value)
-        {
-            var radioButton = sender as RadioButton;
-            if (radioButton == null) return;     
-            
-            string selectedContent = radioButton.Content?.ToString();
-
-            // Разграничаваме кой бутон е избран чрез неговия текст
-            switch (selectedContent)
-            {
-                case "Mask": ExecuteStandartMaskFunction(); break;
-                case "AIv1": ExecuteAIv1Function(); break;
-                case "AIv2": ExecuteAIv2Function(); break;
-                case "AIv3": ExecuteAIv3Function(); break;
-                default: break;
-            }
-        }
-    }
-
-    private void ExecuteStandartMaskFunction() => SetButtonForAiMasking(1, false);
-    private void ExecuteAIv1Function() => SetButtonForAiMasking(2, true);
-    private void ExecuteAIv2Function() => SetButtonForAiMasking(3, true);
-    private void ExecuteAIv3Function() => SetButtonForAiMasking(4, true);
-    private void SetButtonForAiMasking(int sender, bool toSet)
-    {
-        ButtonPanel.IsVisible = false;
-        ButtonPanel2.IsVisible = false;
-        ButtonPanel3.IsVisible = false;     
-
-        maskDetectionMethod = sender;
-        switch (sender)
-        {
-            case 2: ButtonPanel.IsVisible = true; break;
-            case 3: ButtonPanel2.IsVisible = true; break;
-            case 4: ButtonPanel3.IsVisible = true; break;
-            default: break;
-        }
-#if ANDROID
-        CheckAvailableMasksAndroid(!toSet);
-#endif
     }
 
     //-------------------------------------------- FUNCTIONS --------------------------------------------------------- 
@@ -663,37 +519,7 @@ public partial class CombineImages : ContentPage
         PanelButtons2.IsVisible = false;
     }
 
-#if WINDOWS
-    private void CheckAvailableMasksWindows()
-    {
-        try
-        {
-            string picturesPath = Path.Combine("C:", "Users", "Public", "Pictures");
-            string closedJacketMaskPath = Path.Combine(picturesPath, "closed_jacket_mask.png");
-            string openJacketMaskPath = Path.Combine(picturesPath, "open_jacket_mask.png");
-
-            // Проверка за closed_jacket_mask.png
-            if (File.Exists(closedJacketMaskPath))
-            {
-                ClosedJacketImageButton.IsEnabled = true;
-                ClosedJacketImageButton.IsVisible = true;
-            }
-
-            // Проверка за open_jacket_mask.png
-            if (File.Exists(openJacketMaskPath))
-            {
-                OpenJacketImageButton.IsEnabled = true;
-                OpenJacketImageButton.IsVisible = true;
-            }
-        }
-        catch (Exception ex)
-        {
-            // В случай на грешка при достъп до файловата система
-            Console.WriteLine($"Error checking masks: {ex.Message}");
-        }
-    }
-
-#elif ANDROID
+#if ANDROID
     private async void CheckAvailableMasksAndroid(bool toSet)
     {
         //премахваме стари записи
@@ -832,33 +658,6 @@ public partial class CombineImages : ContentPage
         ResponseImage.Source = "Icons/blank_image_photo_2.png";
     }
 
-    private void SetActiveButton(ImageButton activeButton)
-    {
-        // Списък с всички бутони, които трябва да се управляват
-        var allButtons = new List<ImageButton>
-        {
-            ClosedJacketImageButton,
-            OpenJacketImageButton
-            // Тук можете да добавите нови бутони в бъдеще
-        };
-
-        // Премахваме ефектите от всички бутони
-        foreach (var button in allButtons)
-        {
-            button.BackgroundColor = Colors.Transparent;
-            button.BorderColor = Colors.Black;
-            button.BorderWidth = 3;
-            button.Scale = 1.0;
-        }
-
-        // Прилагаме ефектите само на активния бутон
-        if (activeButton != null)
-        {
-            activeButton.BackgroundColor = Color.FromArgb("#E6F3FF");
-            activeButton.BorderColor = Color.FromArgb("#0066CC");
-            activeButton.BorderWidth = 4;
-            activeButton.Scale = 1.1;
-        }
-    }
+   
     private void HideMenus() => Menu1.IsVisible = !Menu1.IsVisible; 
 }
