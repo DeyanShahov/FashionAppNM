@@ -3,8 +3,9 @@ using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui;
 using FashionApp.core.services;
 using FashionApp.Pages;
-using Plugin.AdMob;
-using Plugin.AdMob.Configuration;
+//using Plugin.AdMob;
+//using Plugin.AdMob.Configuration;
+
 
 namespace FashionApp
 {
@@ -16,7 +17,14 @@ namespace FashionApp
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
-                .UseAdMob()
+                //.UseAdMob()
+                //.UseAdMob(new AdMobConfiguration
+                //{
+                //    //AdUnitId = "ca-app-pub-3940256099942544/6300978111", // Test ad unit ID for Interstitial
+                //    //AdUnitId = "ca-app-pub-3940256099942544/2247696110", // Test ad unit ID for Banner
+                //    //AdUnitId = "ca-app-pub-3940256099942544/5224354917", // Test ad unit ID for Rewarded
+                //    //AdUnitId = "ca-app-pub-3940256099942544/5224354917" // Test ad unit ID for Rewarded Interstitial
+                //})
                 .UseMauiCommunityToolkitCamera()
                 .UseMauiCommunityToolkit()
                 .ConfigureFonts(fonts =>
@@ -45,8 +53,8 @@ namespace FashionApp
 
 #if DEBUG
             builder.Logging.AddDebug();
-            AdConfig.UseTestAdUnitIds = true; // Use test ad unit IDs. Setwa testowi reklami
-            AdConfig.DisableConsentCheck = true; // Disable consent check. 
+            //AdConfig.UseTestAdUnitIds = true; // Use test ad unit IDs. Setwa testowi reklami
+            //AdConfig.DisableConsentCheck = true; // Disable consent check. 
 #endif
 
             //return builder.Build();

@@ -3,9 +3,9 @@
     x:Class="FashionApp.Pages.PartnersPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:admob="clr-namespace:Plugin.AdMob;assembly=Plugin.AdMob"
     Title="Fashion Partners"
     BackgroundColor="Black">
+    <!--  xmlns:admob="clr-namespace:Plugin.AdMob;assembly=Plugin.AdMob"  -->
 
     <!--<ContentPage.Resources>
         <ResourceDictionary>
@@ -17,8 +17,8 @@
             </OnPlatform>
         </ResourceDictionary>
     </ContentPage.Resources>-->
-   
-   <Grid RowDefinitions="*,Auto">
+
+    <Grid RowDefinitions="*,Auto">
         <Grid
             Grid.Row="0"
             Padding="10"
@@ -68,7 +68,7 @@
 
         </Grid>
 
-        <admob:BannerAd Grid.Row="1" VerticalOptions="End" />
+        <!--<admob:BannerAd Grid.Row="1" VerticalOptions="End" />-->
     </Grid>
 
 </ContentPage>

@@ -8,7 +8,7 @@ namespace FashionApp
         protected override MauiApp CreateMauiApp()
         {
             var app = MauiProgram.CreateMauiApp();
-            Google.MobileAds.MobileAds.SharedInstance.Start(completionHandler: null);
+            //Google.MobileAds.MobileAds.SharedInstance.Start(completionHandler: null);
 
             return app;
         }

@@ -1,13 +1,13 @@
 using FashionApp.core;
 using FashionApp.core.services;
 using FashionApp.Data.Constants;
-using Plugin.AdMob.Services;
 using System.Collections.ObjectModel;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Diagnostics;
-using Plugin.AdMob;
+//using Plugin.AdMob.Services;
+//using Plugin.AdMob;
 
 namespace FashionApp.Pages;
 
@@ -39,7 +39,7 @@ public partial class CombineImages : ContentPage
 
     private bool isFromClothImage = true;
 
-    private readonly IRewardedInterstitialAdService _rewardedInterstitialAdService;
+    //private readonly IRewardedInterstitialAdService _rewardedInterstitialAdService;
     int tokens = 0;
 
     public CombineImages()
@@ -48,9 +48,9 @@ public partial class CombineImages : ContentPage
 
         BindingContext = this;
 
-        _rewardedInterstitialAdService = FashionApp.core.services.ServiceProvider.GetRequiredService<IRewardedInterstitialAdService>();
-        _rewardedInterstitialAdService.OnAdLoaded += (_, __) => Debug.WriteLine("Rewarded interstitial ad prepared.");
-        _rewardedInterstitialAdService.PrepareAd(onUserEarnedReward: UserDidEarnReward);
+        //_rewardedInterstitialAdService = FashionApp.core.services.ServiceProvider.GetRequiredService<IRewardedInterstitialAdService>();
+        //_rewardedInterstitialAdService.OnAdLoaded += (_, __) => Debug.WriteLine("Rewarded interstitial ad prepared.");
+        //_rewardedInterstitialAdService.PrepareAd(onUserEarnedReward: UserDidEarnReward);
 
 
 
@@ -160,35 +160,35 @@ public partial class CombineImages : ContentPage
 
     private void OnCreateRewardedInterstitialClicked(object sender, EventArgs e)
     {
-        var rewardedInterstitialAd = _rewardedInterstitialAdService.CreateAd();
-        rewardedInterstitialAd.OnUserEarnedReward += (_, reward) =>
-        {
-            UserDidEarnReward(reward);
-        };
-        rewardedInterstitialAd.OnAdLoaded += RewardedInterstitialAd_OnAdLoaded;
-        rewardedInterstitialAd.Load();
+        //var rewardedInterstitialAd = _rewardedInterstitialAdService.CreateAd();
+        //rewardedInterstitialAd.OnUserEarnedReward += (_, reward) =>
+        //{
+        //    UserDidEarnReward(reward);
+        //};
+        //rewardedInterstitialAd.OnAdLoaded += RewardedInterstitialAd_OnAdLoaded;
+        //rewardedInterstitialAd.Load();
     }
 
-    private void RewardedInterstitialAd_OnAdLoaded(object? sender, EventArgs e)
-    {
-        if (sender is IRewardedInterstitialAd rewardedInterstitialAd)
-        {
-            rewardedInterstitialAd.Show();
-        }
-    }
+    //private void RewardedInterstitialAd_OnAdLoaded(object? sender, EventArgs e)
+    //{
+    //    if (sender is IRewardedInterstitialAd rewardedInterstitialAd)
+    //    {
+    //        rewardedInterstitialAd.Show();
+    //    }
+    //}
 
-    private async void UserDidEarnReward(RewardItem rewardItem)
-    {
-        Debug.WriteLine($"User earned {rewardItem.Amount} {rewardItem.Type}.");
-        tokens += rewardItem.Amount;
+    //private async void UserDidEarnReward(RewardItem rewardItem)
+    //{
+    //    Debug.WriteLine($"User earned {rewardItem.Amount} {rewardItem.Type}.");
+    //    tokens += rewardItem.Amount;
 
-        GoogleAdsButton.IsEnabled = false;
-        GoogleAdsButton.IsVisible = false;
+    //    GoogleAdsButton.IsEnabled = false;
+    //    GoogleAdsButton.IsVisible = false;
 
-        CombineImagesButton.IsEnabled = true;
-        CombineImagesButton.IsVisible = true;
-        //await CombineImagesAction();
-    }
+    //    CombineImagesButton.IsEnabled = true;
+    //    CombineImagesButton.IsVisible = true;
+    //    //await CombineImagesAction();
+    //}
 
     private async void OnCombineImages_Clicked(object sender, EventArgs e)
     {
