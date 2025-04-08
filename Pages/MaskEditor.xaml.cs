@@ -30,6 +30,7 @@ public partial class MaskEditor : ContentPage
         DrawingView.Drawable = _drawable;
 
         _cameraService = new CameraService(MyCameraView, CameraPanel);
+        //_cameraService = new CameraService(Camera.MyCameraView);
         _cameraService.ImageCaptured += OnImageCaptured;
         _cameraService.StopCamera();
     }
@@ -206,11 +207,11 @@ public partial class MaskEditor : ContentPage
     private async void OnImageCaptured(Stream imageStream)
     {
         //Capture the image
-        if (ContourOverlay.IsVisible)
-        {
-            // Merge the overlay with the captured image
-            imageStream = await MergeOverlayWithImage(imageStream);
-        }
+        //if (ContourOverlay.IsVisible)
+        //{
+        //    // Merge the overlay with the captured image
+        //    imageStream = await MergeOverlayWithImage(imageStream);
+        //}
 
 
         await ProcessSelectedImage(imageStream);

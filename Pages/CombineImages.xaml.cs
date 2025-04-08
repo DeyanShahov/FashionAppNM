@@ -24,24 +24,28 @@ public partial class CombineImages : ContentPage
     public bool IsAdmin { get; set; } = false;
 
     //private readonly SingleImageLoader singleImageLoader;
-   // private CameraService _cameraService;
+    //private CameraService _cameraService;
 
     public ObservableCollection<JacketModel> ListAvailableClothesForMacros { get; set; } = new ObservableCollection<JacketModel>();
 
     private bool isFromClothImage = true;
 
-    private readonly IRewardedInterstitialAdService _rewardedInterstitialAdService;
-    int tokens = 0;
+    //private readonly IRewardedInterstitialAdService _rewardedInterstitialAdService;
+    //int tokens = 0;
 
-    public CombineImages()
+    private readonly ExecutionGuardService _executionGuardService;
+
+    public CombineImages(ExecutionGuardService executionGuard)
     {
         InitializeComponent();
 
+        _executionGuardService = executionGuard;
+
         BindingContext = this;
 
-        _rewardedInterstitialAdService = FashionApp.core.services.ServiceProvider.GetRequiredService<IRewardedInterstitialAdService>();
-        _rewardedInterstitialAdService.OnAdLoaded += (_, __) => Debug.WriteLine("Rewarded interstitial ad prepared.");
-        _rewardedInterstitialAdService.PrepareAd(onUserEarnedReward: UserDidEarnReward);
+        //_rewardedInterstitialAdService = FashionApp.core.services.ServiceProvider.GetRequiredService<IRewardedInterstitialAdService>();
+        //_rewardedInterstitialAdService.OnAdLoaded += (_, __) => Debug.WriteLine("Rewarded interstitial ad prepared.");
+        //_rewardedInterstitialAdService.PrepareAd(onUserEarnedReward: UserDidEarnReward);
 
 
 
@@ -78,43 +82,62 @@ public partial class CombineImages : ContentPage
     }
     private void OnSelectedClothImageTapped(object sender, TappedEventArgs e) => PanelButtons.IsVisible = !PanelButtons.IsVisible;
     private void OnSelectedBodyImageTapped(object sender, TappedEventArgs e) => PanelButtons2.IsVisible = !PanelButtons2.IsVisible;
-    private void OnCreateRewardedInterstitialClicked(object sender, EventArgs e)
+    private async void OnCreateRewardedInterstitialClicked(object sender, EventArgs e)
     {
-        var rewardedInterstitialAd = _rewardedInterstitialAdService.CreateAd();
-        rewardedInterstitialAd.OnUserEarnedReward += (_, reward) =>
-        {
-            UserDidEarnReward(reward);
-        };
-        rewardedInterstitialAd.OnAdLoaded += RewardedInterstitialAd_OnAdLoaded;
-        rewardedInterstitialAd.Load();
-    }
+        bool pageAlreadyExists = Navigation.ModalStack.Any(p => p is AdvertisementPage);
+        if (pageAlreadyExists) return;
 
-    private void RewardedInterstitialAd_OnAdLoaded(object? sender, EventArgs e)
-    {
-        if (sender is IRewardedInterstitialAd rewardedInterstitialAd)
+        string taskKey = "Advertise Page";
+        if (!_executionGuardService.TryStartTask(taskKey)) return;
+
+        try
         {
-            rewardedInterstitialAd.Show();
+            var page = MauiProgram.ServiceProvider.GetRequiredService<AdvertisementPage>();
+            await Navigation.PushModalAsync(page);
+        }
+        finally
+        {
+            _executionGuardService.FinishTask(taskKey);
         }
     }
 
-    private async void UserDidEarnReward(RewardItem rewardItem)
-    {
-        Debug.WriteLine($"User earned {rewardItem.Amount} {rewardItem.Type}.");
-        tokens += rewardItem.Amount;
+    //private void OnCreateRewardedInterstitialClicked(object sender, EventArgs e)
+    //{
+    //    var rewardedInterstitialAd = _rewardedInterstitialAdService.CreateAd();
+    //    rewardedInterstitialAd.OnUserEarnedReward += (_, reward) =>
+    //    {
+    //        UserDidEarnReward(reward);
+    //    };
+    //    rewardedInterstitialAd.OnAdLoaded += RewardedInterstitialAd_OnAdLoaded;
+    //    rewardedInterstitialAd.Load();
+    //}
 
-        GoogleAdsButton.IsEnabled = false;
-        GoogleAdsButton.IsVisible = false;
+    //private void RewardedInterstitialAd_OnAdLoaded(object? sender, EventArgs e)
+    //{
+    //    if (sender is IRewardedInterstitialAd rewardedInterstitialAd)
+    //    {
+    //        rewardedInterstitialAd.Show();
+    //    }
+    //}
 
-        CombineImagesButton.IsEnabled = true;
-        CombineImagesButton.IsVisible = true;
-        //await CombineImagesAction();
-    }
+    //private async void UserDidEarnReward(RewardItem rewardItem)
+    //{
+    //    Debug.WriteLine($"User earned {rewardItem.Amount} {rewardItem.Type}.");
+    //    tokens += rewardItem.Amount;
+
+    //    GoogleAdsButton.IsEnabled = false;
+    //    GoogleAdsButton.IsVisible = false;
+
+    //    CombineImagesButton.IsEnabled = true;
+    //    CombineImagesButton.IsVisible = true;
+    //    //await CombineImagesAction();
+    //}
 
     private async void OnCombineImages_Clicked(object sender, EventArgs e) => await CombineImagesAction();
 
     private async Task CombineImagesAction()
     {
-        if (tokens < 10) return;
+        //if (tokens < 10) return;
 
         var result1 = SelectedClothImage.Source.ToString()?.Remove(0, 6);
         var result2 = SelectedBodyImage.Source.ToString()?.Remove(0, 6);
@@ -188,7 +211,7 @@ public partial class CombineImages : ContentPage
         {
             ToggleLoading(false);
 
-            tokens -= 10;
+            //tokens -= 10;
 
             GoogleAdsButton.IsEnabled = true;
             GoogleAdsButton.IsVisible = true;

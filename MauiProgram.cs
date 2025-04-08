@@ -47,6 +47,7 @@ namespace FashionApp
             builder.Services.AddTransient<WebViewPage>();
             builder.Services.AddTransient<BaseGallery>();
             builder.Services.AddTransient<CombineImages>();
+            builder.Services.AddTransient<AdvertisementPage>();
 
             builder.Services.AddTransient<ImageEditPage>();
             builder.Services.AddSingleton<TemporaryGallery>();

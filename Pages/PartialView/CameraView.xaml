@@ -45,6 +45,7 @@
 
         <!--  Bottom Controls  -->
         <Grid
+            x:Name="CameraButtonsPanel"
             Grid.Row="1"
             Padding="10"
             ColumnDefinitions="*,*,*"
@@ -59,11 +60,11 @@
                 WidthRequest="120">
                 <Button
                     BackgroundColor="Transparent"
+                    Clicked="Close_Clicked"
                     HorizontalOptions="Center"
                     Text="CLOSE"
                     TextColor="White"
                     VerticalOptions="Center" />
-                <!--  Clicked="HidePanelCommand"  -->
             </Frame>
 
             <Frame
@@ -76,10 +77,10 @@
                 <Button
                     x:Name="Capture"
                     BackgroundColor="DarkRed"
+                    Clicked="Capture_Clicked"
                     CornerRadius="40"
                     Text="REC"
                     TextColor="White" />
-                <!--  Clicked="OnCaptureClicked"  -->
             </Frame>
 
             <!--<Frame

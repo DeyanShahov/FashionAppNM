@@ -11,33 +11,66 @@
     <ScrollView>
         <VerticalStackLayout>
             <Grid RowDefinitions="Auto, *, Auto">
-                <!--<Grid
-                    x:Name="CameraPanel"
-                    IsEnabled="False"
-                    IsVisible="False">
+                <!--<Grid x:Name="CameraPanel" BackgroundColor="Black">
+                    --><!--  Camera Preview  --><!--
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
                     <Frame
                         x:Name="test"
                         Grid.Row="0"
+                        Padding="0"
                         BackgroundColor="Gray"
                         BorderColor="Black"
                         CornerRadius="0">
+                        --><!--  Here will be the CameraView when implemented  --><!--
                         <toolkit:CameraView
                             x:Name="MyCameraView"
                             CameraFlashMode="{Binding FlashMode}"
                             HeightRequest="600"
-                            HorizontalOptions="CenterAndExpand"
+                            HorizontalOptions="FillAndExpand"
                             SelectedCamera="{Binding SelectedCamera}"
+                            VerticalOptions="FillAndExpand"
                             ZoomFactor="{Binding CurrentZoom}" />
                     </Frame>
-
+                    --><!--  Contour Overlay placed directly over the camera view  --><!--
+                    <Image
+                        x:Name="ContourOverlay"
+                        Grid.Row="0"
+                        Aspect="Fill"
+                        HorizontalOptions="FillAndExpand"
+                        IsVisible="False"
+                        Source="Camera/top_body.png"
+                        VerticalOptions="FillAndExpand" />
+                    --><!--  Bottom Controls  --><!--
                     <Grid
                         x:Name="CameraButtonsPanel"
-                        Grid.Row="2"
+                        Grid.Row="1"
                         Padding="10"
-                        ColumnDefinitions="*,Auto,*"
+                        ColumnDefinitions="*,*,*"
                         VerticalOptions="End">
                         <Frame
+                            Grid.Column="0"
+                            Padding="5"
+                            BackgroundColor="Black"
+                            CornerRadius="10"
+                            HeightRequest="60"
+                            HorizontalOptions="Center"
+                            WidthRequest="120">
+                            <Button
+                                BackgroundColor="Transparent"
+                                HorizontalOptions="Center"
+                                Text="CLOSE"
+                                TextColor="White"
+                                VerticalOptions="Center" />
+                            --><!--  Clicked="HidePanelCommand"  --><!--
+                        </Frame>
+
+                        <Frame
                             Grid.Column="1"
+                            Padding="0"
                             CornerRadius="40"
                             HeightRequest="80"
                             HorizontalOptions="Center"
@@ -45,28 +78,10 @@
                             <Button
                                 x:Name="Capture"
                                 BackgroundColor="DarkRed"
-                                Clicked="OnCaptureClicked"
-                                HeightRequest="40"
+                                CornerRadius="40"
                                 Text="REC"
-                                TextColor="White"
-                                WidthRequest="100" />
-
-                        </Frame>
-
-                        <Frame
-                            BackgroundColor="Black"
-                            HeightRequest="100"
-                            HorizontalOptions="Start"
-                            ScaleX="0.7"
-                            ScaleY="0.7"
-                            WidthRequest="120">
-
-                            <Button
-                                Clicked="HidePanelCommand"
-                                HorizontalOptions="Center"
-                                Text="CLOSE"
-                                TextColor="White"
-                                VerticalOptions="Center" />
+                                TextColor="White" />
+                            --><!--  Clicked="OnCaptureClicked"  --><!--
                         </Frame>
                     </Grid>
                 </Grid>-->

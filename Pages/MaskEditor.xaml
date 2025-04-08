@@ -36,7 +36,6 @@
                     VerticalOptions="FillAndExpand"
                     ZoomFactor="{Binding CurrentZoom}" />
             </Frame>
-
             <!--  Contour Overlay placed directly over the camera view  -->
             <Image
                 x:Name="ContourOverlay"
@@ -46,7 +45,6 @@
                 IsVisible="False"
                 Source="Camera/top_body.png"
                 VerticalOptions="FillAndExpand" />
-
             <!--  Bottom Controls  -->
             <Grid
                 x:Name="CameraButtonsPanel"
@@ -87,6 +85,7 @@
                         TextColor="White" />
                 </Frame>
 
+
                 <!--<Frame
                     Grid.Column="2"
                     Padding="5"
@@ -104,10 +103,14 @@
                         TextColor="White"
                         VerticalOptions="Center" />
                 </Frame>-->
+
             </Grid>
         </Grid>
 
-        <!--<views:CameraView/>-->
+        <!--<views:CameraView
+            x:Name="Camera"
+            IsEnabled="False"
+            IsVisible="False" />-->
 
         <VerticalStackLayout
             x:Name="Menu1"
