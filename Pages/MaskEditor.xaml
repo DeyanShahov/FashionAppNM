@@ -241,22 +241,22 @@
         </Grid>
 
         <Grid x:Name="Menu2" Grid.Row="1">
-            <VerticalStackLayout
+            <!--<VerticalStackLayout
                 x:Name="TestGalleryPanel"
                 Margin="10,0,0,0"
                 HorizontalOptions="Start"
                 IsVisible="False"
                 Spacing="20"
                 VerticalOptions="Center">
-                <!--<ImageButton
+                <ImageButton
                     x:Name="TestGalleryButton"
                     Clicked="TestGalleryButton_Clicked"
                     HeightRequest="50"
                     Source="Icons/images_regular_24.png"
-                    WidthRequest="50" />-->
-            </VerticalStackLayout>
+                    WidthRequest="50" />
+            </VerticalStackLayout>-->
 
-            <VerticalStackLayout
+            <!--<VerticalStackLayout
                 x:Name="MacroPanel"
                 Margin="0,0,20,0"
                 HorizontalOptions="End"
@@ -284,7 +284,7 @@
                     HeightRequest="50"
                     Source="open_jacket.png"
                     WidthRequest="50" />
-            </VerticalStackLayout>
+            </VerticalStackLayout>-->
         </Grid>
 
         <VerticalStackLayout

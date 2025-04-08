@@ -56,12 +56,5 @@
 
         </Grid>
 
-        <!--  ActivityIndicator, като overlay, центриран върху съдържанието  -->
-        <ActivityIndicator
-            AbsoluteLayout.LayoutBounds="0.5,0.5,-1,-1"
-            AbsoluteLayout.LayoutFlags="PositionProportional"
-            IsRunning="{Binding IsBusy}"
-            IsVisible="{Binding IsBusy}" />
-
     </AbsoluteLayout>
 </ContentPage>

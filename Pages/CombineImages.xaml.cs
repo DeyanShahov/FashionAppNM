@@ -5,8 +5,9 @@ using System.Collections.ObjectModel;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
-//using Plugin.AdMob.Services;
-//using Plugin.AdMob;
+using Plugin.AdMob.Services;
+using Plugin.AdMob;
+using System.Diagnostics;
 
 namespace FashionApp.Pages;
 
@@ -22,14 +23,14 @@ public partial class CombineImages : ContentPage
     private string _bodyImagePath = String.Empty;
     public bool IsAdmin { get; set; } = false;
 
-    private readonly SingleImageLoader singleImageLoader;
-    private CameraService _cameraService;
+    //private readonly SingleImageLoader singleImageLoader;
+   // private CameraService _cameraService;
 
     public ObservableCollection<JacketModel> ListAvailableClothesForMacros { get; set; } = new ObservableCollection<JacketModel>();
 
     private bool isFromClothImage = true;
 
-    //private readonly IRewardedInterstitialAdService _rewardedInterstitialAdService;
+    private readonly IRewardedInterstitialAdService _rewardedInterstitialAdService;
     int tokens = 0;
 
     public CombineImages()
@@ -38,23 +39,23 @@ public partial class CombineImages : ContentPage
 
         BindingContext = this;
 
-        //_rewardedInterstitialAdService = FashionApp.core.services.ServiceProvider.GetRequiredService<IRewardedInterstitialAdService>();
-        //_rewardedInterstitialAdService.OnAdLoaded += (_, __) => Debug.WriteLine("Rewarded interstitial ad prepared.");
-        //_rewardedInterstitialAdService.PrepareAd(onUserEarnedReward: UserDidEarnReward);
+        _rewardedInterstitialAdService = FashionApp.core.services.ServiceProvider.GetRequiredService<IRewardedInterstitialAdService>();
+        _rewardedInterstitialAdService.OnAdLoaded += (_, __) => Debug.WriteLine("Rewarded interstitial ad prepared.");
+        _rewardedInterstitialAdService.PrepareAd(onUserEarnedReward: UserDidEarnReward);
 
 
 
-        _cameraService = new CameraService(MyCameraView, CameraPanel);
-        _cameraService.ImageCaptured += OnImageCaptured;
-        _cameraService.StopCamera();
+        //_cameraService = new CameraService(MyCameraView, CameraPanel);
+        //_cameraService.ImageCaptured += OnImageCaptured;
+        //_cameraService.StopCamera();
 
-        singleImageLoader = new SingleImageLoader(
-            setErrorMessage: (msg) => ResponseText.Text = msg,
-            setImage: (uri) => SelectedBodyImage.Source = Microsoft.Maui.Controls.ImageSource.FromUri(new System.Uri(uri))
-        );
-     
+        //singleImageLoader = new SingleImageLoader(
+        //    setErrorMessage: (msg) => ResponseText.Text = msg,
+        //    setImage: (uri) => SelectedBodyImage.Source = Microsoft.Maui.Controls.ImageSource.FromUri(new System.Uri(uri))
+        //);
+
 #if ANDROID
-        CheckAvailableMasksAndroid(true);
+        //CheckAvailableMasksAndroid(true);
 #endif
     }
 
@@ -72,47 +73,44 @@ public partial class CombineImages : ContentPage
     private void OnSelectBodyImageClicked(object sender, EventArgs e) => SetAnImageAsSourceAsync(SelectedBodyImage, nameof(_bodyImagePath));
     private void OnCaptureClicked(object sender, EventArgs e)
     {
-        CameraButtonsPanel.IsEnabled = false;
-        _cameraService.CaptureClicked();
+        //CameraButtonsPanel.IsEnabled = false;
+        //_cameraService.CaptureClicked();
     }
     private void OnSelectedClothImageTapped(object sender, TappedEventArgs e) => PanelButtons.IsVisible = !PanelButtons.IsVisible;
     private void OnSelectedBodyImageTapped(object sender, TappedEventArgs e) => PanelButtons2.IsVisible = !PanelButtons2.IsVisible;
     private void OnCreateRewardedInterstitialClicked(object sender, EventArgs e)
     {
-        //var rewardedInterstitialAd = _rewardedInterstitialAdService.CreateAd();
-        //rewardedInterstitialAd.OnUserEarnedReward += (_, reward) =>
-        //{
-        //    UserDidEarnReward(reward);
-        //};
-        //rewardedInterstitialAd.OnAdLoaded += RewardedInterstitialAd_OnAdLoaded;
-        //rewardedInterstitialAd.Load();
+        var rewardedInterstitialAd = _rewardedInterstitialAdService.CreateAd();
+        rewardedInterstitialAd.OnUserEarnedReward += (_, reward) =>
+        {
+            UserDidEarnReward(reward);
+        };
+        rewardedInterstitialAd.OnAdLoaded += RewardedInterstitialAd_OnAdLoaded;
+        rewardedInterstitialAd.Load();
     }
 
-    //private void RewardedInterstitialAd_OnAdLoaded(object? sender, EventArgs e)
-    //{
-    //    if (sender is IRewardedInterstitialAd rewardedInterstitialAd)
-    //    {
-    //        rewardedInterstitialAd.Show();
-    //    }
-    //}
-
-    //private async void UserDidEarnReward(RewardItem rewardItem)
-    //{
-    //    Debug.WriteLine($"User earned {rewardItem.Amount} {rewardItem.Type}.");
-    //    tokens += rewardItem.Amount;
-
-    //    GoogleAdsButton.IsEnabled = false;
-    //    GoogleAdsButton.IsVisible = false;
-
-    //    CombineImagesButton.IsEnabled = true;
-    //    CombineImagesButton.IsVisible = true;
-    //    //await CombineImagesAction();
-    //}
-
-    private async void OnCombineImages_Clicked(object sender, EventArgs e)
+    private void RewardedInterstitialAd_OnAdLoaded(object? sender, EventArgs e)
     {
-        await CombineImagesAction();
+        if (sender is IRewardedInterstitialAd rewardedInterstitialAd)
+        {
+            rewardedInterstitialAd.Show();
+        }
     }
+
+    private async void UserDidEarnReward(RewardItem rewardItem)
+    {
+        Debug.WriteLine($"User earned {rewardItem.Amount} {rewardItem.Type}.");
+        tokens += rewardItem.Amount;
+
+        GoogleAdsButton.IsEnabled = false;
+        GoogleAdsButton.IsVisible = false;
+
+        CombineImagesButton.IsEnabled = true;
+        CombineImagesButton.IsVisible = true;
+        //await CombineImagesAction();
+    }
+
+    private async void OnCombineImages_Clicked(object sender, EventArgs e) => await CombineImagesAction();
 
     private async Task CombineImagesAction()
     {
@@ -133,7 +131,6 @@ public partial class CombineImages : ContentPage
 
             ToggleLoading(true);
 
-            //ResponseImage.IsVisible = toSet;
             SaveButton.IsVisible = false;
             SaveButton.IsEnabled = false;
 
@@ -206,13 +203,13 @@ public partial class CombineImages : ContentPage
     {
         isFromClothImage = true;
         HideMenus();
-        _cameraService.StartCamera();
+        //_cameraService.StartCamera();
     }
     private void PanelButton6_Clicked(object sender, EventArgs e)
     {
         isFromClothImage = false;
         HideMenus();
-        _cameraService.StartCamera();
+        //_cameraService.StartCamera();
     }
 
     private void HidePanelCommand(object sender, EventArgs e)
@@ -220,13 +217,10 @@ public partial class CombineImages : ContentPage
         HideMenus();
         PanelButtons.IsVisible = false;
         PanelButtons2.IsVisible = false;
-        _cameraService.StopCamera();
+        //_cameraService.StopCamera();
     }
 
-    private void OnBackButtonClicked(object sender, EventArgs e)
-    {
-        ReturnToCombinePageAfterBackOrSave();
-    }
+    private void OnBackButtonClicked(object sender, EventArgs e) => ReturnToCombinePageAfterBackOrSave();
 
     private async void OnSaveClicked(object sender, EventArgs e)
     {
@@ -269,7 +263,7 @@ public partial class CombineImages : ContentPage
         if (futureImageName == null || futureImageName == "Default") return;
 
 #if ANDROID
-        LoadLargeImage(futureImageName);
+        //LoadLargeImage(futureImageName);
 #endif
     }
 
@@ -377,9 +371,9 @@ public partial class CombineImages : ContentPage
         await ProcessSelectedImage(imageStream);
         PanelButtons.IsVisible = false;
         PanelButtons2.IsVisible = false;
-        _cameraService.StopCamera();
+        //_cameraService.StopCamera();
         HideMenus();
-        CameraButtonsPanel.IsEnabled = true;
+        //CameraButtonsPanel.IsEnabled = true;
     }
 
     private async void TestGalleryButton_Clicked(object sender, EventArgs e)
@@ -475,76 +469,76 @@ public partial class CombineImages : ContentPage
     }
 
 #if ANDROID
-    private async void CheckAvailableMasksAndroid(bool toSet)
-    {
-        //премахваме стари записи
-        ListAvailableClothesForMacros.Clear();
+    //private async void CheckAvailableMasksAndroid(bool toSet)
+    //{
+    //    //премахваме стари записи
+    //    ListAvailableClothesForMacros.Clear();
 
-        // Проверка за разрешения
-        App.Current?.Handler.MauiContext?.Services.GetService<CheckForAndroidPermissions>()?.CheckStorage();
+    //    // Проверка за разрешения
+    //    //App.Current?.Handler.MauiContext?.Services.GetService<CheckForAndroidPermissions>()?.CheckStorage();
 
-        try
-        {
-            var fileChecker = App.Current?.Handler.MauiContext?.Services.GetService<IFileChecker>();
+    //    try
+    //    {
+    //        var fileChecker = App.Current?.Handler.MauiContext?.Services.GetService<IFileChecker>();
 
-            var fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.DRESS_MASK);
-            if (fileExists) ListAvailableClothesForMacros.Add( new JacketModel { ImagePath = "Macros/icons_dress.png", Data = "dress" });
+    //        var fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.DRESS_MASK);
+    //        if (fileExists) ListAvailableClothesForMacros.Add( new JacketModel { ImagePath = "Macros/icons_dress.png", Data = "dress" });
 
-            fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.DRESS_FULL_MASK);
-            if (fileExists) ListAvailableClothesForMacros.Add( new JacketModel { ImagePath = "Macros/icons_dress_full.png", Data = "dress_full" });
+    //        fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.DRESS_FULL_MASK);
+    //        if (fileExists) ListAvailableClothesForMacros.Add( new JacketModel { ImagePath = "Macros/icons_dress_full.png", Data = "dress_full" });
 
-            fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.JACKET_MASK);
-            if (fileExists) ListAvailableClothesForMacros.Add( new JacketModel { ImagePath = "Macros/icons_jacket.png", Data = "jacket" });
+    //        fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.JACKET_MASK);
+    //        if (fileExists) ListAvailableClothesForMacros.Add( new JacketModel { ImagePath = "Macros/icons_jacket.png", Data = "jacket" });
 
-            fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.CLOSED_JACKET_MASK);
-            if (fileExists) ListAvailableClothesForMacros.Add( new JacketModel { ImagePath = "Macros/icons_jacket_closed.png", Data = "jacket_closed"  });
+    //        fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.CLOSED_JACKET_MASK);
+    //        if (fileExists) ListAvailableClothesForMacros.Add( new JacketModel { ImagePath = "Macros/icons_jacket_closed.png", Data = "jacket_closed"  });
 
-            fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.OPEN_JACKET_MASK);
-            if (fileExists) ListAvailableClothesForMacros.Add( new JacketModel { ImagePath = "Macros/icons_jacket_open.png", Data = "jacket_open" });
+    //        fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.OPEN_JACKET_MASK);
+    //        if (fileExists) ListAvailableClothesForMacros.Add( new JacketModel { ImagePath = "Macros/icons_jacket_open.png", Data = "jacket_open" });
 
-            fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.NO_SET_MASK );
-            if (fileExists) ListAvailableClothesForMacros.Add( new JacketModel { ImagePath = "Macros/icons_no_set.png", Data = "no_set" });
+    //        fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.NO_SET_MASK );
+    //        if (fileExists) ListAvailableClothesForMacros.Add( new JacketModel { ImagePath = "Macros/icons_no_set.png", Data = "no_set" });
 
-            fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.PANTS_MASK );
-            if (fileExists) ListAvailableClothesForMacros.Add( new JacketModel { ImagePath = "Macros/icons_pants.png", Data = "pants" });
+    //        fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.PANTS_MASK );
+    //        if (fileExists) ListAvailableClothesForMacros.Add( new JacketModel { ImagePath = "Macros/icons_pants.png", Data = "pants" });
 
-            fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.PANTS_SHORT_MASK );
-            if (fileExists) ListAvailableClothesForMacros.Add( new JacketModel { ImagePath = "Macros/icons_pants_short.png", Data = "pants_short" });
+    //        fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.PANTS_SHORT_MASK );
+    //        if (fileExists) ListAvailableClothesForMacros.Add( new JacketModel { ImagePath = "Macros/icons_pants_short.png", Data = "pants_short" });
 
-            fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.RAINCOAT_MASK );
-            if (fileExists) ListAvailableClothesForMacros.Add( new JacketModel { ImagePath = "Macros/icons_raincoat.png", Data = "raincoat" });
+    //        fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.RAINCOAT_MASK );
+    //        if (fileExists) ListAvailableClothesForMacros.Add( new JacketModel { ImagePath = "Macros/icons_raincoat.png", Data = "raincoat" });
 
-            fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.SHIRT_MASK );
-            if (fileExists) ListAvailableClothesForMacros.Add( new JacketModel { ImagePath = "Macros/icons_shirt.png", Data = "shirt" });
+    //        fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.SHIRT_MASK );
+    //        if (fileExists) ListAvailableClothesForMacros.Add( new JacketModel { ImagePath = "Macros/icons_shirt.png", Data = "shirt" });
 
-            fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.SKIRT_MASK );
-            if (fileExists) ListAvailableClothesForMacros.Add( new JacketModel { ImagePath = "Macros/icons_skirt.png", Data = "skirt" });
+    //        fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.SKIRT_MASK );
+    //        if (fileExists) ListAvailableClothesForMacros.Add( new JacketModel { ImagePath = "Macros/icons_skirt.png", Data = "skirt" });
 
-            fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.SKIRT_LONG_MASK );
-            if (fileExists) ListAvailableClothesForMacros.Add( new JacketModel { ImagePath = "Macros/icons_skirt_long.png", Data = "skirt_long" });
+    //        fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.SKIRT_LONG_MASK );
+    //        if (fileExists) ListAvailableClothesForMacros.Add( new JacketModel { ImagePath = "Macros/icons_skirt_long.png", Data = "skirt_long" });
 
-            fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.TANK_TOP_MASK );
-            if (fileExists) ListAvailableClothesForMacros.Add( new JacketModel { ImagePath = "Macros/icons_tank_top.png", Data = "tank_top" });
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"{AppConstants.Errors.ERROR_CKECK_MASKS}: {ex.Message}");
-        }
-    }
+    //        fileExists = await fileChecker.CheckFileExistsAsync(AppConstants.ImagesConstants.TANK_TOP_MASK );
+    //        if (fileExists) ListAvailableClothesForMacros.Add( new JacketModel { ImagePath = "Macros/icons_tank_top.png", Data = "tank_top" });
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        Console.WriteLine($"{AppConstants.Errors.ERROR_CKECK_MASKS}: {ex.Message}");
+    //    }
+    //}
 
-    private async void LoadLargeImage(string imageUri)
-    {
-        string imagePath = Path.Combine(
-                AppConstants.Parameters.APP_BASE_PATH,
-                AppConstants.Parameters.APP_NAME,
-                AppConstants.Parameters.APP_FOLDER_MASK,
-                imageUri);
-        _bodyImagePath = imagePath;
+    //private async void LoadLargeImage(string imageUri)
+    //{
+    //    string imagePath = Path.Combine(
+    //            AppConstants.Parameters.APP_BASE_PATH,
+    //            AppConstants.Parameters.APP_NAME,
+    //            AppConstants.Parameters.APP_FOLDER_MASK,
+    //            imageUri);
+    //    _bodyImagePath = imagePath;
 
-        await CopyFileToCacheAsync(imagePath);
+    //    await CopyFileToCacheAsync(imagePath);
 
-        await singleImageLoader.LoadSingleImageAsync(imagePath);  // Зареждане на изображението асинхронно
-    }
+    //    await singleImageLoader.LoadSingleImageAsync(imagePath);  // Зареждане на изображението асинхронно
+    //}
 #endif
 
     public async Task CopyFileToCacheAsync(string sourcePath)//string imagePath)

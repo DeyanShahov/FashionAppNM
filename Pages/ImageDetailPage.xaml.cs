@@ -77,15 +77,15 @@ public partial class ImageDetailPage : ContentPage
 
             if (!confirmation) return;
 
-            var permissionResult = App.Current?.Handler.MauiContext?.Services.GetService<CheckForAndroidPermissions>();
+            //var permissionResult = App.Current?.Handler.MauiContext?.Services.GetService<CheckForAndroidPermissions>();
 
 
 #if __ANDROID__
-            if(!await permissionResult.CheckAndRequestStoragePermission())
-            {
-                await DisplayAlert(AppConstants.Errors.ERROR, AppConstants.Errors.STORAGE_PERMISSION_REQUIRED, AppConstants.Messages.OK);
-                return;
-            }
+            //if(!await permissionResult.CheckAndRequestStoragePermission())
+            //{
+            //    await DisplayAlert(AppConstants.Errors.ERROR, AppConstants.Errors.STORAGE_PERMISSION_REQUIRED, AppConstants.Messages.OK);
+            //    return;
+            //}
 
             string realPath = GetRealPathFromUriService.Get(Android.App.Application.Context.ContentResolver, _imageUri);
 

@@ -1,12 +1,4 @@
-using FashionApp.core.services;
-using FashionApp.Data.Constants;
 using System.Reflection;
-
-
-#if ANDROID
-using Android.Content;
-using Android.Provider;
-#endif
 
 namespace FashionApp.Pages;
 
@@ -49,26 +41,19 @@ public partial class TestGallery : ContentPage
          ImagesList = gallery.LoadImages();
     }
 
-    private void SelectedBodyImage_Tapped(object sender, TappedEventArgs e)
-    {
-       
-    }
 
     private async void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
     {
-        // ������������, �� BindingContext-� �� ����� ����������� � �������� ��� (string).
         if (sender is Image image && image.Source is FileImageSource fileImage)
         {
             string selectedImageName = fileImage.File;
-            // �������� ������ �� ����������� ���� ��������
             ImageSelectedTask.TrySetResult(selectedImageName);
         }
         else if (sender is Image img && img.Source != null)
         {
-            // ��� ���������� ���� ��� ImageSource, ���� �� ���������� ToString() ��� �� ��������� ��������.
             ImageSelectedTask.TrySetResult(img.Source.ToString());
         }
-        // ��������� �������� ��������
+
         await Navigation.PopModalAsync();
     }
 }
@@ -85,22 +70,6 @@ public class Gallery
         Images = LoadImages();
     }
 
-    //        .
-    //      ,   Resources/Images/TestGallery.
-    //private List<string> LoadImages()
-    //{
-    //    List<string> imagesNameList = new List<string>();
-
-    //    if (Path == "TestGallery")
-    //    {
-    //        for (int i = 2; i <= 37; i++)
-    //        {
-    //            imagesNameList.Add('a' + i.ToString());
-    //        }
-    //    }
-    //    return imagesNameList;
-    //}
-
     public List<string> LoadImages()
     {
         List<string> imagesNameList = new List<string>();
@@ -114,20 +83,6 @@ public class Gallery
         }
         return imagesNameList;
     }
-
-    //public List<string> LoadImages()
-    //{
-    //    List<string> imagesNameList = new List<string>();
-
-    //    if (Path == "TestGallery")
-    //    {
-    //        for (int i = 2; i <= 37; i++)
-    //        {
-    //            imagesNameList.Add('a' + i.ToString());
-    //        }
-    //    }
-    //    return imagesNameList;
-    //}
 
     public async Task<byte[]> LoadEmbeddedImageAsync(string fileName)
     {

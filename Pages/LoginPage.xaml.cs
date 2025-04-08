@@ -31,14 +31,13 @@ public partial class LoginPage : ContentPage
 #if ANDROID
             //AdmobBanner.AdsId = "ca-app-pub-3940256099942544/9214589741";
             //AdmobBanner.AdsId = "ca-app-pub-3940256099942544/6300978111";
-
 #endif
     }
 
     private async void OnLoginClicked(object sender, EventArgs e)
     {
-        string username = UsernameEntry.Text?.Trim();
-        string password = PasswordEntry.Text?.Trim();
+        string? username = UsernameEntry.Text.Trim();
+        string? password = PasswordEntry.Text.Trim();
 
         if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
         {

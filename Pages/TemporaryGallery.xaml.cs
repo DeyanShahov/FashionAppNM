@@ -16,12 +16,8 @@ public partial class TemporaryGallery : ContentPage
         set => SetValue(ImagesListProperty, value);
     }
 
-    //private readonly ImagesLoader imagesLoader;
-    private string ErrorMessage;
-    private bool IsBusy = false;
-
+    private string ErrorMessage = String.Empty;
     private bool IsReadyToSet = true;
-
 
 
     public TemporaryGallery(bool isInAppGallery = true, string galleryPath = "TestGallery")
@@ -40,21 +36,17 @@ public partial class TemporaryGallery : ContentPage
         IsReadyToSet = true;
     }
 
-    private void SetSpecificGallery(string galleryPath)
+    private async void SetSpecificGallery(string galleryPath)
     {
-        ImagesLoader imagesLoader = new ImagesLoader(
+        var imagesLoader = new ImagesLoader(
           setErrorMessage: (msg) => ErrorMessage = msg,
           setBusy: (busy) => IsBusy = busy,
           setImagesList: (images) => ImagesList = images
         );
 
-        imagesLoader.LoadImagesAsync(galleryPath);
+        await imagesLoader.LoadImagesAsync(galleryPath);
     }
 
-    private void SelectedBodyImage_Tapped(object sender, TappedEventArgs e)
-    {
-
-    }
 
     private async void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
     {

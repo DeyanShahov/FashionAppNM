@@ -90,13 +90,6 @@
                     WidthRequest="100" />-->
             </Grid>
 
-            <!--<Button
-                x:Name="NavigateButtonToMaskJS"
-                Text="Go to MaskJS"
-                IsEnabled="False"
-                Clicked="OnNavigateClickedToMaskJS"
-                HorizontalOptions="Center"/>-->
-
             <BoxView
                 HeightRequest="1"
                 HorizontalOptions="FillAndExpand"
@@ -185,31 +178,31 @@
                 x:Name="AdminTestFields"
                 IsVisible="False"
                 Spacing="5">
-                <Label
+                <!--<Label
                     x:Name="WelcomeMessage"
                     SemanticProperties.HeadingLevel="Level1"
                     Style="{StaticResource Headline}"
-                    Text="Hello" />
-                <Label
+                    Text="Hello" />-->
+                <!--<Label
                     x:Name="WelcomeInfo"
                     SemanticProperties.Description="Welcome to dot net Multi platform App U I"
                     SemanticProperties.HeadingLevel="Level2"
                     Style="{StaticResource SubHeadline}"
-                    Text="The logged-in users have access to additional features." />
+                    Text="The logged-in users have access to additional features." />-->
 
-                <Button
+                <!--<Button
                     x:Name="LoginBtn"
                     Clicked="OnLoginButton_Clicked"
                     HorizontalOptions="Fill"
-                    SemanticProperties.Hint="Counts the number of times you click" />
+                    SemanticProperties.Hint="Counts the number of times you click" />-->
 
-                <Button
+                <!--<Button
                     x:Name="LoadButton"
                     Clicked="OnLoadClicked"
                     HorizontalOptions="Center"
-                    Text="Load Content" />
+                    Text="Load Content" />-->
 
-                <Entry
+                <!--<Entry
                     x:Name="InputEntry"
                     Margin="0,10,0,0"
                     BackgroundColor="White"
@@ -220,37 +213,33 @@
                     Placeholder="Enter text here"
                     PlaceholderColor="Gray"
                     TextColor="Black"
-                    VerticalOptions="Center" />
+                    VerticalOptions="Center" />-->
 
-
-
-                <Button
+                <!--<Button
                     x:Name="SaveButton"
                     Clicked="OnSaveClicked"
                     HorizontalOptions="Center"
                     IsEnabled="False"
                     IsVisible="False"
-                    Text="Save Image" />
+                    Text="Save Image" />-->
 
-                <ActivityIndicator
+                <!--<ActivityIndicator
                     x:Name="LoadingIndicator"
                     HorizontalOptions="Center"
                     IsRunning="False"
                     IsVisible="False"
-                    Color="Azure" />
+                    Color="Azure" />-->
 
-                <Image
+                <!--<Image
                     x:Name="ResponseImage"
                     Aspect="AspectFit"
-                    IsVisible="False" />
+                    IsVisible="False" />-->
 
-
-
-                <Label
+                <!--<Label
                     x:Name="ResponseText"
                     FontSize="18"
                     HorizontalOptions="Center"
-                    IsVisible="False" />
+                    IsVisible="False" />-->
             </StackLayout>
 
 

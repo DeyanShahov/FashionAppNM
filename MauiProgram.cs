@@ -3,8 +3,8 @@ using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui;
 using FashionApp.core.services;
 using FashionApp.Pages;
-//using Plugin.AdMob;
-//using Plugin.AdMob.Configuration;
+using Plugin.AdMob;
+using Plugin.AdMob.Configuration;
 
 
 namespace FashionApp
@@ -17,7 +17,7 @@ namespace FashionApp
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
-                //.UseAdMob()
+                .UseAdMob()
                 //.UseAdMob(new AdMobConfiguration
                 //{
                 //    //AdUnitId = "ca-app-pub-3940256099942544/6300978111", // Test ad unit ID for Interstitial
@@ -51,10 +51,10 @@ namespace FashionApp
             builder.Services.AddTransient<ImageEditPage>();
             builder.Services.AddSingleton<TemporaryGallery>();
 
+            AdConfig.UseTestAdUnitIds = true; // Use test ad unit IDs. Setwa testowi reklami
+            AdConfig.DisableConsentCheck = true; // Disable consent check.           
 #if DEBUG
-            builder.Logging.AddDebug();
-            //AdConfig.UseTestAdUnitIds = true; // Use test ad unit IDs. Setwa testowi reklami
-            //AdConfig.DisableConsentCheck = true; // Disable consent check. 
+            builder.Logging.AddDebug();          
 #endif
 
             //return builder.Build();

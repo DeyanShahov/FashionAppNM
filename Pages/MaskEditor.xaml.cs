@@ -10,7 +10,7 @@ namespace FashionApp.Pages;
 public partial class MaskEditor : ContentPage
 {
     //public string DynamicParameter { get; set; }
-    public bool _isAdmin { get; set; } = false;
+    //public bool _isAdmin { get; set; } = false;
     private readonly ExecutionGuardService _executionGuardService;
 
     private List<DrawingLine> _lines = new();
@@ -24,7 +24,7 @@ public partial class MaskEditor : ContentPage
         InitializeComponent();
         _executionGuardService = executionGuard;
 
-        SetParameters(_isAdmin);
+        //SetParameters(_isAdmin);
 
         _drawable = new DrawingViewDrawable(_lines);
         DrawingView.Drawable = _drawable;
@@ -34,15 +34,15 @@ public partial class MaskEditor : ContentPage
         _cameraService.StopCamera();
     }
 
-    private void SetParameters(bool isAdmin)
-    {
-        if (isAdmin)
-        {
-            //SelectImageButton.IsVisible = isAdmin;
-            TestGalleryPanel.IsVisible = isAdmin;
-            MacroPanel.IsVisible = isAdmin;
-        }
-    }
+    //private void SetParameters(bool isAdmin)
+    //{
+    //    if (isAdmin)
+    //    {
+    //        //SelectImageButton.IsVisible = isAdmin;
+    //        //TestGalleryPanel.IsVisible = isAdmin;
+    //        //MacroPanel.IsVisible = isAdmin;
+    //    }
+    //}
 
     //private async void OnBackButtonClicked(object sender, EventArgs e) => await Navigation.PopAsync();
     private async void OnSelectImageClicked(object sender, EventArgs e)
@@ -294,12 +294,21 @@ public partial class MaskEditor : ContentPage
             ChangeVisibilityOnSaveButton(true);
         }
     }
-    private async void ClosedJacketImageButton_Clicked(object sender, EventArgs e)
-        => await MacroMechanics(sender, AppConstants.ImagesConstants.CLOSED_JACKET_MASK);
-    private async void OpenJacketImageButton_Clicked(object sender, EventArgs e)
-        => await MacroMechanics(sender, AppConstants.ImagesConstants.OPEN_JACKET_MASK);
-    private void PanelButton_Clicked(object sender, EventArgs e)
+    //private async void ClosedJacketImageButton_Clicked(object sender, EventArgs e)
+    //    => await MacroMechanics(sender, AppConstants.ImagesConstants.CLOSED_JACKET_MASK);
+    //private async void OpenJacketImageButton_Clicked(object sender, EventArgs e)
+    //    => await MacroMechanics(sender, AppConstants.ImagesConstants.OPEN_JACKET_MASK);
+    private async void PanelButton_Clicked(object sender, EventArgs e)
     {
+        // 1. Проверка и искане на разрешение ПРЕДИ употреба
+        var status = await PermissionService.CheckAndRequestCameraAsync();
+        // 2. Проверка на резултата СЛЕД искането
+        if (status != PermissionStatus.Granted)
+        {
+            await DisplayAlert("Отказ", "Не можем да използваме камерата без разрешение.", "OK");
+            return; // Прекратяване на действието
+        }
+
         _cameraService.StartCamera();
         HideMenus();
     }
@@ -338,23 +347,23 @@ public partial class MaskEditor : ContentPage
             return false;
         }
     }
-    private async Task MacroMechanics(object sender, string appConstants)
-    {
-        if (imageFileName != appConstants)
-        {
-            bool resultFromMessage = await MessageForMacroChangesAsync(appConstants);
+    //private async Task MacroMechanics(object sender, string appConstants)
+    //{
+    //    if (imageFileName != appConstants)
+    //    {
+    //        bool resultFromMessage = await MessageForMacroChangesAsync(appConstants);
 
-            if (!resultFromMessage) return;
+    //        if (!resultFromMessage) return;
 
-            SetActiveButton(sender as ImageButton);
-            imageFileName = appConstants;
-        }
-        else
-        {
-            SetActiveButton(new ImageButton());
-            imageFileName = $"masked_image_{DateTime.Now:yyyyMMdd_HHmmss}.png";
-        }
-    }
+    //        SetActiveButton(sender as ImageButton);
+    //        imageFileName = appConstants;
+    //    }
+    //    else
+    //    {
+    //        SetActiveButton(new ImageButton());
+    //        imageFileName = $"masked_image_{DateTime.Now:yyyyMMdd_HHmmss}.png";
+    //    }
+    //}
     private async Task<bool> MessageForMacroChangesAsync(string macroImageFullName)
     {
         // Проверка за съществуваща вече маска към даденото Макро
@@ -378,33 +387,33 @@ public partial class MaskEditor : ContentPage
             return true;
         }         
     }
-    private void SetActiveButton(ImageButton activeButton)
-    {
-        // Списък с всички бутони, които трябва да се управляват
-        var allButtons = new List<ImageButton>
-        {
-            ClosedJacketImageButton,
-            OpenJacketImageButton
-        };
+    //private void SetActiveButton(ImageButton activeButton)
+    //{
+    //    // Списък с всички бутони, които трябва да се управляват
+    //    var allButtons = new List<ImageButton>
+    //    {
+    //        ClosedJacketImageButton,
+    //        OpenJacketImageButton
+    //    };
 
-        // Премахваме ефектите от всички бутони
-        foreach (var button in allButtons)
-        {
-            button.BackgroundColor = Colors.Transparent;
-            button.BorderColor = Colors.Black;
-            button.BorderWidth = 4;
-            button.Scale = 1.0;
-        }
+    //    // Премахваме ефектите от всички бутони
+    //    foreach (var button in allButtons)
+    //    {
+    //        button.BackgroundColor = Colors.Transparent;
+    //        button.BorderColor = Colors.Black;
+    //        button.BorderWidth = 4;
+    //        button.Scale = 1.0;
+    //    }
 
-        // Прилагаме ефектите само на активния бутон
-        if (activeButton != null && allButtons.Contains(activeButton))
-        {
-            activeButton.BackgroundColor = Color.FromArgb("#E6F3FF");
-            activeButton.BorderColor = Color.FromArgb("#0066CC");
-            activeButton.BorderWidth = 6;
-            activeButton.Scale = 1.3;
-        }
-    }
+    //    // Прилагаме ефектите само на активния бутон
+    //    if (activeButton != null && allButtons.Contains(activeButton))
+    //    {
+    //        activeButton.BackgroundColor = Color.FromArgb("#E6F3FF");
+    //        activeButton.BorderColor = Color.FromArgb("#0066CC");
+    //        activeButton.BorderWidth = 6;
+    //        activeButton.Scale = 1.3;
+    //    }
+    //}
     public async Task<byte[]> ConvertStreamToByteArrayAsync(Stream stream)
     {
         if (stream == null) return Array.Empty<byte>();

@@ -11,7 +11,7 @@
     <ScrollView>
         <VerticalStackLayout>
             <Grid RowDefinitions="Auto, *, Auto">
-                <Grid
+                <!--<Grid
                     x:Name="CameraPanel"
                     IsEnabled="False"
                     IsVisible="False">
@@ -69,7 +69,7 @@
                                 VerticalOptions="Center" />
                         </Frame>
                     </Grid>
-                </Grid>
+                </Grid>-->
 
                 <VerticalStackLayout x:Name="Menu1" Margin="5">
 
