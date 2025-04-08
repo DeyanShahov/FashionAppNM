@@ -5,6 +5,7 @@ using FashionApp.core.services;
 using FashionApp.Pages;
 using Plugin.AdMob;
 using Plugin.AdMob.Configuration;
+using FashionApp.core;
 
 
 namespace FashionApp
@@ -37,6 +38,7 @@ namespace FashionApp
             builder.Services.AddSingleton<IFileChecker, FileChecker>();
             builder.Services.AddSingleton<CheckForAndroidPermissions>();
             builder.Services.AddSingleton<ExecutionGuardService>();
+            builder.Services.AddSingleton<Settings>();
 
             //builder.Services.AddTransient<AppShell>();
             //builder.Services.AddTransient<App>();

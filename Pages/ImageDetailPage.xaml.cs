@@ -77,7 +77,7 @@ public partial class ImageDetailPage : ContentPage
 
             if (!confirmation) return;
 
-            //var permissionResult = App.Current?.Handler.MauiContext?.Services.GetService<CheckForAndroidPermissions>();
+            var permissionResult = App.Current?.Handler.MauiContext?.Services.GetService<CheckForAndroidPermissions>();
 
 
 #if __ANDROID__

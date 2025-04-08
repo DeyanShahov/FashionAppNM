@@ -18,32 +18,32 @@ namespace FashionApp.Platforms.Android
         {
             base.OnCreate(savedInstanceState);
             //MobileAds.Initialize(this);
-            //RequestStoragePermission();
+            RequestStoragePermission();
         }
 
-        //void RequestStoragePermission()
-        //{         
-        //    if (Build.VERSION.SdkInt >= BuildVersionCodes.Tiramisu) // Android 13+
-        //    {
-        //        if (ContextCompat.CheckSelfPermission(this, Manifest.Permission.ReadMediaImages) != Permission.Granted)
-        //        {
-        //            //ActivityCompat.RequestPermissions(this, new string[] { Manifest.Permission.ReadMediaImages }, RequestStorageId);
-        //            ActivityCompat.RequestPermissions(this, new string[] { Manifest.Permission.ReadMediaImages }, (int)Permission.Granted);
-        //        }
-        //    }
-        //    else if (Build.VERSION.SdkInt >= BuildVersionCodes.Q) // Android 10+
-        //    {
-        //        // Scoped Storage - не трябва допълнителни permissions за файлове, създадени от приложението
-        //    }
-        //    else
-        //    {
-        //        if (ContextCompat.CheckSelfPermission(this, Manifest.Permission.ReadExternalStorage) != Permission.Granted)
-        //        {
-        //            //ActivityCompat.RequestPermissions(this, new string[] { Manifest.Permission.ReadExternalStorage }, RequestStorageId);
-        //            ActivityCompat.RequestPermissions(this, new string[] { Manifest.Permission.ReadExternalStorage }, (int)Permission.Granted);
-        //        }
-        //    }
-        //}
+        void RequestStoragePermission()
+        {
+            if (Build.VERSION.SdkInt >= BuildVersionCodes.Tiramisu) // Android 13+
+            {
+                if (ContextCompat.CheckSelfPermission(this, Manifest.Permission.ReadMediaImages) != Permission.Granted)
+                {
+                    //ActivityCompat.RequestPermissions(this, new string[] { Manifest.Permission.ReadMediaImages }, RequestStorageId);
+                    ActivityCompat.RequestPermissions(this, new string[] { Manifest.Permission.ReadMediaImages }, (int)Permission.Granted);
+                }
+            }
+            else if (Build.VERSION.SdkInt >= BuildVersionCodes.Q) // Android 10+
+            {
+                // Scoped Storage - не трябва допълнителни permissions за файлове, създадени от приложението
+            }
+            else
+            {
+                if (ContextCompat.CheckSelfPermission(this, Manifest.Permission.ReadExternalStorage) != Permission.Granted)
+                {
+                    //ActivityCompat.RequestPermissions(this, new string[] { Manifest.Permission.ReadExternalStorage }, RequestStorageId);
+                    ActivityCompat.RequestPermissions(this, new string[] { Manifest.Permission.ReadExternalStorage }, (int)Permission.Granted);
+                }
+            }
+        }
 
     }
 }

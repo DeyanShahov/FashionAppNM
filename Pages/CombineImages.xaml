@@ -11,8 +11,8 @@
     <ScrollView>
         <VerticalStackLayout>
             <Grid RowDefinitions="Auto, *, Auto">
-                <!--<Grid x:Name="CameraPanel" BackgroundColor="Black">
-                    --><!--  Camera Preview  --><!--
+                <Grid x:Name="CameraPanel" BackgroundColor="Black">
+                    <!--  Camera Preview  -->
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
                         <RowDefinition Height="Auto" />
@@ -25,7 +25,7 @@
                         BackgroundColor="Gray"
                         BorderColor="Black"
                         CornerRadius="0">
-                        --><!--  Here will be the CameraView when implemented  --><!--
+                        <!--  Here will be the CameraView when implemented  -->
                         <toolkit:CameraView
                             x:Name="MyCameraView"
                             CameraFlashMode="{Binding FlashMode}"
@@ -35,7 +35,7 @@
                             VerticalOptions="FillAndExpand"
                             ZoomFactor="{Binding CurrentZoom}" />
                     </Frame>
-                    --><!--  Contour Overlay placed directly over the camera view  --><!--
+                    <!--  Contour Overlay placed directly over the camera view  -->
                     <Image
                         x:Name="ContourOverlay"
                         Grid.Row="0"
@@ -44,7 +44,7 @@
                         IsVisible="False"
                         Source="Camera/top_body.png"
                         VerticalOptions="FillAndExpand" />
-                    --><!--  Bottom Controls  --><!--
+                    <!--  Bottom Controls  -->
                     <Grid
                         x:Name="CameraButtonsPanel"
                         Grid.Row="1"
@@ -61,11 +61,11 @@
                             WidthRequest="120">
                             <Button
                                 BackgroundColor="Transparent"
+                                Clicked="HidePanelCommand"
                                 HorizontalOptions="Center"
                                 Text="CLOSE"
                                 TextColor="White"
                                 VerticalOptions="Center" />
-                            --><!--  Clicked="HidePanelCommand"  --><!--
                         </Frame>
 
                         <Frame
@@ -78,15 +78,20 @@
                             <Button
                                 x:Name="Capture"
                                 BackgroundColor="DarkRed"
+                                Clicked="OnCaptureClicked"
                                 CornerRadius="40"
                                 Text="REC"
                                 TextColor="White" />
-                            --><!--  Clicked="OnCaptureClicked"  --><!--
                         </Frame>
                     </Grid>
-                </Grid>-->
+                </Grid>
 
                 <VerticalStackLayout x:Name="Menu1" Margin="5">
+
+                    <Label
+                        x:Name="LabelToken"
+                        HorizontalOptions="End"
+                        Text="TOKENS : 0" />
 
                     <VerticalStackLayout x:Name="InputStack">
 
@@ -339,8 +344,8 @@
                             ButtonWidth="220"
                             Clicked="OnCombineImages_Clicked"
                             HorizontalOptions="Center"
-                            IsEnabled="True"
-                            IsVisible="True" />
+                            IsEnabled="False"
+                            IsVisible="False" />
 
                     </VerticalStackLayout>
 
