@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="FashionApp.Pages.ShopPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:FashionApp.Pages.ElementsView"
+    Title="Token Shop"
+    BackgroundImageSource="loading_page_image_2.png">
+    <VerticalStackLayout Padding="20" Spacing="20">
+        <Label
+            x:Name="TokenCountLabel"
+            FontSize="Large"
+            HorizontalOptions="Center"
+            Text="Current Tokens: 0"
+            TextColor="White"
+            VerticalOptions="Start" />
+
+        <Label
+            FontSize="Title"
+            HorizontalOptions="Center"
+            Text="Purchase Tokens"
+            TextColor="White" />
+
+        <!--  Package 1: $0.50 for 2 Tokens  -->
+        <Frame
+            Padding="10"
+            BorderColor="DarkGray"
+            CornerRadius="10"
+            HasShadow="True">
+            <Frame.Shadow>
+                <Shadow
+                    Brush="Black"
+                    Opacity="0.60"
+                    Radius="5"
+                    Offset="4, 4" />
+            </Frame.Shadow>
+            <Grid>
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnPackage1Tapped" />
+                </Grid.GestureRecognizers>
+                <HorizontalStackLayout Spacing="15" VerticalOptions="Center">
+                    <Image
+                        Aspect="AspectFit"
+                        HeightRequest="60"
+                        Source="Icons/token_bag_small.png"
+                        WidthRequest="60" />
+                    <VerticalStackLayout Spacing="5">
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="Medium"
+                            Text="Basic Pack" />
+                        <Label Text="Get 2 Tokens" />
+                        <Label
+                            FontAttributes="Bold"
+                            Text="Price: $0.50"
+                            TextColor="Green" />
+                    </VerticalStackLayout>
+                </HorizontalStackLayout>
+            </Grid>
+        </Frame>
+
+        <!--  Package 2: $1.00 for 5 Tokens  -->
+        <Frame
+            Padding="10"
+            BorderColor="DarkGray"
+            CornerRadius="10"
+            HasShadow="True">
+            <Frame.Shadow>
+                <Shadow
+                    Brush="Black"
+                    Opacity="0.60"
+                    Radius="5"
+                    Offset="4, 4" />
+            </Frame.Shadow>
+            <Grid>
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnPackage2Tapped" />
+                </Grid.GestureRecognizers>
+                <HorizontalStackLayout Spacing="15" VerticalOptions="Center">
+                    <Image
+                        Aspect="AspectFit"
+                        HeightRequest="60"
+                        Source="Icons/token_bag_medium.png"
+                        WidthRequest="60" />
+                    <VerticalStackLayout Spacing="5">
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="Medium"
+                            Text="Standard Pack" />
+                        <Label Text="Get 5 Tokens" />
+                        <Label
+                            FontAttributes="Bold"
+                            Text="Price: $1.00"
+                            TextColor="Green" />
+                    </VerticalStackLayout>
+                </HorizontalStackLayout>
+            </Grid>
+        </Frame>
+
+        <!--  Package 3: $2.00 for 10 Tokens  -->
+        <Frame
+            Padding="10"
+            BorderColor="DarkGray"
+            CornerRadius="10"
+            HasShadow="True">
+            <Frame.Shadow>
+                <Shadow
+                    Brush="Black"
+                    Opacity="0.60"
+                    Radius="5"
+                    Offset="4, 4" />
+            </Frame.Shadow>
+            <Grid>
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnPackage3Tapped" />
+                </Grid.GestureRecognizers>
+                <HorizontalStackLayout Spacing="15" VerticalOptions="Center">
+                    <Image
+                        Aspect="AspectFit"
+                        HeightRequest="60"
+                        Source="Icons/token_bag_large.png"
+                        WidthRequest="60" />
+                    <VerticalStackLayout Spacing="5">
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="Medium"
+                            Text="Mega Pack" />
+                        <Label Text="Get 10 Tokens" />
+                        <Label
+                            FontAttributes="Bold"
+                            Text="Price: $2.00"
+                            TextColor="Green" />
+                    </VerticalStackLayout>
+                </HorizontalStackLayout>
+            </Grid>
+        </Frame>
+
+        <!--<Button
+            Margin="0,20,0,0"
+            Clicked="OnBackClicked"
+            HorizontalOptions="Center"
+            Text="Back" />-->
+
+        <controls:CustomButton
+            Margin="0,20,0,0"
+            ButtonText="BACK"
+            ButtonWidth="220"
+            Clicked="OnBackClicked"
+            HorizontalOptions="Center" />
+
+    </VerticalStackLayout>
+</ContentPage>
