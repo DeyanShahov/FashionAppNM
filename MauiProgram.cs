@@ -18,14 +18,7 @@ namespace FashionApp
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
-                .UseAdMob()
-                //.UseAdMob(new AdMobConfiguration
-                //{
-                //    //AdUnitId = "ca-app-pub-3940256099942544/6300978111", // Test ad unit ID for Interstitial
-                //    //AdUnitId = "ca-app-pub-3940256099942544/2247696110", // Test ad unit ID for Banner
-                //    //AdUnitId = "ca-app-pub-3940256099942544/5224354917", // Test ad unit ID for Rewarded
-                //    //AdUnitId = "ca-app-pub-3940256099942544/5224354917" // Test ad unit ID for Rewarded Interstitial
-                //})
+                .UseAdMob()             
                 .UseMauiCommunityToolkitCamera()
                 .UseMauiCommunityToolkit()
                 .ConfigureFonts(fonts =>

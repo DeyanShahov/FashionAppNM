@@ -297,6 +297,10 @@ namespace FashionApp.Pages
                 page.IsAdmin = isAdmin;
                 await Navigation.PushAsync(page);
             }
+            catch (Exception ex)
+            {
+                await DisplayAlert(AppConstants.Errors.ERROR, $"{ex?.Message}\n{ex?.StackTrace}", AppConstants.Messages.OK);
+            }
             finally
             {
                 _executionGuardService.FinishTask(taskKey);

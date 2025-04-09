@@ -68,7 +68,15 @@ public partial class LoginPage : ContentPage
 
     private async void LoginAsGuestButton_Clicked(object sender, EventArgs e)
     {
-        var page = MauiProgram.ServiceProvider.GetRequiredService<MainPage>();
-        await Navigation.PushAsync(page);
+        try
+        {
+            var page = MauiProgram.ServiceProvider.GetRequiredService<MainPage>();
+            await Navigation.PushAsync(page);
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert(AppConstants.Errors.ERROR, $"{ex?.Message}\n{ex?.StackTrace}", AppConstants.Messages.OK);
+        }
+       
     }
 }
