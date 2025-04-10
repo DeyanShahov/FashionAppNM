@@ -46,6 +46,7 @@ namespace FashionApp
 
             builder.Services.AddTransient<ImageEditPage>();
             builder.Services.AddSingleton<TemporaryGallery>();
+            builder.Services.AddSingleton<ShopPage>();
 
             AdConfig.UseTestAdUnitIds = true; // Use test ad unit IDs. Setwa testowi reklami
             AdConfig.DisableConsentCheck = true; // Disable consent check.           

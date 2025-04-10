@@ -12,7 +12,6 @@
         <VerticalStackLayout>
             <Grid RowDefinitions="Auto, *, Auto">
                 <Grid x:Name="CameraPanel" BackgroundColor="Black">
-                    <!--  Camera Preview  -->
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
                         <RowDefinition Height="Auto" />
@@ -25,17 +24,13 @@
                         BackgroundColor="Gray"
                         BorderColor="Black"
                         CornerRadius="0">
-                        <!--  Here will be the CameraView when implemented  -->
                         <toolkit:CameraView
                             x:Name="MyCameraView"
-                            CameraFlashMode="{Binding FlashMode}"
                             HeightRequest="600"
                             HorizontalOptions="FillAndExpand"
-                            SelectedCamera="{Binding SelectedCamera}"
-                            VerticalOptions="FillAndExpand"
-                            ZoomFactor="{Binding CurrentZoom}" />
+                            VerticalOptions="FillAndExpand" />
                     </Frame>
-                    <!--  Contour Overlay placed directly over the camera view  -->
+
                     <Image
                         x:Name="ContourOverlay"
                         Grid.Row="0"
@@ -44,7 +39,6 @@
                         IsVisible="False"
                         Source="Camera/top_body.png"
                         VerticalOptions="FillAndExpand" />
-                    <!--  Bottom Controls  -->
                     <Grid
                         x:Name="CameraButtonsPanel"
                         Grid.Row="1"
@@ -89,9 +83,12 @@
                 <VerticalStackLayout x:Name="Menu1" Margin="5">
 
                     <Label
-                        x:Name="LabelToken"
+                        x:Name="Tokens"
+                        Margin="0,10"
+                        FontAttributes="Bold"
+                        FontSize="Body"
                         HorizontalOptions="End"
-                        Text="TOKENS : 0" />
+                        Text="0" />
 
                     <VerticalStackLayout x:Name="InputStack">
 
@@ -347,6 +344,18 @@
                             IsEnabled="False"
                             IsVisible="False" />
 
+                        <BoxView
+                            HeightRequest="1"
+                            HorizontalOptions="FillAndExpand"
+                            Color="Silver" />
+
+                        <controls:CustomButton
+                            x:Name="ShopPage"
+                            Margin="0,20"
+                            ButtonText="SHOP"
+                            ButtonWidth="220"
+                            Clicked="ShopPage_Clicked" />
+
                     </VerticalStackLayout>
 
                     <VerticalStackLayout
@@ -424,14 +433,6 @@
                         </HorizontalStackLayout>
                     </VerticalStackLayout>
 
-                    <Label
-                        x:Name="CounterLabel"
-                        Margin="0,30"
-                        FontSize="18"
-                        HorizontalOptions="Center"
-                        Style="{StaticResource Headline}"
-                        Text="Created by RedFox - AI Айляк"
-                        TextColor="Black" />
                 </VerticalStackLayout>
             </Grid>
         </VerticalStackLayout>

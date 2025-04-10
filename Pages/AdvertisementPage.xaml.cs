@@ -9,12 +9,12 @@ namespace FashionApp.Pages;
 
 public partial class AdvertisementPage : ContentPage
 {
-    private readonly Settings _appSettings; // Поле за съхранение на инстанцията на Settings
+    //private readonly Settings _appSettings; // Поле за съхранение на инстанцията на Settings
 
     // Свойства, към които UI може да се свърже (bind)
-    public string CurrentUserName => _appSettings.UserName;
-    public string CurrentPhoneNumber => _appSettings.PhoneIdentificatoryNumber;
-    public int CurrentTokens => _appSettings.Tokens;
+    //public string CurrentUserName => _appSettings.UserName;
+    //public string CurrentPhoneNumber => _appSettings.PhoneIdentificatoryNumber;
+    //public int CurrentTokens => _appSettings.Tokens;
 
     // Команда за примерна промяна на настройките
     public ICommand UpdateSettingsCommand { get; }
@@ -22,9 +22,10 @@ public partial class AdvertisementPage : ContentPage
 
     private readonly IRewardedInterstitialAdService _rewardedInterstitialAdService;
     //private int tokens = 0;
-    public AdvertisementPage(Settings settings)
+    //public AdvertisementPage(Settings settings)
+    public AdvertisementPage()
     {
-        _appSettings = settings; // Запазваме инжектираната инстанция
+        //_appSettings = settings; // Запазваме инжектираната инстанция
 
         //// Слушаме за промени в настройките, за да обновим ViewModel свойствата
         //_appSettings.PropertyChanged += (sender, args) =>
@@ -102,17 +103,20 @@ public partial class AdvertisementPage : ContentPage
     private void UpdateUserSettings()
     {
         // Пример за промяна на настройките
-        _appSettings.Tokens += 1;
+        //_appSettings.Tokens += 1;
         // PhoneIdentificatoryNumber може да се промени по друг начин
         //_appSettings.UserName = "New User";
+
+        AppSettings.Tokens++;
     }
 
     // Метод, който определя дали командата може да се изпълни
-    private bool CanIncreaseTokens()
-    {
-        // Пример: Позволяваме увеличаване само ако токените са под 10
-        return _appSettings.Tokens < 10;
-    }
+    //private bool CanIncreaseTokens()
+    //{
+    //    // Пример: Позволяваме увеличаване само ако токените са под 10
+    //    //return _appSettings.Tokens < 10;
+    //    return AppSettings.Tokens < 10;
+    //}
 
 
     // --- Реализация на INotifyPropertyChanged за ViewModel ---

@@ -26,16 +26,17 @@ public partial class CombineImages : ContentPage
 
     private bool isFromClothImage = true;
 
-    private readonly ExecutionGuardService _executionGuardService;
-    private readonly Settings _appSettings; // Поле за съхранение на инстанцията на Settings
+    //private readonly ExecutionGuardService _executionGuardService;
+    //private readonly Settings _appSettings; // Поле за съхранение на инстанцията на Settings
 
-    public CombineImages(ExecutionGuardService executionGuard, Settings settings)
+    //public CombineImages(ExecutionGuardService executionGuard, Settings settings)
+    public CombineImages()
     {
         InitializeComponent();
 
-        _appSettings = settings;
+        //_appSettings = settings;
 
-        _executionGuardService = executionGuard;
+        //_executionGuardService = executionGuard;
 
         BindingContext = this;
 
@@ -58,7 +59,8 @@ public partial class CombineImages : ContentPage
     {
         base.OnAppearing();
 
-        LabelToken.Text = $"TOKENS : {_appSettings.Tokens}";
+        //LabelToken.Text = $"TOKENS : {_appSettings.Tokens}";
+        Tokens.Text = $"{AppSettings.Tokens}";
 
         SetVisibilityOnCombineImagesButtonBasedOnTokens();
 
@@ -82,8 +84,8 @@ public partial class CombineImages : ContentPage
         bool pageAlreadyExists = Navigation.ModalStack.Any(p => p is AdvertisementPage);
         if (pageAlreadyExists) return;
 
-        string taskKey = "Advertise Page";
-        if (!_executionGuardService.TryStartTask(taskKey)) return;
+        //string taskKey = "Advertise Page";
+        //if (!_executionGuardService.TryStartTask(taskKey)) return;
 
         try
         {
@@ -92,8 +94,17 @@ public partial class CombineImages : ContentPage
         }
         finally
         {
-            _executionGuardService.FinishTask(taskKey);
+            //_executionGuardService.FinishTask(taskKey);
         }
+    }
+
+    private async void ShopPage_Clicked(object sender, EventArgs e)
+    {
+        bool pageAlreadyExists = Navigation.ModalStack.Any(p => p is ShopPage);
+        if (pageAlreadyExists) return;
+
+        var page = MauiProgram.ServiceProvider.GetRequiredService<ShopPage>();
+        await Navigation.PushAsync(page);
     }
 
     private async void OnCombineImages_Clicked(object sender, EventArgs e) => await CombineImagesAction();
@@ -101,6 +112,7 @@ public partial class CombineImages : ContentPage
     private async Task CombineImagesAction()
     {
         //if (tokens < 10) return;
+        if(AppSettings.Tokens < 1) return;
 
         var result1 = SelectedClothImage.Source.ToString()?.Remove(0, 6);
         var result2 = SelectedBodyImage.Source.ToString()?.Remove(0, 6);
@@ -174,8 +186,11 @@ public partial class CombineImages : ContentPage
         {
             ToggleLoading(false);
 
-            _appSettings.Tokens -= 1;
-            LabelToken.Text = $"TOKENS : {_appSettings.Tokens}";
+            //_appSettings.Tokens -= 1;
+            //LabelToken.Text = $"TOKENS : {_appSettings.Tokens}";
+
+            AppSettings.Tokens--;
+            Tokens.Text = $"{AppSettings.Tokens}";
 
             GoogleAdsButton.IsEnabled = true;
             GoogleAdsButton.IsVisible = true;
@@ -253,15 +268,6 @@ public partial class CombineImages : ContentPage
 #endif
     }
 
-    private void SelectClothFromApp_Clicked(object sender, EventArgs e)
-    {
-
-    }
-
-    private void SelectBodyFromApp_Clicked(object sender, EventArgs e)
-    {
-
-    }
 
     //-------------------------------------------- FUNCTIONS --------------------------------------------------------- 
     private async Task<bool> UploadImages()
@@ -354,12 +360,20 @@ public partial class CombineImages : ContentPage
     }
     private async void OnImageCaptured(Stream imageStream)
     {
-        await ProcessSelectedImage(imageStream);
-        PanelButtons.IsVisible = false;
-        PanelButtons2.IsVisible = false;
-        _cameraService.StopCamera();
-        HideMenus();
-        CameraButtonsPanel.IsEnabled = true;
+        try
+        {
+            await ProcessSelectedImage(imageStream);
+            PanelButtons.IsVisible = false;
+            PanelButtons2.IsVisible = false;
+            _cameraService.StopCamera();
+            HideMenus();
+            CameraButtonsPanel.IsEnabled = true;
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert(AppConstants.Errors.ERROR, $"{ex?.Message}\n{ex?.StackTrace}", AppConstants.Messages.OK);
+        }
+
     }
 
     private async void TestGalleryButton_Clicked(object sender, EventArgs e)
@@ -528,24 +542,7 @@ public partial class CombineImages : ContentPage
 #endif
 
     public async Task CopyFileToCacheAsync(string sourcePath)//string imagePath)
-    {
-        //try
-        //{
-        //    var cacheDir = FileSystem.CacheDirectory;
-        //    var fileName = Path.GetFileName(imagePath);
-        //    var newFilePath = Path.Combine(cacheDir, fileName);
-        //    if (!File.Exists(newFilePath))
-        //    {
-        //        using var sourceStream = File.OpenRead(imagePath);
-        //        using var destinationStream = File.Create(newFilePath);
-        //        await sourceStream.CopyToAsync(destinationStream);
-        //    }
-        //}
-        //catch (Exception ex)
-        //{
-        //    Console.WriteLine($"{AppConstants.Errors.ERROR_COPY_FILE}: {ex.Message}");
-        //}
-
+    {        
         // Извличаме името на файла
         var fileName = Path.GetFileName(sourcePath);
         // Директорията за кеш на приложението
@@ -595,9 +592,11 @@ public partial class CombineImages : ContentPage
 
     private void SetVisibilityOnCombineImagesButtonBasedOnTokens()
     {
-        CombineImagesButton.IsVisible = _appSettings.Tokens > 0;
-        CombineImagesButton.IsEnabled = _appSettings.Tokens > 0;
+        //CombineImagesButton.IsVisible = _appSettings.Tokens > 0;
+        //CombineImagesButton.IsEnabled = _appSettings.Tokens > 0;
+        CombineImagesButton.IsVisible = AppSettings.Tokens > 0;
+        CombineImagesButton.IsEnabled = AppSettings.Tokens > 0;
     }
 
-    private void HideMenus() => Menu1.IsVisible = !Menu1.IsVisible; 
+    private void HideMenus() => Menu1.IsVisible = !Menu1.IsVisible;
 }

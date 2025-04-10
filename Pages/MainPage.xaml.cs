@@ -5,17 +5,18 @@ namespace FashionApp.Pages
 {
     public partial class MainPage : ContentPage
     {
-        private readonly HttpClient _client = new HttpClient { Timeout = TimeSpan.FromSeconds(300) };
-        private const string ApiUrl = "https://eminently-verified-walleye.ngrok-free.app";
+        //private readonly HttpClient _client = new HttpClient { Timeout = TimeSpan.FromSeconds(300) };
+        //private const string ApiUrl = "https://eminently-verified-walleye.ngrok-free.app";
         //private const string ApiUrl = "http://192.168.0.101:80";
 
-        private readonly ExecutionGuardService _executionGuardService;
+        //private readonly ExecutionGuardService _executionGuardService;
 
 
-        public MainPage(ExecutionGuardService executionGuard)
+        //public MainPage(ExecutionGuardService executionGuard)
+        public MainPage()
         {
             InitializeComponent();
-            _executionGuardService = executionGuard;
+            //_executionGuardService = executionGuard;
 
             BindingContext = this;
             
@@ -25,21 +26,20 @@ namespace FashionApp.Pages
 
         private void SetContentLabel()
         {
-            ContentLabel.Text = AppConstants.Messages.CREATED_BY;
 
 #if ANDROID
             // Проверка и отпечатване на екрана на текущата Андроид версия и съответната API версия
-            ContentLabel.Text += $"\n Android: {Android.OS.Build.VERSION.Release}  API: {(int)(int)Android.OS.Build.VERSION.SdkInt}";
+            ContentLabel.Text = $"{AppConstants.Messages.CREATED_BY}\n Android: {Android.OS.Build.VERSION.Release}  API: {(int)(int)Android.OS.Build.VERSION.SdkInt}";
 #endif
         }
 
-        private async void OnEditorButtonClicked(object sender, EventArgs e)
+        private async void OnEditorButtonClicked(object sender, EventArgs e) 
         {
             bool pageAlreadyExists = Navigation.NavigationStack.Any(p => p is MaskEditor);
             if (pageAlreadyExists) return;
 
-            string taskKey = AppConstants.Pages.EDITOR;
-            if (!_executionGuardService.TryStartTask(taskKey)) return;
+            //string taskKey = AppConstants.Pages.EDITOR;
+            //if (!_executionGuardService.TryStartTask(taskKey)) return;
 
             try
             {
@@ -48,7 +48,7 @@ namespace FashionApp.Pages
             }
             finally
             {
-                _executionGuardService.FinishTask(taskKey);
+                //_executionGuardService.FinishTask(taskKey);
             }         
         }
 
@@ -57,8 +57,9 @@ namespace FashionApp.Pages
             bool pageAlreadyExists = Navigation.NavigationStack.Any(p => p is PartnersPage);
             if (pageAlreadyExists) return;
 
-            string taskKey = AppConstants.Pages.PARTNERS;
-            if (!_executionGuardService.TryStartTask(taskKey)) return;
+            //string taskKey = AppConstants.Pages.PARTNERS;
+            //if (!_executionGuardService.TryStartTask(taskKey)) return;
+
             try
             {
                 var page = MauiProgram.ServiceProvider.GetRequiredService<PartnersPage>();
@@ -66,7 +67,7 @@ namespace FashionApp.Pages
             }
             finally
             {
-                _executionGuardService.FinishTask(taskKey);
+                //_executionGuardService.FinishTask(taskKey);
             }
         }
 
@@ -75,8 +76,9 @@ namespace FashionApp.Pages
             bool pageAlreadyExists = Navigation.NavigationStack.Any(p => p is WebViewPage);
             if (pageAlreadyExists) return;
 
-            string taskKey = AppConstants.Pages.WEB_VIEW;
-            if (!_executionGuardService.TryStartTask(taskKey)) return;
+            //string taskKey = AppConstants.Pages.WEB_VIEW;
+            //if (!_executionGuardService.TryStartTask(taskKey)) return;
+
             try
             {
                 var page = MauiProgram.ServiceProvider.GetRequiredService<WebViewPage>();
@@ -84,7 +86,7 @@ namespace FashionApp.Pages
             }
             finally
             {
-                _executionGuardService.FinishTask(taskKey);
+                //_executionGuardService.FinishTask(taskKey);
             }
         }
 
@@ -93,8 +95,9 @@ namespace FashionApp.Pages
             bool pageAlreadyExists = Navigation.NavigationStack.Any(p => p is BaseGallery);
             if (pageAlreadyExists) return;
 
-            string taskKey = AppConstants.Pages.RESULTS_GALLERY;
-            if (!_executionGuardService.TryStartTask(taskKey)) return;
+            //string taskKey = AppConstants.Pages.RESULTS_GALLERY;
+            //if (!_executionGuardService.TryStartTask(taskKey)) return;
+
             try
             {         
                 var page = MauiProgram.ServiceProvider.GetRequiredService<BaseGallery>();
@@ -104,7 +107,7 @@ namespace FashionApp.Pages
             }
             finally
             {
-                _executionGuardService.FinishTask(taskKey);
+               // _executionGuardService.FinishTask(taskKey);
             }
         }
 
@@ -113,8 +116,9 @@ namespace FashionApp.Pages
             bool pageAlreadyExists = Navigation.NavigationStack.Any(p => p is BaseGallery);
             if (pageAlreadyExists) return;
 
-            string taskKey = AppConstants.Pages.MASKS_GALLERY;
-            if (!_executionGuardService.TryStartTask(taskKey)) return;
+            //string taskKey = AppConstants.Pages.MASKS_GALLERY;
+            //if (!_executionGuardService.TryStartTask(taskKey)) return;
+
             try
             {               
                 var page = MauiProgram.ServiceProvider.GetRequiredService<BaseGallery>();
@@ -124,7 +128,7 @@ namespace FashionApp.Pages
             }
             finally
             {
-                _executionGuardService.FinishTask(taskKey);
+                //_executionGuardService.FinishTask(taskKey);
             }
         }
 
@@ -133,8 +137,8 @@ namespace FashionApp.Pages
             bool pageAlreadyExists = Navigation.NavigationStack.Any(p => p is BaseGallery);
             if (pageAlreadyExists) return;
 
-            string taskKey = AppConstants.Pages.WEB_GALLERY;
-            if (!_executionGuardService.TryStartTask(taskKey)) return;
+            //string taskKey = AppConstants.Pages.WEB_GALLERY;
+            //if (!_executionGuardService.TryStartTask(taskKey)) return;
             try
             {         
                 var page = MauiProgram.ServiceProvider.GetRequiredService<BaseGallery>();
@@ -144,7 +148,7 @@ namespace FashionApp.Pages
             }
             finally
             {
-                _executionGuardService.FinishTask(taskKey);
+                //_executionGuardService.FinishTask(taskKey);
             }
         }
       
@@ -154,8 +158,8 @@ namespace FashionApp.Pages
             bool pageAlreadyExists = Navigation.NavigationStack.Any(p => p is CombineImages);
             if (pageAlreadyExists) return;
 
-            string taskKey = AppConstants.Pages.COMBINE_IMAGES;
-            if (!_executionGuardService.TryStartTask(taskKey)) return;
+            //string taskKey = AppConstants.Pages.COMBINE_IMAGES;
+            //if (!_executionGuardService.TryStartTask(taskKey)) return;
 
             try
             {
@@ -169,7 +173,7 @@ namespace FashionApp.Pages
             }
             finally
             {
-                _executionGuardService.FinishTask(taskKey);
+                //_executionGuardService.FinishTask(taskKey);
             }
         }
     }

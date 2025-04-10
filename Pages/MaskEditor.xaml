@@ -29,12 +29,9 @@
                 <!--  Here will be the CameraView when implemented  -->
                 <toolkit:CameraView
                     x:Name="MyCameraView"
-                    CameraFlashMode="{Binding FlashMode}"
                     HeightRequest="600"
                     HorizontalOptions="FillAndExpand"
-                    SelectedCamera="{Binding SelectedCamera}"
-                    VerticalOptions="FillAndExpand"
-                    ZoomFactor="{Binding CurrentZoom}" />
+                    VerticalOptions="FillAndExpand" />
             </Frame>
             <!--  Contour Overlay placed directly over the camera view  -->
             <Image

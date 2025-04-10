@@ -4,12 +4,13 @@ namespace FashionApp.Pages;
 
 public partial class ShopPage : ContentPage
 {
-    private readonly Settings _appSettings;
+    //private readonly Settings _appSettings;
 
-    public ShopPage(Settings settings)
+    //public ShopPage(Settings settings)
+    public ShopPage()
     {
         InitializeComponent();
-        _appSettings = settings;
+        //_appSettings = settings;
         BindingContext = this;
     }
 
@@ -21,7 +22,8 @@ public partial class ShopPage : ContentPage
 
     private void UpdateTokenCount()
     {
-        TokenCountLabel.Text = $"Current Tokens: {_appSettings.Tokens}";
+        //TokenCountLabel.Text = $"Current Tokens: {_appSettings.Tokens}";
+        TokenCountLabel.Text = $"Current Tokens: {AppSettings.Tokens}";
     }
 
     private async void OnPackage1Tapped(object sender, TappedEventArgs e)
@@ -50,7 +52,8 @@ public partial class ShopPage : ContentPage
             // In a real app, you would integrate with PayPal SDK here
             await Task.Delay(500); // Simulate network delay
 
-            _appSettings.Tokens += tokensToAdd;
+            //_appSettings.Tokens += tokensToAdd;
+            AppSettings.Tokens += tokensToAdd;
             UpdateTokenCount();
 
             await DisplayAlert("Purchase Successful", $"You have successfully purchased {tokensToAdd} tokens.", "OK");
