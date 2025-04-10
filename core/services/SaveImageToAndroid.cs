@@ -9,7 +9,7 @@ namespace FashionApp.core.services
     internal static class SaveImageToAndroid
     {
 #if ANDROID
-        public static async void Save(string imageFileName, Stream stream, string directory)
+        public static async Task<bool> Save(string imageFileName, Stream stream, string directory)
         {
             var context = Platform.CurrentActivity;
             string directoryPath = Path.Combine(Android.OS.Environment.DirectoryPictures, directory);
@@ -36,7 +36,7 @@ namespace FashionApp.core.services
                         AppConstants.Errors.ERROR, 
                         AppConstants.Errors.FAILED_TO_SAVE_IMAGE, 
                         AppConstants.Messages.OK);
-                    return;
+                    return false;
                 }
 
                 using (var os = resolver.OpenOutputStream(imageUri))
@@ -55,11 +55,14 @@ namespace FashionApp.core.services
                     AppConstants.Messages.OK);
 
                 imageFileName = string.Empty; // Reset value of paramether
+
+                return true;
             }
             else
             {
                 // Handle older Android versions if needed
                 await Application.Current.MainPage.DisplayAlert(AppConstants.Errors.ERROR, "OS is invalid!", AppConstants.Messages.OK);
+                return false;
 
                 //Java.IO.File storagePath = Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryPictures);
                 //string path = System.IO.Path.Combine(storagePath.ToString(), imageFileName);
