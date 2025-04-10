@@ -18,7 +18,6 @@ public partial class CombineImages : ContentPage
     private byte[] _imageData = [];
     private string _clothImagePath = String.Empty;
     private string _bodyImagePath = String.Empty;
-    public bool IsAdmin { get; set; } = false;
 
     private readonly SingleImageLoader singleImageLoader;
     private CameraService _cameraService;
