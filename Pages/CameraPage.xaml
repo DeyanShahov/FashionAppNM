@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentView
-    x:Class="FashionApp.Pages.PartialView.CameraView"
+<ContentPage
+    x:Class="FashionApp.Pages.CameraPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit">
-    <Grid
-        x:Name="CameraPanel"
-        IsEnabled="True"
-        IsVisible="True">
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    Title="CameraPage">
+    <Grid x:Name="CameraPanel">
         <!--  Camera Preview  -->
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
@@ -24,12 +22,9 @@
             <!--  Here will be the CameraView when implemented  -->
             <toolkit:CameraView
                 x:Name="MyCameraView"
-                CameraFlashMode="{Binding FlashMode}"
                 HeightRequest="600"
                 HorizontalOptions="FillAndExpand"
-                SelectedCamera="{Binding SelectedCamera}"
-                VerticalOptions="FillAndExpand"
-                ZoomFactor="{Binding CurrentZoom}" />
+                VerticalOptions="FillAndExpand" />
         </Frame>
 
 
@@ -84,23 +79,22 @@
             </Frame>
 
             <!--<Frame
-                Grid.Column="2"
-                Padding="5"
-                BackgroundColor="Black"
-                CornerRadius="10"
-                HeightRequest="60"
-                HorizontalOptions="Center"
-                IsVisible="False"
-                WidthRequest="120">
-                <Button
-                    BackgroundColor="Transparent"
-                    Clicked="ContourSwitch_Clicked"
-                    HorizontalOptions="Center"
-                    Text="MASK"
-                    TextColor="White"
-                    VerticalOptions="Center" />
-            </Frame>-->
+             Grid.Column="2"
+             Padding="5"
+             BackgroundColor="Black"
+             CornerRadius="10"
+             HeightRequest="60"
+             HorizontalOptions="Center"
+             IsVisible="False"
+             WidthRequest="120">
+             <Button
+                 BackgroundColor="Transparent"
+                 Clicked="ContourSwitch_Clicked"
+                 HorizontalOptions="Center"
+                 Text="MASK"
+                 TextColor="White"
+                 VerticalOptions="Center" />
+         </Frame>-->
         </Grid>
     </Grid>
-
-</ContentView>
+</ContentPage>

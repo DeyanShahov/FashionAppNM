@@ -4,82 +4,12 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:FashionApp.Pages.ElementsView"
-    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     Title="Combine Images"
     BackgroundImageSource="loading_page_image_2.png">
 
     <ScrollView>
         <VerticalStackLayout>
             <Grid RowDefinitions="Auto, *, Auto">
-                <Grid x:Name="CameraPanel" BackgroundColor="Black">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-
-                    <Frame
-                        x:Name="test"
-                        Grid.Row="0"
-                        Padding="0"
-                        BackgroundColor="Gray"
-                        BorderColor="Black"
-                        CornerRadius="0">
-                        <toolkit:CameraView
-                            x:Name="MyCameraView"
-                            HeightRequest="600"
-                            HorizontalOptions="FillAndExpand"
-                            VerticalOptions="FillAndExpand" />
-                    </Frame>
-
-                    <Image
-                        x:Name="ContourOverlay"
-                        Grid.Row="0"
-                        Aspect="Fill"
-                        HorizontalOptions="FillAndExpand"
-                        IsVisible="False"
-                        Source="Camera/top_body.png"
-                        VerticalOptions="FillAndExpand" />
-                    <Grid
-                        x:Name="CameraButtonsPanel"
-                        Grid.Row="1"
-                        Padding="10"
-                        ColumnDefinitions="*,*,*"
-                        VerticalOptions="End">
-                        <Frame
-                            Grid.Column="0"
-                            Padding="5"
-                            BackgroundColor="Black"
-                            CornerRadius="10"
-                            HeightRequest="60"
-                            HorizontalOptions="Center"
-                            WidthRequest="120">
-                            <Button
-                                BackgroundColor="Transparent"
-                                Clicked="HidePanelCommand"
-                                HorizontalOptions="Center"
-                                Text="CLOSE"
-                                TextColor="White"
-                                VerticalOptions="Center" />
-                        </Frame>
-
-                        <Frame
-                            Grid.Column="1"
-                            Padding="0"
-                            CornerRadius="40"
-                            HeightRequest="80"
-                            HorizontalOptions="Center"
-                            WidthRequest="80">
-                            <Button
-                                x:Name="Capture"
-                                BackgroundColor="DarkRed"
-                                Clicked="OnCaptureClicked"
-                                CornerRadius="40"
-                                Text="REC"
-                                TextColor="White" />
-                        </Frame>
-                    </Grid>
-                </Grid>
-
                 <VerticalStackLayout x:Name="Menu1" Margin="5">
 
                     <Label
@@ -141,45 +71,18 @@
                                                 Radius="10"
                                                 Offset="3, 3" />
                                         </Frame.Shadow>
-                                        <!--<Grid ColumnDefinitions="*,*" RowDefinitions="*,*">
-                                            <ImageButton
-                                                x:Name="TestGalleryButton"
-                                                Grid.Row="0"
-                                                Grid.Column="0"
-                                                Clicked="TestGalleryButton_Clicked"
-                                                HeightRequest="70"
-                                                Source="Icons/images_regular_24.png"
-                                                WidthRequest="70" />
-                                            <ImageButton
-                                                x:Name="TestGalleryButton2"
-                                                Grid.Row="0"
-                                                Grid.Column="1"
-                                                Clicked="PanelButton_Clicked"
-                                                HeightRequest="70"
-                                                Source="Icons/camera_regular_24.png"
-                                                WidthRequest="70" />
-                                            <ImageButton
-                                                x:Name="TestGalleryButton3"
-                                                Grid.Row="1"
-                                                Grid.Column="0"
-                                                Clicked="OnSelectClothImageClicked"
-                                                HeightRequest="70"
-                                                Source="Icons/folder_open_regular_24.png"
-                                                WidthRequest="70" />
-                                        </Grid>-->
-
                                         <Grid ColumnDefinitions="*,*">
                                             <ImageButton
-                                                x:Name="TestGalleryButton3"
+                                                x:Name="SelectClothImageButton"
                                                 Grid.Column="0"
-                                                Clicked="OnSelectClothImageClicked"
+                                                Clicked="SelectClothImageButton_Clicked"
                                                 HeightRequest="70"
                                                 Source="Icons/folder_open_regular_24.png"
                                                 WidthRequest="70" />
                                             <ImageButton
-                                                x:Name="TestGalleryButton2"
+                                                x:Name="CameraButton"
                                                 Grid.Column="1"
-                                                Clicked="PanelButton_Clicked"
+                                                Clicked="CameraButton_Clicked"
                                                 HeightRequest="70"
                                                 Source="Icons/camera_regular_24.png"
                                                 WidthRequest="70" />
@@ -244,14 +147,7 @@
                                                             HorizontalOptions="Center"
                                                             Source="{Binding ImagePath}"
                                                             VerticalOptions="Center"
-                                                            WidthRequest="60">
-                                                            <!--<Image.GestureRecognizers>
-                                                            <TapGestureRecognizer Command="{Binding BindingContext.SelectJacketCommand, Source={x:Reference JacketCarousel}}" CommandParameter="{Binding ImagePath}" />
-                                                            -->
-                                                            <!--<TapGestureRecognizer CommandParameter="{Binding Data}" Tapped="MacroButton_Clicked" />-->
-                                                            <!--
-                                                        </Image.GestureRecognizers>-->
-                                                        </ImageButton>
+                                                            WidthRequest="60" />
                                                     </Grid>
                                                 </DataTemplate>
                                             </CarouselView.ItemTemplate>
@@ -288,42 +184,6 @@
                                             </Image.GestureRecognizers>
                                         </Image>
                                     </Frame>
-
-                                    <!--<Frame
-                                        x:Name="PanelButtons2"
-                                        Padding="0"
-                                        BackgroundColor="LightGray"
-                                        BorderColor="Black"
-                                        HasShadow="True"
-                                        HeightRequest="120"
-                                        IsVisible="False"
-                                        WidthRequest="220">
-                                        <Frame.Shadow>
-                                            <Shadow
-                                                Brush="Black"
-                                                Opacity="0.99"
-                                                Radius="10"
-                                                Offset="3, 3" />
-                                        </Frame.Shadow>
-                                        <Grid ColumnDefinitions="*,*">
-                                            <ImageButton
-                                                x:Name="TestGalleryButton5"
-                                                Grid.Row="0"
-                                                Grid.Column="0"
-                                                Clicked="TestGalleryButton5_Clicked"
-                                                HeightRequest="70"
-                                                Source="Icons/images_regular_24.png"
-                                                WidthRequest="70" />
-                                            <ImageButton
-                                                x:Name="TestGalleryButton7"
-                                                Grid.Row="0"
-                                                Grid.Column="1"
-                                                Clicked="OnSelectBodyImageClicked"
-                                                HeightRequest="70"
-                                                Source="Icons/folder_open_regular_24.png"
-                                                WidthRequest="70" />
-                                        </Grid>
-                                    </Frame>-->
 
                                     <Label
                                         Grid.Row="2"

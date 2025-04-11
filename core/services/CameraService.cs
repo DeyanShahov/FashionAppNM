@@ -18,24 +18,30 @@ namespace FashionApp.core.services
             _cameraFrame = cameraFrame;
         }
 
+        public CameraService(CameraView cameraView)
+        {
+            _cameraView = cameraView;
+            _cameraView.MediaCaptured += OnMediaCaptured;
+        }
+
         public async void StartCamera()
         {
             if (_cameraView != null)
             {
                 _cameraView.StopCameraPreview();
                 await _cameraView.StartCameraPreview(CancellationToken.None);
-                _cameraView.IsVisible = true;
-                _cameraFrame.IsVisible = true;
-                _cameraFrame.IsEnabled = true;
+                //_cameraView.IsVisible = true;
+                //_cameraFrame.IsVisible = true;
+                //_cameraFrame.IsEnabled = true;
             }
         }
 
         public void StopCamera()
         {
             _cameraView.StopCameraPreview();
-            _cameraView.IsVisible = false;
-            _cameraFrame.IsVisible = false;
-            _cameraFrame.IsEnabled = false;
+            //_cameraView.IsVisible = false;
+            //_cameraFrame.IsVisible = false;
+            //_cameraFrame.IsEnabled = false;
         }
 
         public async void CaptureClicked()

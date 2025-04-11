@@ -20,30 +20,16 @@ public partial class CombineImages : ContentPage
     private string _bodyImagePath = String.Empty;
 
     private readonly SingleImageLoader singleImageLoader;
-    private CameraService _cameraService;
 
     public ObservableCollection<JacketModel> ListAvailableClothesForMacros { get; set; } = new ObservableCollection<JacketModel>();
 
     private bool isFromClothImage = true;
 
-    //private readonly ExecutionGuardService _executionGuardService;
-    //private readonly Settings _appSettings; // Поле за съхранение на инстанцията на Settings
-
-    //public CombineImages(ExecutionGuardService executionGuard, Settings settings)
     public CombineImages()
     {
         InitializeComponent();
 
-        //_appSettings = settings;
-
-        //_executionGuardService = executionGuard;
-
         BindingContext = this;
-
-
-        _cameraService = new CameraService(MyCameraView, CameraPanel);
-        _cameraService.ImageCaptured += OnImageCaptured;
-        _cameraService.StopCamera();
 
         singleImageLoader = new SingleImageLoader(
             setErrorMessage: (msg) => ResponseText.Text = msg,
@@ -59,47 +45,27 @@ public partial class CombineImages : ContentPage
     {
         base.OnAppearing();
 
-        //LabelToken.Text = $"TOKENS : {_appSettings.Tokens}";
         Tokens.Text = "";
         Tokens.Text = $"{AppSettings.Tokens}";
 
         SetVisibilityOnCombineImagesButtonBasedOnTokens();
 
         PanelButtons.IsVisible = false;
-        //PanelButtons2.IsVisible = false;
     }
 
     //---------------------------------------- BUTONS ACTIONS --------------------------------------------------------------
     private async void OnNavigateClicked(object sender, EventArgs e) => await Navigation.PopAsync();
-    private void OnSelectClothImageClicked(object sender, EventArgs e) => SetAnImageAsSourceAsync(SelectedClothImage, nameof(_clothImagePath));
-    //private void OnSelectBodyImageClicked(object sender, EventArgs e) => SetAnImageAsSourceAsync(SelectedBodyImage, nameof(_bodyImagePath));
-    private void OnCaptureClicked(object sender, EventArgs e)
-    {
-        CameraButtonsPanel.IsEnabled = false;
-        _cameraService.CaptureClicked();
-    }
+    private void SelectClothImageButton_Clicked(object sender, EventArgs e) => SetAnImageAsSourceAsync(SelectedClothImage, nameof(_clothImagePath));
     private void OnSelectedClothImageTapped(object sender, TappedEventArgs e) => PanelButtons.IsVisible = !PanelButtons.IsVisible;
 
-
-    //private void OnSelectedBodyImageTapped(object sender, TappedEventArgs e) => PanelButtons2.IsVisible = !PanelButtons2.IsVisible;
     private void OnSelectedBodyImageTapped(object sender, TappedEventArgs e) => SetAnImageAsSourceAsync(SelectedBodyImage, nameof(_bodyImagePath));
     private async void OnCreateRewardedInterstitialClicked(object sender, EventArgs e)
     {
         bool pageAlreadyExists = Navigation.ModalStack.Any(p => p is AdvertisementPage);
         if (pageAlreadyExists) return;
 
-        //string taskKey = "Advertise Page";
-        //if (!_executionGuardService.TryStartTask(taskKey)) return;
-
-        try
-        {
-            var page = MauiProgram.ServiceProvider.GetRequiredService<AdvertisementPage>();
-            await Navigation.PushModalAsync(page);
-        }
-        finally
-        {
-            //_executionGuardService.FinishTask(taskKey);
-        }
+        var page = MauiProgram.ServiceProvider.GetRequiredService<AdvertisementPage>();
+        await Navigation.PushModalAsync(page);
     }
 
     private async void ShopPage_Clicked(object sender, EventArgs e)
@@ -115,7 +81,6 @@ public partial class CombineImages : ContentPage
 
     private async Task CombineImagesAction()
     {
-        //if (tokens < 10) return;
         if(AppSettings.Tokens < 1) return;
 
         var result1 = SelectedClothImage.Source.ToString()?.Remove(0, 6);
@@ -137,6 +102,9 @@ public partial class CombineImages : ContentPage
             SaveButton.IsEnabled = false;
 
             ResponseText.IsVisible = false;
+
+            if(_clothImagePath == "") _clothImagePath = result1; //???????
+
 
             if (!await UploadImages()) return; // Качваме двата файла
 
@@ -173,7 +141,7 @@ public partial class CombineImages : ContentPage
             {
                 ResponseImage.Source = ImageSource.FromStream(() => new MemoryStream(_imageData));
                 SaveButton.IsVisible = true;
-                SaveButton.IsEnabled = true;               
+                SaveButton.IsEnabled = true;
             }
             else
             {
@@ -190,9 +158,6 @@ public partial class CombineImages : ContentPage
         {
             ToggleLoading(false);
 
-            //_appSettings.Tokens -= 1;
-            //LabelToken.Text = $"TOKENS : {_appSettings.Tokens}";
-
             AppSettings.Tokens--;
             Tokens.Text = $"{AppSettings.Tokens}";
 
@@ -204,26 +169,11 @@ public partial class CombineImages : ContentPage
     }
 
 
-    private void PanelButton_Clicked(object sender, EventArgs e)
+    private async void CameraButton_Clicked(object sender, EventArgs e)
     {
-        isFromClothImage = true;
-        HideMenus();
-        _cameraService.StartCamera();
-    }
-    private void PanelButton6_Clicked(object sender, EventArgs e)
-    {
-        isFromClothImage = false;
-        HideMenus();
-        _cameraService.StartCamera();
+        await Navigation.PushModalAsync(new CameraPage(SelectedClothImage, ref _clothImagePath));
     }
 
-    private void HidePanelCommand(object sender, EventArgs e)
-    {
-        HideMenus();
-        PanelButtons.IsVisible = false;
-        //PanelButtons2.IsVisible = false;
-        _cameraService.StopCamera();
-    }
 
     private void OnBackButtonClicked(object sender, EventArgs e) => ReturnToCombinePageAfterBackOrSave();
 
@@ -353,87 +303,6 @@ public partial class CombineImages : ContentPage
             }
         }
     }
-    private async Task<string> SetCameraImageRealPathForSelectedClothImage(Stream stream)
-    {
-        DeleteTemporaryImage(); // Изтриваме ако е имало предищно неизтрита снимка     
-        if (stream.CanSeek) stream.Position = 0; // Ако потокът е seekable, може да се наложи да го ресетнете:
-
-        string tempPath = Path.Combine(FileSystem.CacheDirectory, $"testImage_{DateTime.Now.Ticks}.png");
-        using (var fileStream = File.Create(tempPath)) await stream.CopyToAsync(fileStream);
-        return tempPath;
-    }
-    private async void OnImageCaptured(Stream imageStream)
-    {
-        try
-        {
-            await ProcessSelectedImage(imageStream);
-            PanelButtons.IsVisible = false;
-            //PanelButtons2.IsVisible = false;
-            _cameraService.StopCamera();
-            HideMenus();
-            CameraButtonsPanel.IsEnabled = true;
-        }
-        catch (Exception ex)
-        {
-            await DisplayAlert(AppConstants.Errors.ERROR, $"{ex?.Message}\n{ex?.StackTrace}", AppConstants.Messages.OK);
-        }
-
-    }
-
-    //private async void TestGalleryButton_Clicked(object sender, EventArgs e)
-    //{
-    //    isFromClothImage = true;
-    //    var tempGallery = new TemporaryGallery();
-    //    await Navigation.PushModalAsync(tempGallery);
-    //    string selectedImageName = await tempGallery.ImageSelectedTask.Task;
-    //    await ProcessSelectedImage(selectedImageName);
-    //}
-
-    //private async void TestGalleryButton5_Clicked(object sender, EventArgs e)
-    //{
-    //    isFromClothImage = false;
-    //    var tempGallery = new TemporaryGallery();
-    //    await Navigation.PushModalAsync(tempGallery);
-    //    string selectedImageName = await tempGallery.ImageSelectedTask.Task;
-    //    await ProcessSelectedImage(selectedImageName);
-    //}
-
-    private async Task ProcessSelectedImage(Stream? stream)
-    {
-        var resizedImageResult = await ImageStreamResize.ResizeImageStream(stream, 500, 700); // Преоразмеряване на изображението
-        var resultPath = await SetCameraImageRealPathForSelectedClothImage(resizedImageResult.ResizedStream);
-
-        if(isFromClothImage)
-        {
-            _clothImagePath = resultPath;
-            SelectedClothImage.Source = ImageSource.FromFile(resultPath);
-            SelectedClothImage.IsVisible = true;
-        }
-        else
-        {
-            _bodyImagePath = resultPath;
-            SelectedBodyImage.Source = ImageSource.FromFile(resultPath);
-            SelectedBodyImage.IsVisible = true;
-        }
-       
-    }
-
-    //private async Task ProcessSelectedImage(string fileName)
-    //{
-    //    if (isFromClothImage)
-    //    {
-    //        _clothImagePath = Path.Combine("Gallery", $"{fileName}.jpg");
-    //        SelectedClothImage.Source = fileName;
-    //        SelectedClothImage.IsVisible = true;
-    //    }
-    //    else
-    //    {
-    //        _bodyImagePath = Path.Combine("Gallery", $"{fileName}.jpg");
-    //        SelectedBodyImage.Source = fileName;
-    //        SelectedBodyImage.IsVisible = true;
-    //    }
-        
-    //}
 
     private async void SetAnImageAsSourceAsync(Image image, string imageToSave)
     {      
@@ -470,7 +339,6 @@ public partial class CombineImages : ContentPage
         }
 
         PanelButtons.IsVisible = false;
-        //PanelButtons2.IsVisible = false;
     }
 
 #if ANDROID
@@ -540,7 +408,7 @@ public partial class CombineImages : ContentPage
                 imageUri);
         _bodyImagePath = imagePath;
 
-        await CopyFileToCacheAsync(imagePath);
+        //await CopyFileToCacheAsync(imagePath);
 
         await singleImageLoader.LoadSingleImageAsync(imagePath);  // Зареждане на изображението асинхронно
     }
@@ -597,11 +465,7 @@ public partial class CombineImages : ContentPage
 
     private void SetVisibilityOnCombineImagesButtonBasedOnTokens()
     {
-        //CombineImagesButton.IsVisible = _appSettings.Tokens > 0;
-        //CombineImagesButton.IsEnabled = _appSettings.Tokens > 0;
         CombineImagesButton.IsVisible = AppSettings.Tokens > 0;
         CombineImagesButton.IsEnabled = AppSettings.Tokens > 0;
     }
-
-    private void HideMenus() => Menu1.IsVisible = !Menu1.IsVisible;
 }
