@@ -60,25 +60,29 @@ public partial class CombineImages : ContentPage
         base.OnAppearing();
 
         //LabelToken.Text = $"TOKENS : {_appSettings.Tokens}";
+        Tokens.Text = "";
         Tokens.Text = $"{AppSettings.Tokens}";
 
         SetVisibilityOnCombineImagesButtonBasedOnTokens();
 
         PanelButtons.IsVisible = false;
-        PanelButtons2.IsVisible = false;
+        //PanelButtons2.IsVisible = false;
     }
 
     //---------------------------------------- BUTONS ACTIONS --------------------------------------------------------------
     private async void OnNavigateClicked(object sender, EventArgs e) => await Navigation.PopAsync();
     private void OnSelectClothImageClicked(object sender, EventArgs e) => SetAnImageAsSourceAsync(SelectedClothImage, nameof(_clothImagePath));
-    private void OnSelectBodyImageClicked(object sender, EventArgs e) => SetAnImageAsSourceAsync(SelectedBodyImage, nameof(_bodyImagePath));
+    //private void OnSelectBodyImageClicked(object sender, EventArgs e) => SetAnImageAsSourceAsync(SelectedBodyImage, nameof(_bodyImagePath));
     private void OnCaptureClicked(object sender, EventArgs e)
     {
         CameraButtonsPanel.IsEnabled = false;
         _cameraService.CaptureClicked();
     }
     private void OnSelectedClothImageTapped(object sender, TappedEventArgs e) => PanelButtons.IsVisible = !PanelButtons.IsVisible;
-    private void OnSelectedBodyImageTapped(object sender, TappedEventArgs e) => PanelButtons2.IsVisible = !PanelButtons2.IsVisible;
+
+
+    //private void OnSelectedBodyImageTapped(object sender, TappedEventArgs e) => PanelButtons2.IsVisible = !PanelButtons2.IsVisible;
+    private void OnSelectedBodyImageTapped(object sender, TappedEventArgs e) => SetAnImageAsSourceAsync(SelectedBodyImage, nameof(_bodyImagePath));
     private async void OnCreateRewardedInterstitialClicked(object sender, EventArgs e)
     {
         bool pageAlreadyExists = Navigation.ModalStack.Any(p => p is AdvertisementPage);
@@ -217,7 +221,7 @@ public partial class CombineImages : ContentPage
     {
         HideMenus();
         PanelButtons.IsVisible = false;
-        PanelButtons2.IsVisible = false;
+        //PanelButtons2.IsVisible = false;
         _cameraService.StopCamera();
     }
 
@@ -364,7 +368,7 @@ public partial class CombineImages : ContentPage
         {
             await ProcessSelectedImage(imageStream);
             PanelButtons.IsVisible = false;
-            PanelButtons2.IsVisible = false;
+            //PanelButtons2.IsVisible = false;
             _cameraService.StopCamera();
             HideMenus();
             CameraButtonsPanel.IsEnabled = true;
@@ -376,23 +380,24 @@ public partial class CombineImages : ContentPage
 
     }
 
-    private async void TestGalleryButton_Clicked(object sender, EventArgs e)
-    {
-        isFromClothImage = true;
-        var tempGallery = new TemporaryGallery();
-        await Navigation.PushModalAsync(tempGallery);
-        string selectedImageName = await tempGallery.ImageSelectedTask.Task;
-        await ProcessSelectedImage(selectedImageName);
-    }
+    //private async void TestGalleryButton_Clicked(object sender, EventArgs e)
+    //{
+    //    isFromClothImage = true;
+    //    var tempGallery = new TemporaryGallery();
+    //    await Navigation.PushModalAsync(tempGallery);
+    //    string selectedImageName = await tempGallery.ImageSelectedTask.Task;
+    //    await ProcessSelectedImage(selectedImageName);
+    //}
 
-    private async void TestGalleryButton5_Clicked(object sender, EventArgs e)
-    {
-        isFromClothImage = false;
-        var tempGallery = new TemporaryGallery();
-        await Navigation.PushModalAsync(tempGallery);
-        string selectedImageName = await tempGallery.ImageSelectedTask.Task;
-        await ProcessSelectedImage(selectedImageName);
-    }
+    //private async void TestGalleryButton5_Clicked(object sender, EventArgs e)
+    //{
+    //    isFromClothImage = false;
+    //    var tempGallery = new TemporaryGallery();
+    //    await Navigation.PushModalAsync(tempGallery);
+    //    string selectedImageName = await tempGallery.ImageSelectedTask.Task;
+    //    await ProcessSelectedImage(selectedImageName);
+    //}
+
     private async Task ProcessSelectedImage(Stream? stream)
     {
         var resizedImageResult = await ImageStreamResize.ResizeImageStream(stream, 500, 700); // Преоразмеряване на изображението
@@ -413,22 +418,22 @@ public partial class CombineImages : ContentPage
        
     }
 
-    private async Task ProcessSelectedImage(string fileName)
-    {
-        if (isFromClothImage)
-        {
-            _clothImagePath = Path.Combine("Gallery", $"{fileName}.jpg");
-            SelectedClothImage.Source = fileName;
-            SelectedClothImage.IsVisible = true;
-        }
-        else
-        {
-            _bodyImagePath = Path.Combine("Gallery", $"{fileName}.jpg");
-            SelectedBodyImage.Source = fileName;
-            SelectedBodyImage.IsVisible = true;
-        }
+    //private async Task ProcessSelectedImage(string fileName)
+    //{
+    //    if (isFromClothImage)
+    //    {
+    //        _clothImagePath = Path.Combine("Gallery", $"{fileName}.jpg");
+    //        SelectedClothImage.Source = fileName;
+    //        SelectedClothImage.IsVisible = true;
+    //    }
+    //    else
+    //    {
+    //        _bodyImagePath = Path.Combine("Gallery", $"{fileName}.jpg");
+    //        SelectedBodyImage.Source = fileName;
+    //        SelectedBodyImage.IsVisible = true;
+    //    }
         
-    }
+    //}
 
     private async void SetAnImageAsSourceAsync(Image image, string imageToSave)
     {      
@@ -465,7 +470,7 @@ public partial class CombineImages : ContentPage
         }
 
         PanelButtons.IsVisible = false;
-        PanelButtons2.IsVisible = false;
+        //PanelButtons2.IsVisible = false;
     }
 
 #if ANDROID

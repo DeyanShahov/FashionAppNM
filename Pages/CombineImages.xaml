@@ -131,7 +131,7 @@
                                         BackgroundColor="LightGray"
                                         BorderColor="Black"
                                         HasShadow="True"
-                                        HeightRequest="220"
+                                        HeightRequest="110"
                                         IsVisible="False"
                                         WidthRequest="220">
                                         <Frame.Shadow>
@@ -141,7 +141,7 @@
                                                 Radius="10"
                                                 Offset="3, 3" />
                                         </Frame.Shadow>
-                                        <Grid ColumnDefinitions="*,*" RowDefinitions="*,*">
+                                        <!--<Grid ColumnDefinitions="*,*" RowDefinitions="*,*">
                                             <ImageButton
                                                 x:Name="TestGalleryButton"
                                                 Grid.Row="0"
@@ -165,6 +165,23 @@
                                                 Clicked="OnSelectClothImageClicked"
                                                 HeightRequest="70"
                                                 Source="Icons/folder_open_regular_24.png"
+                                                WidthRequest="70" />
+                                        </Grid>-->
+
+                                        <Grid ColumnDefinitions="*,*">
+                                            <ImageButton
+                                                x:Name="TestGalleryButton3"
+                                                Grid.Column="0"
+                                                Clicked="OnSelectClothImageClicked"
+                                                HeightRequest="70"
+                                                Source="Icons/folder_open_regular_24.png"
+                                                WidthRequest="70" />
+                                            <ImageButton
+                                                x:Name="TestGalleryButton2"
+                                                Grid.Column="1"
+                                                Clicked="PanelButton_Clicked"
+                                                HeightRequest="70"
+                                                Source="Icons/camera_regular_24.png"
                                                 WidthRequest="70" />
                                         </Grid>
                                     </Frame>
@@ -272,7 +289,7 @@
                                         </Image>
                                     </Frame>
 
-                                    <Frame
+                                    <!--<Frame
                                         x:Name="PanelButtons2"
                                         Padding="0"
                                         BackgroundColor="LightGray"
@@ -306,7 +323,7 @@
                                                 Source="Icons/folder_open_regular_24.png"
                                                 WidthRequest="70" />
                                         </Grid>
-                                    </Frame>
+                                    </Frame>-->
 
                                     <Label
                                         Grid.Row="2"

@@ -104,22 +104,18 @@
             </Grid>
         </Grid>
 
-        <!--<views:CameraView
-            x:Name="Camera"
-            IsEnabled="False"
-            IsVisible="False" />-->
-
         <VerticalStackLayout
             x:Name="Menu1"
             Grid.Row="0"
             Padding="30,10">
             <Frame
+                Margin="20"
                 BackgroundColor="Silver"
                 BorderColor="Black"
                 CornerRadius="5"
                 HasShadow="True"
                 HorizontalOptions="FillAndExpand"
-                VerticalOptions="CenterAndExpand"
+                VerticalOptions="Start"
                 WidthRequest="350">
                 <Frame.Shadow>
                     <Shadow
@@ -141,64 +137,13 @@
             </Frame>
 
             <Frame
-                Margin="10"
+                Margin="20"
                 BackgroundColor="Silver"
                 BorderColor="Black"
                 CornerRadius="5"
                 HasShadow="True"
                 HorizontalOptions="FillAndExpand"
-                VerticalOptions="CenterAndExpand"
-                WidthRequest="350">
-                <Frame.Shadow>
-                    <Shadow
-                        Brush="Black"
-                        Opacity="0.99"
-                        Radius="10"
-                        Offset="3, 3" />
-                </Frame.Shadow>
-                <StackLayout>
-                    <ImageButton
-                        x:Name="TestGalleryButton"
-                        Aspect="AspectFill"
-                        Clicked="TestGalleryButton_Clicked"
-                        HeightRequest="160"
-                        HorizontalOptions="Center"
-                        Source="Icons/open_gallery_empty_image.png"
-                        VerticalOptions="Center" />
-                </StackLayout>
-            </Frame>
-
-
-
-
-            <!--<Button
-                x:Name="SelectImageButton"
-                Clicked="OnSelectImageClicked"
-                HorizontalOptions="Center"
-                IsVisible="False"
-                Text="Select Image" />-->
-
-            <!--<Button
-                x:Name="OpenImageEditor"
-                Clicked="OpenImageEditor_Clicked"
-                HorizontalOptions="Center"
-                IsVisible="False"
-                Text="Image Editor" />-->
-
-            <!--<Button
-                x:Name="PanelButton"
-                Clicked="PanelButton_Clicked"
-                HorizontalOptions="Center"
-                IsVisible="False"
-                Text="Open Cam" />-->
-
-            <Frame
-                BackgroundColor="Silver"
-                BorderColor="Black"
-                CornerRadius="5"
-                HasShadow="True"
-                HorizontalOptions="FillAndExpand"
-                VerticalOptions="CenterAndExpand"
+                VerticalOptions="End"
                 WidthRequest="350">
                 <Frame.Shadow>
                     <Shadow
@@ -211,122 +156,13 @@
                     <ImageButton
                         x:Name="OpenCameraButton"
                         Aspect="AspectFill"
-                        Clicked="PanelButton_Clicked"
+                        Clicked="OpenCamera_Clicked"
                         HeightRequest="160"
                         HorizontalOptions="Center"
                         Source="Icons/open_camera_empty_image.png"
                         VerticalOptions="End" />
                 </StackLayout>
             </Frame>
-        </VerticalStackLayout>
-
-        <Grid
-            x:Name="ImageContainer"
-            Grid.Row="1"
-            HorizontalOptions="Center"
-            VerticalOptions="Center">
-            <Image
-                x:Name="SelectedImage"
-                Aspect="AspectFit"
-                SizeChanged="OnImageSizeChanged" />
-
-            <GraphicsView
-                x:Name="DrawingView"
-                DragInteraction="OnDragInteraction"
-                EndInteraction="OnEndInteraction"
-                HorizontalOptions="Start"
-                IsVisible="False"
-                StartInteraction="OnStartInteraction"
-                VerticalOptions="Start" />
-        </Grid>
-
-        <Grid x:Name="Menu2" Grid.Row="1">
-            <!--<VerticalStackLayout
-                x:Name="TestGalleryPanel"
-                Margin="10,0,0,0"
-                HorizontalOptions="Start"
-                IsVisible="False"
-                Spacing="20"
-                VerticalOptions="Center">
-                <ImageButton
-                    x:Name="TestGalleryButton"
-                    Clicked="TestGalleryButton_Clicked"
-                    HeightRequest="50"
-                    Source="Icons/images_regular_24.png"
-                    WidthRequest="50" />
-            </VerticalStackLayout>-->
-
-            <!--<VerticalStackLayout
-                x:Name="MacroPanel"
-                Margin="0,0,20,0"
-                HorizontalOptions="End"
-                IsVisible="False"
-                Spacing="20"
-                VerticalOptions="Center">
-                <ImageButton
-                    x:Name="ClosedJacketImageButton"
-                    BackgroundColor="Transparent"
-                    BorderColor="Black"
-                    BorderWidth="3"
-                    Clicked="ClosedJacketImageButton_Clicked"
-                    CornerRadius="5"
-                    HeightRequest="50"
-                    Source="closed_jacket.png"
-                    WidthRequest="50" />
-
-                <ImageButton
-                    x:Name="OpenJacketImageButton"
-                    BackgroundColor="Transparent"
-                    BorderColor="Black"
-                    BorderWidth="3"
-                    Clicked="OpenJacketImageButton_Clicked"
-                    CornerRadius="5"
-                    HeightRequest="50"
-                    Source="open_jacket.png"
-                    WidthRequest="50" />
-            </VerticalStackLayout>-->
-        </Grid>
-
-        <VerticalStackLayout
-            x:Name="Menu3"
-            Grid.Row="2"
-            Padding="30,10"
-            Spacing="10">
-
-            <HorizontalStackLayout
-                x:Name="DrawingTools"
-                HorizontalOptions="Center"
-                IsVisible="False"
-                Spacing="10">
-
-                <VerticalStackLayout Spacing="5">
-                    <Label HorizontalOptions="Center" Text="{Binding Source={x:Reference BrushSlider}, Path=Value, StringFormat='Brush Size: {0:F0}'}" />
-                    <Slider
-                        x:Name="BrushSlider"
-                        Maximum="50"
-                        Minimum="5"
-                        WidthRequest="200"
-                        Value="20" />
-                </VerticalStackLayout>
-            </HorizontalStackLayout>
-
-            <HorizontalStackLayout
-                x:Name="DrawingBottons"
-                HorizontalOptions="Center"
-                IsVisible="False"
-                Spacing="10">
-                <Button Clicked="OnClearClicked" Text="Clear" />
-                <Button Clicked="OnUndoClicked" Text="Undo" />
-                <Button
-                    x:Name="SaveMaskImageButton"
-                    Clicked="OnSaveImageClicked"
-                    Text="Save" />
-            </HorizontalStackLayout>
-
-            <!--<Button
-                Clicked="OnBackButtonClicked"
-                HorizontalOptions="Center"
-                Text="Back to Main Page" />-->
         </VerticalStackLayout>
     </Grid>
 </ContentPage>

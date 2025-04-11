@@ -12,17 +12,20 @@ public partial class ShopPage : ContentPage
         InitializeComponent();
         //_appSettings = settings;
         BindingContext = this;
-    }
 
-    protected override void OnAppearing()
-    {
-        base.OnAppearing();
         UpdateTokenCount();
     }
+
+    //protected override void OnAppearing()
+    //{
+    //    base.OnAppearing();
+    //    UpdateTokenCount();
+    //}
 
     private void UpdateTokenCount()
     {
         //TokenCountLabel.Text = $"Current Tokens: {_appSettings.Tokens}";
+        TokenCountLabel.Text = "";
         TokenCountLabel.Text = $"Current Tokens: {AppSettings.Tokens}";
     }
 
