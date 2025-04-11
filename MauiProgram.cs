@@ -3,8 +3,6 @@ using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui;
 using FashionApp.core.services;
 using FashionApp.Pages;
-using Plugin.AdMob;
-using Plugin.AdMob.Configuration;
 using FashionApp.core;
 
 
@@ -17,8 +15,7 @@ namespace FashionApp
         {
             var builder = MauiApp.CreateBuilder();
             builder
-                .UseMauiApp<App>()
-                .UseAdMob()             
+                .UseMauiApp<App>()            
                 .UseMauiCommunityToolkitCamera()
                 .UseMauiCommunityToolkit()
                 .ConfigureFonts(fonts =>
@@ -48,8 +45,7 @@ namespace FashionApp
             builder.Services.AddSingleton<TemporaryGallery>();
             builder.Services.AddSingleton<ShopPage>();
 
-            AdConfig.UseTestAdUnitIds = true; // Use test ad unit IDs. Setwa testowi reklami
-            AdConfig.DisableConsentCheck = true; // Disable consent check.           
+           
 #if DEBUG
             builder.Logging.AddDebug();          
 #endif

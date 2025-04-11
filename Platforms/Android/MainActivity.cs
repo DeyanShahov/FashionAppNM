@@ -2,7 +2,6 @@
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
-//using Android.Gms.Ads;
 using Android.OS;
 using Android.Runtime;
 using AndroidX.Core.App;
@@ -27,7 +26,6 @@ namespace FashionApp.Platforms.Android
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-            //MobileAds.Initialize(this);
 
             RequestStoragePermission();
         }

@@ -13,7 +13,7 @@ public partial class LoginPage : ContentPage
     public LoginPage()
     {
         InitializeComponent();
-        SetBannerId();
+
         //this.BackgroundImageSource = "Resources/Images/loading_page_image.png";
         GetPhoneId();
     }
@@ -26,13 +26,7 @@ public partial class LoginPage : ContentPage
 #endif
     }
 
-    private void SetBannerId()
-    {
-#if ANDROID
-            //AdmobBanner.AdsId = "ca-app-pub-3940256099942544/9214589741";
-            //AdmobBanner.AdsId = "ca-app-pub-3940256099942544/6300978111";
-#endif
-    }
+
 
     private async void OnLoginClicked(object sender, EventArgs e)
     {

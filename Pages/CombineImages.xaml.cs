@@ -81,6 +81,7 @@ public partial class CombineImages : ContentPage
     private void OnSelectedBodyImageTapped(object sender, TappedEventArgs e) => PanelButtons2.IsVisible = !PanelButtons2.IsVisible;
     private async void OnCreateRewardedInterstitialClicked(object sender, EventArgs e)
     {
+        return; // ЗА СЕГА НЕ ИСКАМЕ ДА СЕ ПУШВА РЕКЛАМА
         bool pageAlreadyExists = Navigation.ModalStack.Any(p => p is AdvertisementPage);
         if (pageAlreadyExists) return;
 

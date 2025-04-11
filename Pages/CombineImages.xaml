@@ -82,13 +82,14 @@
 
                 <VerticalStackLayout x:Name="Menu1" Margin="5">
 
-                    <Label
-                        x:Name="Tokens"
-                        Margin="0,10"
-                        FontAttributes="Bold"
-                        FontSize="Body"
-                        HorizontalOptions="End"
-                        Text="0" />
+                    <Grid Margin="0,0,10,0">
+                        <Label
+                            x:Name="Tokens"
+                            FontAttributes="Bold"
+                            FontSize="Large"
+                            HorizontalOptions="End"
+                            Text="0" />
+                    </Grid>
 
                     <VerticalStackLayout x:Name="InputStack">
 
