@@ -95,7 +95,12 @@ public partial class MaskEditor : ContentPage
         _cameraService.CaptureClicked();
     }
 
-    private void HideMenus() => Menu1.IsVisible = !Menu1.IsVisible;
+    private void HideMenus()
+    {
+        Menu1.IsVisible = !Menu1.IsVisible;
+        CameraPanel.IsVisible = !CameraPanel.IsVisible;
+        CameraPanel.IsEnabled = !CameraPanel.IsEnabled;
+    }
 
 
     private async Task ProcessSelectedImage(Stream? stream)

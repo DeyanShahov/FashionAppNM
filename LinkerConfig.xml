@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<linker>
+	<!-- Запазваме целия Assembly, ако има много проблеми с linker-а -->
+	<!-- <assembly fullname="FashionApp" preserve="all" /> -->
+
+	<!-- Запазваме специфични типове -->
+	<assembly fullname="FashionApp">
+		<!-- Коригирани namespace и име -->
+		<type fullname="FashionApp.core.services.CameraService" preserve="all" />
+		<type fullname="FashionApp.core.services.CheckForAndroidPermissions" preserve="all" />
+		<type fullname="FashionApp.core.services.DeleteImageFromAndroid" preserve="all" />
+		<type fullname="FashionApp.core.services.ExecutionGuardService" preserve="all" />
+		<type fullname="FashionApp.core.services.FileChecker" preserve="all" />
+		<type fullname="FashionApp.core.services.GetRealPathFromUriService" preserve="all" />
+		<type fullname="FashionApp.core.services.ImagesLoader" preserve="all" />
+		<type fullname="FashionApp.core.services.PermissionService" preserve="all" />
+		<type fullname="FashionApp.core.services.SaveImageToAndroid" preserve="all" />
+		<type fullname="FashionApp.core.services.ServiceProvider" preserve="all" />
+		<type fullname="FashionApp.core.services.SingleImageLoader" preserve="all" />
+		<!-- Коригирани namespace и име -->
+		<type fullname="FashionApp.core.AddMaskToImage" preserve="all" />
+		<type fullname="FashionApp.core.AppSettings" preserve="all" />
+		<type fullname="FashionApp.core.ComfyUIUploader" preserve="all" />
+		<type fullname="FashionApp.core.ImageStreamResize" preserve="all" />
+		<type fullname="FashionApp.core.JacketModel" preserve="all" />
+		<type fullname="FashionApp.core.MacroIconToPhoto" preserve="all" />
+		<type fullname="FashionApp.core.PreserveAttribute" preserve="all" />
+		<type fullname="FashionApp.core.Settings" preserve="all" />
+		<!-- Коригирани namespace и име -->
+		<type fullname="FashionApp.Pages.CombineImages" preserve="all" /> 
+		<!-- Коригирани namespace и име -->
+		<type fullname="FashionApp.Pages.CameraPage" preserve="all" /> 		
+		<!-- Добавяне AdvertismentPage -->
+		<type fullname="FashionApp.Pages.AdvertismentPage" preserve="all" />
+		<!-- Добавяне на LoginPage -->
+		<type fullname="FashionApp.Pages.LoginPage" preserve="all" />
+		<!-- Добавяне на BaseGallery -->
+		<type fullname="FashionApp.Pages.BaseGallery" preserve="all" />
+		<!-- Добавяне на ImageDetailPage -->
+		<type fullname="FashionApp.Pages.ImageDetailPage" preserve="all" />
+		<!-- Добавяне на ImageEditPage -->
+		<type fullname="FashionApp.Pages.ImageEditPage" preserve="all" />
+		<!-- Добавяне на MainPage -->
+		<type fullname="FashionApp.Pages.MainPage" preserve="all" />
+		<!-- Добавяне на MaskEditor -->
+		<type fullname="FashionApp.Pages.MaskEditor" preserve="all" />
+		<!-- Добавяне на PartnersPage -->
+		<type fullname="FashionApp.Pages.PartnersPage" preserve="all" />
+		<!-- Добавяне на ShopPage -->
+		<type fullname="FashionApp.Pages.ShopPage" preserve="all" />	
+		<!-- Добавяне на TemporaryGallery -->
+		<type fullname="FashionApp.Pages.TemporaryGallery" preserve="all" />
+		<!-- Добавяне на TestGallery -->
+		<type fullname="FashionApp.Pages.TestGallery" preserve="all" />
+		<!-- Добавяне на WebViewPage -->
+		<type fullname="FashionApp.Pages.WebViewPage" preserve="all" />
+	</assembly>
+
+	<!-- Запазване на външни библиотеки -->
+	<assembly fullname="CommunityToolkit.Maui" preserve="all" />
+	<assembly fullname="CommunityToolkit.Maui.Camera" preserve="all" />
+	<assembly fullname="CommunityToolkit.Maui.Core" preserve="all" />
+	<!-- <assembly fullname="Microsoft.Maui.Controls" preserve="all" /> -->
+	<!-- <assembly fullname="Microsoft.Maui.Controls.Compatibility" preserve="all" /> -->
+	<assembly fullname="Plugin.AdMob" preserve="all" />
+
+	<!-- Може да се наложи да запазите и други assemblies, ако използвате библиотеки,
+	     които разчитат на рефлексия и не са linker-safe -->
+	<!--
+	<assembly fullname="System.Core">
+		<type fullname="System.Linq.Expressions.*" preserve="all" />
+	</assembly>
+	-->
+</linker>

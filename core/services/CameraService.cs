@@ -3,6 +3,7 @@ using FashionApp.Data.Constants;
 
 namespace FashionApp.core.services
 {
+    [Microsoft.Maui.Controls.Internals.Preserve(AllMembers = true)]
     public class CameraService
     {
         private readonly CameraView _cameraView;

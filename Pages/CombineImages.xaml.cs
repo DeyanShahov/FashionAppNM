@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.Json;
 
+
 namespace FashionApp.Pages;
 
 public partial class CombineImages : ContentPage
@@ -45,7 +46,6 @@ public partial class CombineImages : ContentPage
     {
         base.OnAppearing();
 
-        Tokens.Text = "";
         Tokens.Text = $"{AppSettings.Tokens}";
 
         SetVisibilityOnCombineImagesButtonBasedOnTokens();

@@ -81,26 +81,6 @@
                         Text="REC"
                         TextColor="White" />
                 </Frame>
-
-
-                <!--<Frame
-                    Grid.Column="2"
-                    Padding="5"
-                    BackgroundColor="Black"
-                    CornerRadius="10"
-                    HeightRequest="60"
-                    HorizontalOptions="Center"
-                    IsVisible="False"
-                    WidthRequest="120">
-                    <Button
-                        BackgroundColor="Transparent"
-                        Clicked="ContourSwitch_Clicked"
-                        HorizontalOptions="Center"
-                        Text="MASK"
-                        TextColor="White"
-                        VerticalOptions="Center" />
-                </Frame>-->
-
             </Grid>
         </Grid>
 
