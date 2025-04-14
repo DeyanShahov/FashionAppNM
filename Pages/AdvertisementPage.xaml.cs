@@ -1,6 +1,6 @@
 using FashionApp.core;
-using Plugin.AdMob;
-using Plugin.AdMob.Services;
+//using Plugin.AdMob;
+//using Plugin.AdMob.Services;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows.Input;
@@ -20,7 +20,9 @@ public partial class AdvertisementPage : ContentPage
     public ICommand UpdateSettingsCommand { get; }
 
 
-    private readonly IRewardedInterstitialAdService _rewardedInterstitialAdService;
+    //private readonly IRewardedInterstitialAdService _rewardedInterstitialAdService;  For AdMob
+
+
     //private int tokens = 0;
     //public AdvertisementPage(Settings settings)
     public AdvertisementPage()
@@ -53,48 +55,49 @@ public partial class AdvertisementPage : ContentPage
 
         InitializeComponent();
 
-        _rewardedInterstitialAdService = FashionApp.core.services.ServiceProvider.GetRequiredService<IRewardedInterstitialAdService>();
-        _rewardedInterstitialAdService.OnAdLoaded += (_, __) => Debug.WriteLine("Rewarded interstitial ad prepared.");
-        _rewardedInterstitialAdService.PrepareAd(onUserEarnedReward: UserDidEarnReward);
+        // Инициализиране на AdMob
+        //_rewardedInterstitialAdService = FashionApp.core.services.ServiceProvider.GetRequiredService<IRewardedInterstitialAdService>();
+        //_rewardedInterstitialAdService.OnAdLoaded += (_, __) => Debug.WriteLine("Rewarded interstitial ad prepared.");
+        //_rewardedInterstitialAdService.PrepareAd(onUserEarnedReward: UserDidEarnReward);
     }
 
     protected override void OnAppearing()
     {
         base.OnAppearing();
 
-        CreateRewardedInterstitial();
+        //CreateRewardedInterstitial();
     }
 
     #region AdMob
-    private void CreateRewardedInterstitial()
-    {
-        var rewardedInterstitialAd = _rewardedInterstitialAdService.CreateAd();
-        rewardedInterstitialAd.OnUserEarnedReward += (_, reward) =>
-        {
-            UserDidEarnReward(reward);
-        };
-        rewardedInterstitialAd.OnAdLoaded += RewardedInterstitialAd_OnAdLoaded;
-        rewardedInterstitialAd.Load();
+    //private void CreateRewardedInterstitial()
+    //{
+    //    var rewardedInterstitialAd = _rewardedInterstitialAdService.CreateAd();
+    //    rewardedInterstitialAd.OnUserEarnedReward += (_, reward) =>
+    //    {
+    //        UserDidEarnReward(reward);
+    //    };
+    //    rewardedInterstitialAd.OnAdLoaded += RewardedInterstitialAd_OnAdLoaded;
+    //    rewardedInterstitialAd.Load();
 
-    }
+    //}
 
-    private void RewardedInterstitialAd_OnAdLoaded(object? sender, EventArgs e)
-    {
-        if (sender is IRewardedInterstitialAd rewardedInterstitialAd)
-        {
-            ToggleLoading(false);
-            rewardedInterstitialAd.Show();
-        }
-    }
+    //private void RewardedInterstitialAd_OnAdLoaded(object? sender, EventArgs e)
+    //{
+    //    if (sender is IRewardedInterstitialAd rewardedInterstitialAd)
+    //    {
+    //        ToggleLoading(false);
+    //        rewardedInterstitialAd.Show();
+    //    }
+    //}
 
-    private async void UserDidEarnReward(RewardItem rewardItem)
-    {
-        Debug.WriteLine($"User earned {rewardItem.Amount} {rewardItem.Type}.");
-        UpdateUserSettings();
-        //tokens += rewardItem.Amount;
+    //private async void UserDidEarnReward(RewardItem rewardItem)
+    //{
+    //    Debug.WriteLine($"User earned {rewardItem.Amount} {rewardItem.Type}.");
+    //    UpdateUserSettings();
+    //    //tokens += rewardItem.Amount;
 
-        await Navigation.PopModalAsync();
-    }
+    //    await Navigation.PopModalAsync();
+    //}
     #endregion
 
 

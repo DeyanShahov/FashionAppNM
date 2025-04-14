@@ -320,11 +320,7 @@ public partial class ImageEditPage : ContentPage
                 case "no set":
                     result = true;
                     break;
-            }
-
-            string ops = imageFileName;
-
-           
+            }         
 
             if (result && checkForSave)
             {

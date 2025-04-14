@@ -3,9 +3,9 @@
     x:Class="FashionApp.Pages.LoginPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:admob="clr-namespace:Plugin.AdMob;assembly=Plugin.AdMob"
     Title="Login"
     BackgroundImageSource="loading_page_image.png">
+    <!--  xmlns:admob="clr-namespace:Plugin.AdMob;assembly=Plugin.AdMob"  -->
 
     <Grid>
         <Grid.RowDefinitions>
@@ -132,9 +132,9 @@
 
         </VerticalStackLayout>
 
-        <admob:BannerAd
+        <!--<admob:BannerAd
             Grid.Row="2"
             AdSize="SmartBanner"
-            AdUnitId="ca-app-pub-3940256099942544/6300978111" />
+            AdUnitId="ca-app-pub-3940256099942544/6300978111" />-->
     </Grid>
 </ContentPage>

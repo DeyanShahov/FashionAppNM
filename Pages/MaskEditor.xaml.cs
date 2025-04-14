@@ -83,12 +83,15 @@ public partial class MaskEditor : ContentPage
 
         _cameraService.StartCamera();
         HideMenus();
+
+        //await Navigation.PushModalAsync(new CameraPage(SelectedClothImage, ref _clothImagePath));
     }
     private void HidePanelCommand(object sender, EventArgs e)
     {     
         _cameraService.StopCamera();
         HideMenus();
     }
+
     private void OnCaptureClicked(object sender, EventArgs e)
     {
         CameraButtonsPanel.IsEnabled = false;
@@ -104,7 +107,7 @@ public partial class MaskEditor : ContentPage
 
 
     private async Task ProcessSelectedImage(Stream? stream)
-    {             
+    {
         bool pageAlreadyExists = Navigation.ModalStack.Any(p => p is ImageEditPage);
         if (pageAlreadyExists) return;
 
@@ -130,7 +133,7 @@ public partial class MaskEditor : ContentPage
         }
     }
 
-   
+
     private async Task<Stream> AddAlphaChanel(Stream imageStream)
     {
         using var originalBitmap = SKBitmap.Decode(imageStream);

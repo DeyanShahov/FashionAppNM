@@ -57,6 +57,7 @@ public partial class CameraPage : ContentPage
         var resultPath = await SetCameraImageRealPathForSelectedClothImage(resizedImageResult.ResizedStream);
 
         _imagePathThobeSet = resultPath;
+        //_imageThobeSet.Source = ImageSource.FromStream(() => resizedImageResult.ResizedStream);
         _imageThobeSet.Source = ImageSource.FromFile(resultPath);
 
         await CloseCamera();
@@ -67,8 +68,14 @@ public partial class CameraPage : ContentPage
         DeleteTemporaryImage(); // Изтриваме ако е имало предищно неизтрита снимка     
         if (stream.CanSeek) stream.Position = 0; // Ако потокът е seekable, може да се наложи да го ресетнете:
 
-        string tempPath = Path.Combine(FileSystem.CacheDirectory, $"testImage_{DateTime.Now.Ticks}.png");
-        using (var fileStream = File.Create(tempPath)) await stream.CopyToAsync(fileStream);
+        string fileName = $"testImage_{Guid.NewGuid()}.png";
+        //string fileName = $"testImage_{DateTime.Now.Ticks}.png";
+        string appPath = FileSystem.CacheDirectory; // Пътя до кеш директорията на приложението
+        string tempPath = Path.Combine(appPath, fileName);
+        using (var fileStream = File.Create(tempPath)) 
+        {  
+            await stream.CopyToAsync(fileStream); 
+        }
         return tempPath;
     }
 

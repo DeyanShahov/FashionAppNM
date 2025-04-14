@@ -27,7 +27,7 @@
 		<type fullname="FashionApp.core.PreserveAttribute" preserve="all" />
 		<type fullname="FashionApp.core.Settings" preserve="all" />
 		<!-- Коригирани namespace и име -->
-		<type fullname="FashionApp.Pages.CombineImages" preserve="all" /> 
+		<!--<type fullname="FashionApp.Pages.CombineImages" preserve="all" />--> 
 		<!-- Коригирани namespace и име -->
 		<type fullname="FashionApp.Pages.CameraPage" preserve="all" /> 		
 		<!-- Добавяне AdvertismentPage -->
@@ -62,7 +62,7 @@
 	<assembly fullname="CommunityToolkit.Maui.Core" preserve="all" />
 	<!-- <assembly fullname="Microsoft.Maui.Controls" preserve="all" /> -->
 	<!-- <assembly fullname="Microsoft.Maui.Controls.Compatibility" preserve="all" /> -->
-	<assembly fullname="Plugin.AdMob" preserve="all" />
+	<!--<assembly fullname="Plugin.AdMob" preserve="all" />-->
 
 	<!-- Може да се наложи да запазите и други assemblies, ако използвате библиотеки,
 	     които разчитат на рефлексия и не са linker-safe -->

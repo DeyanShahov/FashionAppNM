@@ -13,7 +13,6 @@
             x:Name="CameraPanel"
             IsEnabled="False"
             IsVisible="False">
-            <!--  Camera Preview  -->
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
@@ -26,14 +25,12 @@
                 BackgroundColor="Gray"
                 BorderColor="Black"
                 CornerRadius="0">
-                <!--  Here will be the CameraView when implemented  -->
                 <toolkit:CameraView
                     x:Name="MyCameraView"
                     HeightRequest="600"
                     HorizontalOptions="FillAndExpand"
                     VerticalOptions="FillAndExpand" />
             </Frame>
-            <!--  Contour Overlay placed directly over the camera view  -->
             <Image
                 x:Name="ContourOverlay"
                 Grid.Row="0"
@@ -42,7 +39,6 @@
                 IsVisible="False"
                 Source="Camera/top_body.png"
                 VerticalOptions="FillAndExpand" />
-            <!--  Bottom Controls  -->
             <Grid
                 x:Name="CameraButtonsPanel"
                 Grid.Row="1"

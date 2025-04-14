@@ -2,10 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="10">
 	<application android:allowBackup="true" android:icon="@mipmap/appicon" android:supportsRtl="true" android:label="FashionApp"
 			android:usesCleartextTraffic="true" android:networkSecurityConfig="@xml/network_security_config">
-		<activity android:name="com.google.android.gms.ads.AdActivity" android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize" android:theme="@android:style/Theme.Translucent" />
+		<!--<activity android:name="com.google.android.gms.ads.AdActivity" android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize" android:theme="@android:style/Theme.Translucent" />
 		<meta-data
 			android:name="com.google.android.gms.ads.APPLICATION_ID"
-			android:value="ca-app-pub-4231613145079561~2440618048"/>
+			android:value="ca-app-pub-4231613145079561~2440618048"/>-->
 			<!--android:value="ca-app-pub-3940256099942544~3347511713" />-->
 	</application>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
