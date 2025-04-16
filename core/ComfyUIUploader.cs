@@ -3,6 +3,7 @@ using System.Net.Http.Headers;
 
 public class ComfyUIUploader
 {
+    //private readonly HttpClientHandler _httpClientHandler;
     private readonly HttpClient _httpClient;
     private readonly string _serverUrl; // Пример: "http://127.0.0.1:8188"
 
@@ -10,6 +11,14 @@ public class ComfyUIUploader
     {
         _serverUrl = serverUrl.TrimEnd('/');
         _httpClient = new HttpClient();
+
+        //_httpClientHandler = new HttpClientHandler
+        //{
+        //    // Allow self-signed certificates ONLY for development purposes!!!
+        //    ServerCertificateCustomValidationCallback = (message, cert, chain, SslPolicyErrors) => true // Accept all certificates
+        //};
+        //// Initialize HttpClient here using the handler
+        //_httpClient = new HttpClient(_httpClientHandler);
     }
 
     //public async Task<string> UploadImageAsync(string filePath, bool isFromInAppGallery = false, string uploadType = "input")

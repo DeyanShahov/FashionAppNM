@@ -81,15 +81,8 @@ public partial class CombineImages : ContentPage
 
     private async Task CombineImagesAction()
     {
-        if(AppSettings.Tokens < 1) return;
-
-        var result1 = SelectedClothImage.Source.ToString()?.Remove(0, 6);
-        var result2 = SelectedBodyImage.Source.ToString()?.Remove(0, 6);
-        if (result1 == "Icons/blank_image_photo.png" || result2 == "Icons/blank_image_photo.png")
-        {
-            await DisplayAlert(AppConstants.Errors.ERROR, AppConstants.Errors.SELECT_BOTH_IMAGES, AppConstants.Messages.OK);
-            return;
-        }
+        if (AppSettings.Tokens < 1) return;
+        if (await CheckForMissingInput()) return; ;
 
         try
         {
@@ -103,7 +96,7 @@ public partial class CombineImages : ContentPage
 
             ResponseText.IsVisible = false;
 
-            if(_clothImagePath == "") _clothImagePath = result1; //???????
+            if (_clothImagePath == "") _clothImagePath = SelectedClothImage.Source.ToString()?.Remove(0, 6);  //???????
 
 
             if (!await UploadImages()) return; // Качваме двата файла
@@ -111,41 +104,14 @@ public partial class CombineImages : ContentPage
             // Изпращаме POST заявка към API
             await Task.Delay(5000); // Изчакване от 5 секунди
 
-            var requestUrl = $"{ApiUrl}/{AppConstants.Parameters.CONFY_FUNCTION_COMBINE_ENDPOINT}";
-            var requestBody = new
+            bool result = await SendCombineRequest(ApiUrl, _imageData, ResponseImage, ResponseText.Text);
+            if (result)
             {
-                function_name = AppConstants.Parameters.CONFY_FUNCTION_GENERATE_NAME,
-                cloth_image = AppConstants.Parameters.INPUT_IMAGE_CLOTH,
-                body_image = AppConstants.Parameters.INPUT_IMAGE_BODY,
-                mask_detection_method = true,  // Задаване типа на маската: ръчна ( true ) / АI ( false )
-                args = new List<string>() // Списъка с евентуалните зони за маркиране от АЙ-то
-            };
-
-            var jsonContent = new StringContent(
-                JsonSerializer.Serialize(requestBody),
-                Encoding.UTF8,
-                "application/json"
-            );
-
-            var response = await _client.PostAsync(requestUrl, jsonContent);
-
-            if (!response.IsSuccessStatusCode)
-            {
-                throw new HttpRequestException($"HTTP {AppConstants.Errors.ERROR}: {response.StatusCode}");
-            }
-
-            var contentType = response.Content.Headers.ContentType?.MediaType;
-            _imageData = await response.Content.ReadAsByteArrayAsync();
-
-            if (contentType != null && contentType.StartsWith("image/"))
-            {
-                ResponseImage.Source = ImageSource.FromStream(() => new MemoryStream(_imageData));
                 SaveButton.IsVisible = true;
                 SaveButton.IsEnabled = true;
             }
             else
             {
-                ResponseText.Text = Encoding.UTF8.GetString(_imageData);
                 ResponseText.IsVisible = true;
             }
         }
@@ -168,6 +134,61 @@ public partial class CombineImages : ContentPage
         }
     }
 
+    private async Task<bool> SendCombineRequest(string Url, byte[] _imageData, Image ResponseImage, string responseText)
+    {
+        var requestUrl = $"{Url}/{AppConstants.Parameters.CONFY_FUNCTION_COMBINE_ENDPOINT}";
+        var requestBody = new
+        {
+            function_name = AppConstants.Parameters.CONFY_FUNCTION_GENERATE_NAME,
+            cloth_image = AppConstants.Parameters.INPUT_IMAGE_CLOTH,
+            body_image = AppConstants.Parameters.INPUT_IMAGE_BODY,
+            mask_detection_method = true,  // Задаване типа на маската: ръчна ( true ) / АI ( false )
+            args = new List<string>() // Списъка с евентуалните зони за маркиране от АЙ-то
+        };
+
+        var jsonContent = new StringContent(
+            JsonSerializer.Serialize(requestBody),
+            Encoding.UTF8,
+            "application/json"
+        );
+
+        var response = await _client.PostAsync(requestUrl, jsonContent);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new HttpRequestException($"HTTP {AppConstants.Errors.ERROR}: {response.StatusCode}");
+        }
+
+        var contentType = response.Content.Headers.ContentType?.MediaType;
+        _imageData = await response.Content.ReadAsByteArrayAsync();
+
+        if (contentType != null && contentType.StartsWith("image/"))
+        {
+            ResponseImage.Source = ImageSource.FromStream(() => new MemoryStream(_imageData));          
+            return true;
+        }
+        else
+        {
+            responseText = Encoding.UTF8.GetString(_imageData);         
+            return false;
+        }
+    }
+
+    private async Task<bool> CheckForMissingInput()
+    {
+        var result1 = SelectedClothImage.Source.ToString()?.Remove(0, 6);
+        var result2 = SelectedBodyImage.Source.ToString()?.Remove(0, 6);
+        if (result1 == "Icons/blank_image_photo.png" || result2 == "Icons/blank_image_photo.png")
+        {
+            await DisplayAlert(AppConstants.Errors.ERROR, AppConstants.Errors.SELECT_BOTH_IMAGES, AppConstants.Messages.OK);
+            return true;
+        }
+
+        return false;
+
+        //if(SelectedClothImage.Source.ToString().Contains("blank") || SelectedBodyImage.Source.ToString().Contains("blank")) return true;
+        //else return false;
+    }
 
     private async void CameraButton_Clicked(object sender, EventArgs e)
     {
